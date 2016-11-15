@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+        >
+
+
+    <com.yishanxiu.yishang.view.CustomImageView
+            style="@style/common_image_fill_width_style"
+            app:scaleRate="2"
+            android:src="@drawable/pic_load_error"
+            android:id="@+id/big_iv"/>
+    <TextView
+            android:id="@+id/find_item_big_title_tv"
+            style="@style/findBigTitleStyle"
+            android:text="@string/test_msg"
+            />
+    <TextView
+            android:id="@+id/find_item_classfy_tv"
+            style="@style/find_item_classfy_style"
+            android:text="@string/msg_big_title"
+            />
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/default_drawpadding"
+            android:layout_marginBottom="@dimen/comon_half_margin">
+        <TextView
+                android:id="@+id/create_time_tv"
+                style="@style/find_item_classfy_style"
+                android:text="@string/time_test"
+                android:layout_weight="1"
+                />
+        <TextView
+                android:id="@+id/find_item_scan_num_tv"
+                style="@style/find_item_classfy_style"
+                android:drawableLeft="@drawable/scan"
+                android:gravity="center_vertical"
+                android:text="1234"
+                android:layout_marginRight="@dimen/common_margin"
+                android:drawablePadding="@dimen/default_drawpadding"
+                />
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
+            android:gravity="center">
+
+
+    </LinearLayout>
+
+
+    <!--每个类别推荐-->
+    <striveen.util.used.view.view.HorizontalListView
+            android:id="@+id/find_page_item_hv"
+            android:layout_width="match_parent"
+            android:layout_marginTop="8dp"
+            android:layout_height="@dimen/findproduct_hv_item_height"
+            android:background="@color/white"
+            android:visibility="gone"
+            />
+</LinearLayout>

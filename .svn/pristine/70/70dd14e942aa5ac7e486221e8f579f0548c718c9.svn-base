@@ -1,0 +1,388 @@
+package com.yishanxiu.yishang.activity;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.gson.Gson;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.activity.base.BaseUIActivity;
+import com.yishanxiu.yishang.adapter.GridViewAdapter;
+import com.yishanxiu.yishang.getdata.GetDataConfing;
+import com.yishanxiu.yishang.getdata.GetDataQueue;
+import com.yishanxiu.yishang.getdata.IGetServicesDataCallBack;
+import com.yishanxiu.yishang.getdata.JsonKeys;
+import com.yishanxiu.yishang.getdata.ShowGetDataError;
+import com.yishanxiu.yishang.pic.util.BitmpUtil;
+import com.yishanxiu.yishang.utils.*;
+
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.view.Gravity;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import net.tsz.afinal.annotation.view.ViewInject;
+import net.tsz.afinal.json.JsonMap;
+import net.tsz.afinal.json.JsonParseHelper;
+
+/**
+ * @author FangDongzhang 退货退款
+ * @date 2016/7/8
+ */
+public class ReturnRefundActivity extends BaseUIActivity {
+
+	@ViewInject(id = R.id.noScrollgridview)
+	private GridView noScrollgridview;
+	private GridViewAdapter adapter;
+
+	@ViewInject(id = R.id.forward_msg_ll)
+	private LinearLayout linearLayout;
+
+	@ViewInject(id = R.id.price)
+	private EditText price;
+
+	@ViewInject(id = R.id.radiogroup_return)
+	private RadioGroup radioGroup_return_refund;
+
+	@ViewInject(id = R.id.radio_refund)
+	private RadioButton radio_refund;
+
+	@ViewInject(id = R.id.radio_return)
+	private RadioButton radio_return;
+
+	//提交申请
+	@ViewInject(id = R.id.commitApplayTv, click = "commitApplayTvClick")
+	private TextView commitApplayTv;
+
+	@ViewInject(id = R.id.refund_money)
+	private TextView refund_money;
+
+	@ViewInject(id = R.id.application_service)
+	private TextView application_service;
+
+	//留言
+	@ViewInject(id = R.id.tv_msg)
+	private EditText tv_msg;
+	private String orderId;
+	private String orderProductId;
+	//1：退货   2：退款操作
+	private String returnRefundType = "1";
+	private int orderStatus;
+	private int returnRefundStatus;
+	private String productPrice;
+	private Drawable drawable;
+	private String path = "";
+	private final int select_local_requestcode = 1;
+	private final int select_camera_requestcode = 3;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_return_refund);
+		setCenter_title("申请售后");
+		BitmpUtil.drr.clear();
+		BitmpUtil.drr.add(BitmpUtil.ADDPIC);
+		Intent intent = getIntent();
+		orderStatus = intent.getIntExtra("orderStatus", -1);
+		returnRefundStatus = intent.getIntExtra("returnRefundStatus", -1);
+		productPrice = intent.getStringExtra("productPrice");
+		orderId = intent.getStringExtra("orderId");
+		orderProductId = intent.getStringExtra("orderProductId");
+		init();
+		drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.check_mark, null);
+		//initListener();
+		setData();
+	}
+
+	OnCheckedChangeListener checkedChangeListener = new OnCheckedChangeListener() {
+
+		@Override
+		public void onCheckedChanged(RadioGroup group, int checkedId) {
+			if (checkedId == radio_refund.getId()) {
+				returnRefundType = "2";
+				radio_return.setCompoundDrawables(null, null, null, null);
+				radio_refund.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
+			}
+			if (checkedId == radio_return.getId()) {
+				returnRefundType = "1";
+				radio_refund.setCompoundDrawables(null, null, null, null);
+				radio_return.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
+			}
+		}
+	};
+
+
+	/**
+	 * 初始化组建默认数据 / 状态
+	 */
+	private void setData() {
+		switch (orderStatus) {
+			case 2:
+				returnRefundType = "2";
+				price.setEnabled(false);
+				radio_refund.setEnabled(false);
+				radio_return.setEnabled(false);
+				price.setText(StringUtils.getFormatMoney(productPrice));
+				price.setBackgroundColor(ContextCompat.getColor(mContext, R.color.trans_white_color));
+				break;
+			case 3:
+				returnRefundType = "2";
+				price.setEnabled(false);
+				radio_refund.setEnabled(false);
+				radio_return.setEnabled(false);
+				price.setText(StringUtils.getFormatMoney(productPrice));
+				price.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white));
+				break;
+			case 4:
+				returnRefundType = "2";
+				price.setEnabled(true);
+				radio_refund.setEnabled(true);
+				radio_return.setEnabled(true);
+				radioGroup_return_refund.setOnCheckedChangeListener(checkedChangeListener);
+				price.setText(StringUtils.getFormatMoney(productPrice));
+				price.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white));
+				break;
+			default:
+				break;
+		}
+	}
+
+	/**
+	 * 初始化组建
+	 */
+	public void init() {
+		String value = "申请服务*";
+		String value2 = "退款金额*";
+		int fstart = value.indexOf("*");
+		int fend = fstart + "*".length();
+		SpannableStringBuilder style = new SpannableStringBuilder(value);
+		SpannableStringBuilder style2 = new SpannableStringBuilder(value2);
+		style.setSpan(new ForegroundColorSpan(Color.RED), fstart, fend, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+		style2.setSpan(new ForegroundColorSpan(Color.RED), fstart, fend, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+		refund_money.setText(style2);
+		application_service.setText(style);
+		adapter = new GridViewAdapter(this);
+		adapter.setMaxNum(3);
+		noScrollgridview.setAdapter(adapter);
+		noScrollgridview.setOnItemClickListener(new OnItemClickListener() {
+
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				if (arg2 == BitmpUtil.drr.size() - 1) {
+					popupWindows = new PopupWindows(mContext, noScrollgridview);
+				} /*else {
+					Intent intent = new Intent(mContext, PhotoActivity.class);
+					intent.putExtra("ID", arg2);
+					startActivity(intent);
+				}*/
+			}
+		});
+	}
+
+	private PopupWindow popupWindows;
+
+	public class PopupWindows extends PopupWindow {
+
+		public PopupWindows(final Context mContext, View parent) {
+			View view = View.inflate(mContext, R.layout.item_popupwindows, null);
+			view.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_ins));
+			LinearLayout ll_popup = (LinearLayout) view.findViewById(R.id.ll_popup);
+			ll_popup.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.push_bottom_in_2));
+
+			setWidth(LayoutParams.MATCH_PARENT);
+			setHeight(LayoutParams.WRAP_CONTENT);
+			// setBackgroundDrawable(new BitmapDrawable());
+			setOutsideTouchable(true);
+			setContentView(view);
+			showAtLocation(parent, Gravity.BOTTOM, 0, 0);
+			update();
+
+			Button camera = (Button) view.findViewById(R.id.item_popupwindows_camera);
+			Button photo = (Button) view.findViewById(R.id.item_popupwindows_Photo);
+			Button cancel = (Button) view.findViewById(R.id.item_popupwindows_cancel);
+
+			RelativeLayout layout = (RelativeLayout) view.findViewById(R.id.rlt_pop);
+			layout.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dismiss();
+				}
+			});
+
+			camera.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					photo();
+					dismiss();
+				}
+			});
+			photo.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					Intent intent = new Intent(mContext, SelectPictureActivity.class);
+					intent.putExtra(SelectPictureActivity.INTENT_MAX_NUM, 4 - BitmpUtil.drr.size());
+					startActivityForResult(intent, select_local_requestcode);
+					dismiss();
+				}
+			});
+			cancel.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					dismiss();
+				}
+			});
+
+		}
+	}
+
+
+	public void photo() {
+		Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		Uri imageUri = CropImage.getOutputMediaFileUri();
+		path = imageUri.getPath();
+		openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+		startActivityForResult(openCameraIntent, select_camera_requestcode);
+	}
+
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_OK) {
+			if (requestCode == select_local_requestcode) {
+				ArrayList<String> temp = (ArrayList<String>) data
+						.getSerializableExtra(SelectPictureActivity.INTENT_SELECTED_PICTURE);
+				BitmpUtil.drr.addAll(0, temp);
+				adapter.notifyDataSetChanged();
+			} else if (requestCode == select_camera_requestcode) {
+				if (path != null) {
+					BitmpUtil.drr.add(0, path);
+				}
+				adapter.notifyDataSetChanged();
+			}
+		}
+	}
+
+	public void commitApplayTvClick(View view) {
+		//上传图片
+		String returnPrice = price.getText().toString();
+		double price = Double.parseDouble(returnPrice);
+		if (price < 0.01) {
+			toast.showToast(R.string.refund_amount_error);
+			return;
+		}
+		if(price>Double.parseDouble(productPrice)){
+			toast.showToast(getString(R.string.refund_amount_over)+productPrice);
+			return;
+		}
+		loadingToast.show();
+		int num = BitmpUtil.drr.size();
+		if (num > 1) {
+			if (num > 4) {
+				num = 4;
+			}
+			Map<String, Object> fileMap = new HashMap<String, Object>();
+			fileMap.put("key", "file");
+			ArrayList<File> fileList = new ArrayList<File>();
+			for (int i = 0; i < num - 1; i++) {
+				String filePath = BitmpUtil.drr.get(i);
+				File file = new File(BitmapHelper.compressBitmapWithStoreCache(mContext, filePath, 640, 960, 1 * 1024, true));
+				fileList.add(file);
+			}
+			//int num=fileList.size();
+			//fileList.remove(num-1);
+			fileMap.put("fileList", fileList);
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("imgType", String.valueOf(2));
+			GetDataQueue queue = new GetDataQueue();
+			queue.setActionName(GetDataConfing.GetAction_uploadPictureOrFile);
+			queue.setParamsNoJson(params);
+			queue.setFileMap(fileMap);
+			queue.setMediaType(GetDataQueue.MediaType.MUTILPART);
+			queue.setWhat(GetDataConfing.what_uploadPictureOrFile);
+			queue.setCallBack(callBack);
+			getDataUtil.getData(queue);
+		} else {
+			upLoadApplay(new ArrayList<String>());
+		}
+	}
+
+	IGetServicesDataCallBack callBack = new IGetServicesDataCallBack() {
+		@Override
+		public void onLoaded(GetDataQueue entity) {
+			loadingToast.dismiss();
+			if (entity.isOk()) {
+				if (ShowGetDataError.isCodeSuccess(mContext, entity.getInfo())) {
+					if (entity.getWhat() == GetDataConfing.what_uploadPictureOrFile) {
+						JsonMap<String, Object> data = JsonParseHelper.getJsonMap(entity.getInfo());
+						String temp = data.getStringNoNull(JsonKeys.Key_Info);
+						Gson gson = new Gson();
+						ArrayList<String> pics = gson.fromJson(temp, ArrayList.class);
+						upLoadApplay(pics);
+					} else if (entity.what == GetDataConfing.what_GetProdctInfo) {
+						JsonMap<String, Object> data = JsonParseHelper.getJsonMap_JsonMap(entity.getInfo(),
+								JsonKeys.Key_Info);
+						toast.showToast("申请售后成功");
+						sendBroadcast(new Intent(Constant.ORDER_STATUS_CHANGE));
+						finish();
+					}
+				}
+			} else {
+				ShowGetDataError.showNetError(mContext);
+			}
+
+		}
+	};
+
+
+	private void upLoadApplay(ArrayList<String> pics) {
+		JsonMap<String, Object> orderMap = new JsonMap<String, Object>();
+		orderMap.put("userId", Utils.getUserId(mContext));
+		orderMap.put("orderId", orderId);
+		orderMap.put("orderProductId", orderProductId);
+		orderMap.put("returnRefundType", returnRefundType);
+		orderMap.put("refundTotalMoney", price.getText().toString());
+		orderMap.put("attr1", tv_msg.getText().toString());
+		orderMap.put("picIdentity", pics.size() > 0 ? "1" : "2");
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("pics", pics);
+		map.put("returnRefundOrderAuto", orderMap);
+		GetDataQueue queue = new GetDataQueue();
+		queue.setActionName(GetDataConfing.GetAction_GetProdctInfo);
+		queue.setParamsNoJson(map);
+		queue.setWhat(GetDataConfing.what_GetProdctInfo);
+		queue.setCallBack(callBack);
+		queue.setMediaType(GetDataQueue.MediaType.JSON);
+		getDataUtil.getData(queue);
+
+	}
+
+	@Override
+	public void onBackPressed() {
+		if(popupWindows!=null&&popupWindows.isShowing()){
+			popupWindows.dismiss();
+		}else {
+			super.onBackPressed();
+		}
+	}
+}

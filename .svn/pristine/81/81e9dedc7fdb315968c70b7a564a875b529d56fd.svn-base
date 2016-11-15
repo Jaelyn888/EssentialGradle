@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/white">
+
+	<com.lzy.widget.OverScrollDecor
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:fadingEdge="none">
+
+		<LinearLayout
+			android:id="@+id/content_layout"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical">
+
+			<include layout="@layout/artical_detail_head_layout" />
+
+			<com.yishanxiu.yishang.view.GridViewNoScroll
+				android:id="@+id/noscroll_gv"
+				style="@style/relation_product_style" />
+
+		</LinearLayout>
+
+	</com.lzy.widget.OverScrollDecor>
+
+</LinearLayout>

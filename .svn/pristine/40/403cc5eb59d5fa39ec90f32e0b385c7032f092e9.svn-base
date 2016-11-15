@@ -1,0 +1,350 @@
+package com.yishanxiu.yishang.activity;
+
+import java.io.File;
+import java.util.HashMap;
+
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.DialogInterface;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.support.v7.app.AlertDialog;
+import android.text.format.Formatter;
+import com.hyphenate.chat.EMClient;
+import com.lzy.okhttpserver.download.DownloadInfo;
+import com.lzy.okhttpserver.download.DownloadManager;
+import com.lzy.okhttpserver.download.DownloadService;
+import com.lzy.okhttpserver.listener.DownloadListener;
+import com.lzy.okhttputils.OkHttpUtils;
+import com.lzy.okhttputils.request.GetRequest;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.activity.base.BaseUIActivity;
+import com.yishanxiu.yishang.bean.ApkInfo;
+import com.yishanxiu.yishang.getdata.GetDataConfing;
+import com.yishanxiu.yishang.getdata.GetDataQueue;
+import com.yishanxiu.yishang.getdata.IGetServicesDataCallBack;
+import com.yishanxiu.yishang.getdata.JsonKeys;
+import com.yishanxiu.yishang.getdata.ShowGetDataError;
+import com.yishanxiu.yishang.utils.*;
+import com.yishanxiu.yishang.view.WihteRoundCornersDialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import net.tsz.afinal.annotation.view.ViewInject;
+import net.tsz.afinal.json.JsonMap;
+import net.tsz.afinal.json.JsonParseHelper;
+import net.tsz.afinal.sdcard.SdcardHelper;
+
+/**
+ * Created by Jaelyn on 16/2/25. 设置
+ */
+public class SetActivity extends BaseUIActivity {
+
+	/**
+	 * 账号管理
+	 */
+	@ViewInject(id = R.id.accountManagerLayout, click = "accountManagerLayoutClick")
+	private TextView accountManagerLayout;
+	/**
+	 * 安全管理
+	 */
+	@ViewInject(id = R.id.securityLayout, click = "securityLayoutClick")
+	private TextView securityLayout;
+	/**
+	 * 关于我们
+	 */
+	@ViewInject(id = R.id.tr_my_about_us, click = "tr_my_about_usClick")
+	private TextView tr_my_about_us;
+	/**
+	 * 帮助中心
+	 */
+	@ViewInject(id = R.id.tr_my_help_center, click = "tr_my_help_centerClick")
+	private TextView tr_my_help_center;
+	/**
+	 * 意见反馈
+	 */
+	@ViewInject(id = R.id.tr_my_feedback, click = "tr_my_feedbackClick")
+	private TextView tr_my_feedback;
+	/**
+	 * 版本检测
+	 */
+	@ViewInject(id = R.id.tr_my_version_checking, click = "tr_my_version_checkingClick")
+	private LinearLayout tr_my_version_checking;
+
+	@ViewInject(id = R.id.my_the_current_version)
+	private TextView my_the_current_version;
+	/**
+	 * 联系我们
+	 */
+	@ViewInject(id = R.id.bt_my_log_out, click = "bt_my_log_out")
+	private Button bt_my_log_out;
+	/**
+	 * 退出登录
+	 */
+	@ViewInject(id = R.id.tr_my_contact_us, click = "tr_my_contact_usClick")
+	private TextView tr_my_contact_us;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.set_layout);
+		setCenter_title(R.string.systemSet);
+		my_the_current_version.setText("V " + Utils.getVersionName(mContext));
+//		Intent e = new Intent(this, DownloadService.class);
+//		this.startService(e);
+//		this.bindService(e, this, BIND_AUTO_CREATE);
+	}
+
+	public void accountManagerLayoutClick(View view) {
+
+	}
+
+	public void securityLayoutClick(View view) {
+
+	}
+
+	public void tr_my_about_usClick(View view) {
+		Intent intent = new Intent(mContext, UrlWebviewActivity.class);
+		intent.putExtra(ExtraKeys.Key_Msg1, 7);
+		jumpTo(intent, false);
+	}
+
+	public void tr_my_help_centerClick(View view) {
+		Intent intent = new Intent(mContext, UrlWebviewActivity.class);
+		intent.putExtra(ExtraKeys.Key_Msg1, 1);
+		jumpTo(intent, false);
+	}
+
+	public void tr_my_feedbackClick(View view) {
+		jumpTo(UserFeedBackActivity.class);
+	}
+
+	public void tr_my_version_checkingClick(View view) {
+		upversion();
+	}
+
+	public void tr_my_contact_usClick(View view) {
+
+	}
+
+
+
+	private IGetServicesDataCallBack callBack = new IGetServicesDataCallBack() {
+
+		@Override
+		public void onLoaded(GetDataQueue entity) {
+			loadingToast.dismiss();
+			if (entity.isOk()) {
+				if (ShowGetDataError.isCodeSuccess(mContext, entity.getInfo())) {
+					if (entity.what == GetDataConfing.What_selectAppVersionInfo) {
+						JsonMap<String, Object> info = JsonParseHelper.getJsonMap_JsonMap(entity.getInfo(),
+								JsonKeys.Key_Info);
+						if (info.isEmpty()) {
+							toast.showToast(R.string.app_version_newest);
+						} else {
+							versionCode = info.getStringNoNull("versionNumber");
+							String filePath = info.getStringNoNull("versionFilePath");
+							String versionContent = info.getStringNoNull("versionContent");
+							if (TextUtils.isEmpty(versionCode) || TextUtils.isEmpty(filePath)
+									|| versionCode.equalsIgnoreCase(Utils.getVersionName(mContext))) {
+
+								toast.showToast(R.string.app_version_newest);
+							} else {
+								showNewVersion(filePath, versionContent);
+							}
+						}
+					}
+				}
+			} else {
+				ShowGetDataError.showNetError(mContext);
+			}
+
+		}
+
+	};
+	/**
+	 * 提示用户有新版本
+	 */
+	private DownloadManager downloadManager;
+	private String versionCode;
+	private String apkDownLoadPath;
+	private AlertDialog alertDialog;
+	private MyDownloadListener listener;
+	private DownloadInfo downloadInfo;
+	private Notification.Builder builderNotification;
+	private NotificationManager notificationManager;
+	/**
+	 * 检测版本
+	 */
+	private void upversion() {
+		if (!SdcardHelper.ExistSDCard()) {
+			toast.showToast(R.string.nosdcard);
+		} else {
+			loadingToast.show();
+			GetDataQueue queue = new GetDataQueue();
+			queue.setActionName(GetDataConfing.Action_selectAppVersionInfo);
+			queue.setParams(new HashMap<String, Object>());
+			queue.setCallBack(callBack);
+			queue.setWhat(GetDataConfing.What_selectAppVersionInfo);
+			getDataUtil.getData(queue);
+		}
+
+	}
+	/**
+	 * 提示用户有新版本
+	 */
+	private void showNewVersion(String filePath, String appUpdateDiscri) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+		builder.setTitle(R.string.app_version_select);
+		builder.setMessage(appUpdateDiscri) ;
+		builder.setNegativeButton(R.string.app_version_iknow, dialogClickListener);
+		builder.setPositiveButton(R.string.app_version_update,dialogClickListener);
+
+		alertDialog=builder.show();
+		apkDownLoadPath = filePath;
+
+	}
+
+
+	DialogInterface.OnClickListener dialogClickListener=new DialogInterface.OnClickListener() {
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			alertDialog.dismiss();
+			if(which==AlertDialog.BUTTON_POSITIVE) {
+				String appName = getString(R.string.app_name);
+				startDownload(apkDownLoadPath, appName + ".apk", appName, 1);
+			}
+		}
+	};
+
+	private void startDownload(String apkDownLoadPath, String apk, String appName, int id) {
+		downloadManager = DownloadService.getDownloadManager();
+		builderNotification = new Notification.Builder(mContext);
+		builderNotification.setSmallIcon(R.drawable.app_icon);
+		builderNotification.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.app_icon));
+		builderNotification.setAutoCancel(true);
+		builderNotification.setContentTitle(getString(R.string.app_update_ticker));
+		builderNotification.setTicker(getString(R.string.app_update_ticker));
+		notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+
+		downloadInfo = downloadManager.getDownloadInfo(apkDownLoadPath);
+		listener = new MyDownloadListener();
+		if (downloadInfo != null) {
+			switch (downloadInfo.getState()) {
+				case DownloadManager.PAUSE:
+					downloadInfo.setListener(listener);
+					downloadManager.restartTask(apkDownLoadPath);
+					break;
+				case DownloadManager.NONE:
+				case DownloadManager.ERROR:
+					downloadManager.addTask(apkDownLoadPath, downloadInfo.getRequest(), listener);
+					break;
+				case DownloadManager.DOWNLOADING:
+					downloadInfo.setListener(listener);
+					break;
+				case DownloadManager.FINISH:
+					File apkFile = new File(downloadInfo.getTargetPath());
+					if (apkFile.exists()) {
+						ApkUtils.install(mContext, apkFile);
+					} else {
+						downloadManager.removeTask(apkDownLoadPath);
+						downloadManager.addTask(apkDownLoadPath, downloadInfo.getRequest(), listener);
+					}
+					break;
+			}
+
+		} else {
+			ApkInfo apkInfo = new ApkInfo();
+			apkInfo.setName(appName);
+			apkInfo.setUrl(apkDownLoadPath);
+			GetRequest request = OkHttpUtils.get(apkDownLoadPath);//
+			downloadManager.addTask(apkDownLoadPath, request, listener);
+			AppCacheUtils.getInstance(mContext).put(apkDownLoadPath, apk);
+
+		}
+	}
+
+	private class MyDownloadListener extends DownloadListener {
+		@Override
+		public void onProgress(DownloadInfo downloadInfo) {
+			String downloadLength = Formatter.formatFileSize(mContext, downloadInfo.getDownloadLength());
+			String totalLength = Formatter.formatFileSize(mContext, downloadInfo.getTotalLength());
+			builderNotification.setContentText(downloadLength + "/" + totalLength);
+			builderNotification.setSubText((Math.round(downloadInfo.getProgress() * 10000) * 1.0f / 100) + "%");
+			notificationManager.notify(0, builderNotification.build());
+		}
+
+		@Override
+		public void onFinish(DownloadInfo downloadInfo) {
+			File apkFile = new File(downloadInfo.getTargetPath());
+			if (apkFile.exists()) {
+				Uri uri = Uri.fromFile(apkFile);
+				Intent installIntent = new Intent(Intent.ACTION_VIEW);
+				installIntent.setDataAndType(uri, "application/vnd.android.package-archive");
+				PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, installIntent, 0);
+				builderNotification.setContentIntent(pendingIntent);
+				String totalLength = Formatter.formatFileSize(mContext, downloadInfo.getTotalLength());
+				builderNotification.setContentText(totalLength);
+				builderNotification.setSubText(null);
+				builderNotification.setContentTitle(getString(R.string.download_success));
+				notificationManager.notify(0, builderNotification.build());
+				ApkUtils.install(mContext, apkFile);
+			}
+		}
+
+		@Override
+		public void onError(DownloadInfo downloadInfo, String errorMsg, Exception e) {
+			String downloadLength = Formatter.formatFileSize(mContext, downloadInfo.getDownloadLength());
+			String totalLength = Formatter.formatFileSize(mContext, downloadInfo.getTotalLength());
+			builderNotification.setContentText(downloadLength + "/" + totalLength);
+			builderNotification.setSubText((Math.round(downloadInfo.getProgress() * 10000) * 1.0f / 100) + "%");
+			builderNotification.setContentTitle(errorMsg);
+			notificationManager.notify(0, builderNotification.build());
+		}
+	}
+	/**
+	 * 退出登陆
+	 * 
+	 * @param v
+	 */
+	public void bt_my_log_out(View v) {
+		showExitDialog();
+	}
+
+
+	private void showExitDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+		builder.setTitle("退出登录");
+		builder.setMessage(R.string.change_user) ;
+		builder.setNegativeButton(R.string.cancel, exitDialogClickListener);
+		builder.setPositiveButton(R.string.ensure,exitDialogClickListener);
+		alertDialog=builder.show();
+
+	}
+
+	private DialogInterface.OnClickListener exitDialogClickListener = new DialogInterface.OnClickListener() {
+
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			alertDialog.dismiss();
+			if(which==AlertDialog.BUTTON_POSITIVE) {
+				EMClient.getInstance().logout(true);
+				Utils.clearUserInfoData(mContext);
+				finish();
+			}
+		}
+
+	};
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
+
+}

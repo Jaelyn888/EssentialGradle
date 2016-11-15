@@ -1,0 +1,153 @@
+package com.yishanxiu.yishang.fragment;
+
+import android.content.Intent;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+import com.shizhefei.view.indicator.IndicatorViewPager;
+import com.shizhefei.view.indicator.ScrollIndicatorView;
+import com.shizhefei.view.indicator.slidebar.TextWidthColorBar;
+import com.shizhefei.view.indicator.transition.OnTransitionTextListener;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.activity.MainActivity2;
+import com.yishanxiu.yishang.activity.ProductSearchActivity;
+import com.yishanxiu.yishang.utils.DisplayUtil;
+import com.yishanxiu.yishang.utils.ExtraKeys;
+
+/**
+ * @author FangDongzhang
+ *         <p/>
+ *         2016/8/2 商城
+ */
+public class ShopMallFragment2 extends LazyFragment {
+	private IndicatorViewPager indicatorViewPager;
+	@ViewInject(R.id.moretab_viewPager)
+	private ViewPager viewPager;
+	@ViewInject(R.id.moretab_indicator)
+	private ScrollIndicatorView scrollIndicatorView;
+	private String[] strings = {"推荐", "分类", "品牌"};
+
+//    @ViewInject(R.id.find_artical_search)
+//    private ImageView find_artical_search;
+
+	@Override
+	protected void onCreateViewLazy(Bundle savedInstanceState) {
+		super.onCreateViewLazy(savedInstanceState);
+		setContentView(R.layout.shop_mall_fragment);
+		ViewUtils.inject(this, getContentView());
+		initView();
+	}
+
+
+	@Override
+	protected void onFragmentStartLazy() {
+		super.onFragmentStartLazy();
+		int index = ((MainActivity2) activity).secondPageIndex;
+		if (index > 0) {
+			indicatorViewPager.setCurrentItem(index, true);
+			((MainActivity2) activity).secondPageIndex = -1;
+
+		}
+	}
+
+	/**
+	 * 初始化控件
+	 */
+	private void initView() {
+		int indicatorColor = ContextCompat.getColor(activity, R.color.black_deep);
+		scrollIndicatorView.setOnTransitionListener(
+				new OnTransitionTextListener().setColorId(activity, R.color.black_deep, R.color.darkGray).setSizeId(activity, R.dimen.common_textsize, R.dimen.common_textsize));
+		scrollIndicatorView.setScrollBar(new TextWidthColorBar(activity, scrollIndicatorView, indicatorColor, 5));
+		viewPager.setOffscreenPageLimit(strings.length);
+		indicatorViewPager = new IndicatorViewPager(scrollIndicatorView, viewPager);
+		indicatorViewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
+	}
+
+	/**
+	 * 搜索监听
+	 */
+	@OnClick(R.id.find_artical_search)
+	public void find_artical_search_click(View view) {
+		Intent intent = new Intent(activity, ProductSearchActivity.class);
+		intent.putExtra(ExtraKeys.Key_Msg1, "");
+		activity.jumpTo(intent);
+	}
+
+	private class MyAdapter extends IndicatorViewPager.IndicatorFragmentPagerAdapter {
+		private LayoutInflater inflater = null;
+
+		public MyAdapter(FragmentManager fragmentManager) {
+			super(fragmentManager);
+			inflater = LayoutInflater.from(getApplicationContext());
+		}
+
+		@Override
+		public int getCount() {
+			return strings.length;
+		}
+
+		@Override
+		public View getViewForTab(int position, View convertView, ViewGroup container) {
+			if (convertView == null) {
+				convertView = inflater.inflate(R.layout.tab_top, container, false);
+			}
+			TextView textView = (TextView) convertView;
+			textView.setText(strings[position]);
+			return convertView;
+		}
+
+		@Override
+		public int getItemPosition(Object object) {
+			// 这是ViewPager适配器的特点,有两个值
+			// POSITION_NONE，POSITION_UNCHANGED，默认就是POSITION_UNCHANGED,
+			// 表示数据没变化不用更新.notifyDataChange的时候重新调用getViewForPage
+			return PagerAdapter.POSITION_UNCHANGED;
+		}
+
+
+		@Override
+		public Fragment getFragmentForPage(int position) {
+			if (position == 0) {
+				return new RecommendFragment();
+			} else if (position == 1) {
+				return new ProductCategoryFragment();
+			} else if (position == 2) {
+				return new BrandAllFragment();
+			} else {
+				return null;
+			}
+		}
+
+	}
+
+
+//	@Override
+//	protected void onResumeLazy() {
+//		super.onResumeLazy();
+//		int index = ((MainActivity2) activity).secondPageIndex;
+//		if (index > 0) {
+//			indicatorViewPager.setCurrentItem(index, true);
+//			((MainActivity2) activity).secondPageIndex = -1;
+//
+//		}
+//	}
+
+
+	@Override
+	public void onHiddenChanged(boolean hidden) {
+		super.onHiddenChanged(hidden);
+	}
+}

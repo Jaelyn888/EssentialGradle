@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:id="@+id/myProgressBar"
+            android:layout_width="match_parent"
+            android:max="100"
+            android:progress="10"
+            android:layout_height="4dp"
+            android:visibility="gone"
+            android:progressDrawable="@drawable/cus_hor_progress"
+    />
+    <com.yishanxiu.yishang.view.WebViewNoScroll
+            android:id="@+id/find_contents_wb"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+    />
+
+    <!--相关用户-->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/relation_person_layout"
+            android:orientation="vertical"
+            android:layout_marginBottom="@dimen/common_margin"
+            android:visibility="gone">
+
+        <ImageView style="@style/hor_line_style"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/relation_persion"
+                android:layout_gravity="center"
+                android:padding="@dimen/common_margin"/>
+
+        <ImageView style="@style/hor_line_style"
+        />
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:id="@+id/relation_person_info"
+                      android:layout_marginTop="@dimen/common_margin"/>
+
+    </LinearLayout>
+
+    <!--相关商品-->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/relation_goods"
+            android:orientation="vertical"
+            android:layout_marginBottom="@dimen/common_margin"
+            android:visibility="gone">
+
+        <ImageView style="@style/hor_line_style"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/relation_goods"
+                android:layout_gravity="center"
+                android:padding="@dimen/common_margin"/>
+
+        <ImageView style="@style/hor_line_style"
+        />
+
+    </LinearLayout>
+
+</LinearLayout>

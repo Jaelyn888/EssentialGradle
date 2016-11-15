@@ -1,0 +1,129 @@
+package com.yishanxiu.yishang.adapter;
+
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.model.RecommendProduct;
+
+/**
+ * Created by FangDongzhang on 2016/9/7.
+ */
+public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
+
+    //item类型
+    //public static final int ITEM_TYPE_HEADER = 0;
+    public static final int ITEM_TYPE_CONTENT = 1;
+    public static final int ITEM_TYPE_BOTTOM = 2;
+
+    private LayoutInflater mLayoutInflater;
+    private Context context;
+
+    public MyRecyclerViewAdapter(Context context) {
+        this.context = context;
+        mLayoutInflater = LayoutInflater.from(context);
+    }
+
+    //内容长度
+    public int getContentItemCount() {
+        return 6;
+    }
+
+    private int mBottomCount = 1;//底部View个数
+
+    //判断当前item是否是FooterView
+    public boolean isBottomView(int position) {
+        return mBottomCount != 0 && position >= (getContentItemCount());
+    }
+
+    //判断当前item类型
+    @Override
+    public int getItemViewType(int position) {
+        int dataItemCount = getContentItemCount();
+        if (mBottomCount != 0 && position >= dataItemCount) {
+            //底部View
+            return ITEM_TYPE_BOTTOM;
+        } else {
+            //内容View
+            return ITEM_TYPE_CONTENT;
+        }
+    }
+
+
+    @Override
+    public int getItemCount() {
+        return 6 + mBottomCount;
+    }
+
+    //创建新View，被LayoutManager所调用
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        View view;
+        ContentViewHolder contentViewHolder;
+        BottomViewHolder bottomViewHolder;
+        if (viewType == ITEM_TYPE_CONTENT) {
+            view = mLayoutInflater.inflate(R.layout.recommend_pro_item, viewGroup, false);
+            contentViewHolder = new ContentViewHolder(view);
+            view.setOnClickListener(this);
+            return contentViewHolder;
+        } else if (viewType == ITEM_TYPE_BOTTOM) {
+            view = mLayoutInflater.inflate(R.layout.rv_footer, viewGroup, false);
+            bottomViewHolder = new BottomViewHolder(view);
+            view.setOnClickListener(this);
+            return bottomViewHolder;
+
+        }
+        return null;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+//        ((BottomViewHolder) holder).footer_imageView.setTag(position);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (mOnItemClickListener != null) {
+            //注意这里使用getTag方法获取数据
+            mOnItemClickListener.onItemClick(view, (RecommendProduct) view.getTag());
+            Toast.makeText(context, "" + view.getTag(), Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public static class ContentViewHolder extends RecyclerView.ViewHolder {
+
+        public ContentViewHolder(View itemView) {
+            super(itemView);
+
+
+        }
+    }
+
+    //底部 ViewHolder
+    public static class BottomViewHolder extends RecyclerView.ViewHolder {
+        public ImageView footer_imageView;
+
+        public BottomViewHolder(View itemView) {
+            super(itemView);
+            footer_imageView = (ImageView) itemView.findViewById(R.id.footer_imageView);
+        }
+    }
+
+    private OnRecyclerViewItemClickListener mOnItemClickListener = null;
+
+    public void setOnItemClickListener(OnRecyclerViewItemClickListener listener) {
+        this.mOnItemClickListener = listener;
+    }
+
+
+    public interface OnRecyclerViewItemClickListener {
+        void onItemClick(View view, RecommendProduct data);
+    }
+
+}

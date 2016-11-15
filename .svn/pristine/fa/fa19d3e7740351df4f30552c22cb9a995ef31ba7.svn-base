@@ -1,0 +1,216 @@
+package com.yishanxiu.yishang.adapter;
+
+import android.content.Context;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import com.yishanxiu.yishang.model.shopmall.ProductPicModel;
+import net.tsz.afinal.json.JsonMap;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Jaelyn on 2015/9/11 0011.
+ * 商品图片 轮播图
+ */
+public class ProductPicAdapter extends PagerAdapter implements View.OnClickListener, ViewPager.OnPageChangeListener {
+	private LinearLayout circleFlowIndicator;
+	private int currentIndex = 0;
+	/**
+	 * 广告展示的数据信息
+	 */
+	private List<ProductPicModel> datas;
+	private List<View> mViewList = new ArrayList<View>();
+	private OnItemClickListener listener;
+	private Context context;
+	private TextView goods_retain_tv;
+	/**
+	 * 图片隶属的item的位置
+	 */
+	private int parentPosition = 0;
+
+	public int getParentPosition() {
+		return parentPosition;
+	}
+
+	public void setParentPosition(int parentPosition) {
+		this.parentPosition = parentPosition;
+	}
+
+	public ProductPicAdapter(Context context) {
+		super();
+		this.context = context;
+		initView();
+	}
+
+
+	public ProductPicAdapter(Context context,
+	                         List<ProductPicModel> data) {
+		super();
+		this.context = context;
+		this.datas = data;
+		initView();
+	}         //		R.layout.item_index_guanggao, new String[] { "ImagePath" },
+//				new int[] { R.id.i_i_aiv_guanggao_pic }, R.drawable.u4
+
+	private void initView() {
+		mViewList.clear();
+		if (datas == null) {
+			return;
+		}
+		for (int i = 0; i < datas.size(); i++) {
+			View view = View.inflate(context, R.layout.home_page_item_goods_item, null);
+			ImageView imageView = (ImageView) view.findViewById(R.id.goods_pic_iv);
+//			TextView goods_retain_tv= (TextView) view.findViewById(R.id.goods_retain_tv);
+//			String strFormat = context.getString(R.string.product_retain);
+//			String goods_retain_str = String.format(strFormat, "" + (i + 1));
+//			goods_retain_tv.setText(goods_retain_str);
+			//imageView.setDefaultResource(R.drawable.app_introduce_pic1);
+			String picPath = datas.get(i).getPath();
+			BitmapHelper.loadImage(context, picPath, imageView, true);
+
+			view.setTag(i);
+			view.setOnClickListener(this);
+			mViewList.add(view);
+
+		}
+	}
+
+	@Override
+	public int getCount() {
+		if (datas == null) {
+			return 0;
+		}
+		return datas.size() >= 2 ? Integer.MAX_VALUE : datas.size();
+	}
+
+	private void adInd(LinearLayout view, int i) {
+
+	}
+
+	public void setIndContainerView(LinearLayout circleFlowIndicator1) {
+		this.circleFlowIndicator = circleFlowIndicator1;
+		initIndicatorView();
+	}
+
+	private void initIndicatorView() {
+		if (datas == null) {
+			return;
+		}
+		if (datas.size() >= 2) {
+			circleFlowIndicator.removeAllViews();
+			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			lp.setMargins(4, 0, 4, 0);
+
+			for (int index = 0; index < datas.size(); index++) {
+				ImageView iv = new ImageView(context);
+				iv.setImageResource(R.drawable.indicator_bg);
+				//iv.setBackgroundResource(R.drawable.main_ad_ind);
+				iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+				if (index == 0) {
+					iv.setSelected(true);
+					currentIndex = index;
+				} else {
+					iv.setSelected(false);
+				}
+				circleFlowIndicator.addView(iv, lp);
+			}
+		}
+	}
+
+
+	public List<ProductPicModel> getData() {
+		return datas;
+	}
+
+	public void setData(List<ProductPicModel> data) {
+		this.datas = data;
+		initView();
+		initIndicatorView();
+	}
+
+
+//
+//	@Override
+//	public Object getItem(int position) {
+//		return data.get(position % (data.size() == 0 ? 1 : data.size()));
+//	}
+
+
+	@Override
+	public boolean isViewFromObject(View arg0, Object arg1) {
+		return arg0 == arg1;
+	}
+
+	@Override
+	public Object instantiateItem(ViewGroup container, int position) {
+		RelativeLayout imageView = (RelativeLayout) mViewList.get(position % datas.size());
+		try {
+			ViewPager viewPager = (ViewPager) imageView.getParent();
+			if (viewPager != null) {
+				viewPager.removeView(imageView);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		container.addView(imageView, 0);
+
+		return mViewList.get(position % datas.size());
+	}
+
+	@Override
+	public void destroyItem(ViewGroup container, int position, Object object) {
+		try {
+			//container.removeView(mViewList.get(position%datas.size()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onClick(View view) {
+		if (listener != null) {
+			listener.onItemClick(parentPosition, (Integer) view.getTag());
+		}
+	}
+
+	@Override
+	public void onPageScrolled(int i, float v, int i1) {
+
+	}
+
+	@Override
+	public void onPageSelected(int position) {
+		try {
+			circleFlowIndicator.getChildAt(currentIndex % datas.size()).setSelected(false);
+			circleFlowIndicator.getChildAt(position % datas.size()).setSelected(true);
+			currentIndex = position;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onPageScrollStateChanged(int i) {
+
+	}
+
+	public interface OnItemClickListener {
+		void onItemClick(int position, int index);
+	}
+
+	public void setOnItemClickListener(OnItemClickListener listener) {
+		this.listener = listener;
+	}
+}

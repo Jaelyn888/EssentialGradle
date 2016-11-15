@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content_logistic_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_bg"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/common_margin"
+    android:paddingRight="@dimen/common_margin" >
+
+    <com.handmark.pulltorefresh.library.PullToRefreshScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:background="@color/white" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_5dp"
+                android:background="@color/gray_bg" />
+
+            <LinearLayout
+                style="@style/layout_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/logistics_companies"
+                        android:textColor="@color/TextColorBlack" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/common_margin"
+                        android:text="@string/logistics_nu" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/margin_27dp"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/logistics_companies"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/TextColorGray" />
+
+                    <TextView
+                        android:id="@+id/logistics_nu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/common_margin"
+                        android:textColor="@color/TextColorGray" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_8dp"
+                android:background="@color/gray_bg" />
+
+            <TextView
+                android:id="@+id/textView5"
+                style="@style/layout_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:text="@string/logistics_track"
+                android:textColor="@color/TextColorBlack" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line_height"
+                android:background="@color/gray_bg" />
+
+            <com.yishanxiu.yishang.view.ListViewNoScroll
+                android:id="@+id/listView_logistic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:divider="@null" >
+            </com.yishanxiu.yishang.view.ListViewNoScroll>
+        </LinearLayout>
+    </com.handmark.pulltorefresh.library.PullToRefreshScrollView>
+
+</LinearLayout>

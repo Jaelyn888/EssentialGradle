@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/gray_bg"
+	android:orientation="horizontal"
+	android:paddingTop="@dimen/common_margin">
+
+	<TextView
+		android:id="@+id/lable_tv"
+		style="@style/ed_lable_style"
+		android:background="@color/white"/>
+
+	<EditText
+		android:id="@+id/editText_modify"
+		android:background="@color/white"
+		style="@style/edit_login_reg_style"/>
+
+</LinearLayout>

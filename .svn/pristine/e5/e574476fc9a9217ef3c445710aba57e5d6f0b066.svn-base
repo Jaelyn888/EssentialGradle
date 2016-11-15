@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/TextColorBlack"
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:id="@+id/head_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@string/shopcart_t"
+            android:textSize="@dimen/textsize_18"
+            android:textColor="@color/white"
+             />
+
+        <ImageView
+            android:id="@+id/find_artical_search"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/comon_half_margin"
+            android:paddingRight="@dimen/common_margin"
+            android:src="@drawable/search_white" />
+    </RelativeLayout>
+
+    <com.shizhefei.view.indicator.ScrollIndicatorView
+        android:id="@+id/moretab_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="@dimen/common_margin"
+        android:layout_marginRight="@dimen/common_margin" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/moretab_viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

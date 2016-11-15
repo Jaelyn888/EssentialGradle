@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/select_pro_llt"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/titlebar_height_sub"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/sort_tv_layout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center" >
+
+            <TextView
+                android:id="@+id/sort_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:text="@string/sort"
+                android:textColor="@drawable/black_gray_txt" />
+        </LinearLayout>
+
+        <!--
+            <ImageView
+            style="@style/vertical_line_style"
+            android:paddingBottom="@dimen/common_margin_other"
+            android:paddingTop="@dimen/common_margin_other"
+            />
+        -->
+
+        <LinearLayout
+            android:id="@+id/price_ll"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center" >
+
+            <TextView
+                android:id="@+id/price_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:text="@string/price_txt"
+                android:textColor="@drawable/black_gray_txt" />
+
+            <ImageView
+                android:id="@+id/pop_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/default_drawpadding"
+                android:src="@drawable/pop_gray" />
+        </LinearLayout>
+
+        <!--
+            <ImageView
+            style="@style/vertical_line_style"
+            android:paddingBottom="@dimen/common_margin_other"
+            android:paddingTop="@dimen/common_margin_other"
+            />
+        -->
+
+        <LinearLayout
+            android:id="@+id/discount_cb"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:visibility="gone" >
+
+            <CheckBox
+                style="@style/checkBoxStyle1"
+                android:clickable="false"
+                android:duplicateParentState="true"
+                android:paddingLeft="@dimen/default_drawpadding"
+                android:text="@string/discount" />
+        </LinearLayout>
+
+        <!--
+            <ImageView
+            style="@style/vertical_line_style"
+            android:paddingBottom="@dimen/common_margin_other"
+            android:paddingTop="@dimen/common_margin_other"
+            />
+        -->
+
+        <LinearLayout
+            android:id="@+id/self_product_cb"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:drawablePadding="@dimen/default_drawpadding"
+                android:drawableRight="@drawable/cus_check1"
+                android:duplicateParentState="true"
+                android:gravity="center_vertical"
+                android:text="@string/self_product"
+                android:textColor="@drawable/black_gray_txt" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView style="@style/hor_line_style" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.handmark.pulltorefresh.library.PullToRefreshGridView
+            android:id="@+id/ptr_gv"
+            style="@style/relation_product_style" />
+
+        <com.yishanxiu.yishang.view.NoTouchLinearLayout
+            android:id="@+id/no_touch_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/trans_dark_gray"
+            android:visibility="gone" />
+    </FrameLayout>
+
+</LinearLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlt_pop"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_transparent" >
+
+    <LinearLayout
+        android:id="@+id/ll_popup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#ffffff"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/telephone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/common_margin"
+            android:drawableTop="@drawable/telephone"
+            android:gravity="center"
+            android:paddingBottom="@dimen/common_margin"
+            android:paddingTop="@dimen/common_margin"
+            android:text="@string/telephone" />
+
+        <TextView
+            android:id="@+id/custom_service"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/common_margin"
+            android:drawableTop="@drawable/costom_service"
+            android:gravity="center"
+            android:paddingBottom="@dimen/common_margin"
+            android:paddingTop="@dimen/common_margin"
+            android:text="@string/costom_service" />
+    </LinearLayout>
+
+</RelativeLayout>

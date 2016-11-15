@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/base_brand_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/white"
+    android:paddingLeft="@dimen/common_margin_more"
+    android:paddingRight="@dimen/common_margin_more"
+    android:paddingTop="@dimen/common_margin"
+    android:paddingBottom="@dimen/common_margin"
+     >
+
+    <ImageView
+        android:id="@+id/iv_head"
+        android:layout_width="@dimen/brand_h"
+        android:layout_height="@dimen/brand_h"
+        android:scaleType="fitXY"
+        android:src="@drawable/brand_log_load_error" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="@dimen/common_margin">
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size16" />
+
+        <TextView
+            android:id="@+id/tv_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_3dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/gray" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_if_attention"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:clickable="true"
+        android:drawablePadding="@dimen/default_drawpadding"
+        android:drawableTop="@drawable/attentioned_bg"
+        android:focusable="false"
+        android:gravity="center_vertical"
+        android:text="@string/attention"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/font_size12"
+        android:visibility="gone" />
+
+</LinearLayout>

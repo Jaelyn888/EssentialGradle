@@ -1,0 +1,115 @@
+package com.yishanxiu.yishang.adapter;
+
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+import com.yishanxiu.yishang.utils.StringUtils;
+import com.yishanxiu.yishang.utils.Utils;
+import com.yishanxiu.yishang.view.CustomImageView;
+
+import net.tsz.afinal.json.JsonMap;
+
+/**
+ * Created by FangDongzhang on 2016/9/6.
+ */
+public class RecommendProAdapter extends MyBaseAdapter {
+
+    /**
+     * 是否显示描述字段 默认不显示
+     */
+    private boolean showDiscri = false;
+
+    public RecommendProAdapter(Context context) {
+        super(context);
+    }
+
+    /**
+     * 是否显示描述信息
+     *
+     * @return
+     */
+    public boolean isShowDiscri() {
+        return showDiscri;
+    }
+
+    public void setShowDiscri(boolean isShowDiscri) {
+        this.showDiscri = isShowDiscri;
+    }
+
+    @Override
+    public int getCount() {
+        return 6;
+    }
+
+    @Override
+    public View getView(int i, View view, ViewGroup viewGroup) {
+        RelationGoodsAdapterViewHolder relationGoodsAdapterViewHolder;
+        if (view == null) {
+            view = layoutInflater.inflate(R.layout.recommend_pro_item, null);
+            relationGoodsAdapterViewHolder = new RelationGoodsAdapterViewHolder(view);
+            view.setTag(relationGoodsAdapterViewHolder);
+        } else {
+            relationGoodsAdapterViewHolder = (RelationGoodsAdapterViewHolder) view.getTag();
+        }
+
+//        bindData(i, relationGoodsAdapterViewHolder);
+        return view;
+    }
+
+    private void bindData(int i, RelationGoodsAdapterViewHolder relationGoodsAdapterViewHolder) {
+        JsonMap<String, Object> jsonMap = (JsonMap<String, Object>) datas.get(i);
+        String picPath = jsonMap.getStringNoNull("path");
+        BitmapHelper.loadImage(context, picPath, relationGoodsAdapterViewHolder.relation_goods_iv, BitmapHelper.LoadImgOption.SquareMiddle, true);
+        relationGoodsAdapterViewHolder.product_name_tv.setText(jsonMap.getStringNoNull("productName"));
+
+        boolean isSelfProduct = jsonMap.getBoolean("linkFrom");
+        if (isSelfProduct) {
+            relationGoodsAdapterViewHolder.self_product_iv.setVisibility(View.VISIBLE);
+        } else {
+            relationGoodsAdapterViewHolder.self_product_iv.setVisibility(View.GONE);
+        }
+        double marketPrice = jsonMap.getDouble("costPrice");
+        boolean isDiscount = jsonMap.getBoolean("isDiscount");
+        relationGoodsAdapterViewHolder.product_price_tv.setText(StringUtils.getFormatMoneyWithSign(marketPrice));
+        if (isDiscount) {
+            double discountPrice = jsonMap.getDouble("discountPrice");
+            relationGoodsAdapterViewHolder.product_price_discount_tv.setVisibility(View.VISIBLE);
+            relationGoodsAdapterViewHolder.product_price_discount_tv.setText(StringUtils.getFormatMoneyWithSign(discountPrice));
+            Utils.addDeleteLine(relationGoodsAdapterViewHolder.product_price_tv);
+            relationGoodsAdapterViewHolder.product_price_discount_tv.setSelected(true);
+        } else {
+            Utils.crashDeleteLine(relationGoodsAdapterViewHolder.product_price_tv);
+            relationGoodsAdapterViewHolder.product_price_discount_tv.setVisibility(View.GONE);
+        }
+
+        //if (showDiscri) {
+        relationGoodsAdapterViewHolder.brand_name_tv.setText(jsonMap.getStringNoNull("brandName"));
+//		} else {
+//			relationGoodsAdapterViewHolder.brand_name_tv.setVisibility(View.GONE);
+//		}
+    }
+
+    private class RelationGoodsAdapterViewHolder {
+        private ImageView self_product_iv;// 自营标记
+        public TextView product_name_tv; // 商品名字
+        public TextView brand_name_tv; // 描述
+        public TextView product_price_tv; // 原价
+        public TextView product_price_discount_tv; // 折扣价
+        private CustomImageView relation_goods_iv;
+
+        public RelationGoodsAdapterViewHolder(View view) {
+            relation_goods_iv = (CustomImageView) view.findViewById(R.id.relation_goods_iv);
+            self_product_iv = (ImageView) view.findViewById(R.id.self_product_iv);
+            product_name_tv = (TextView) view.findViewById(R.id.product_name_tv);
+            brand_name_tv = (TextView) view.findViewById(R.id.brand_name_tv);
+            product_price_tv = (TextView) view.findViewById(R.id.product_price_tv);
+            product_price_discount_tv = (TextView) view.findViewById(R.id.product_price_discount_tv);
+        }
+    }
+
+}

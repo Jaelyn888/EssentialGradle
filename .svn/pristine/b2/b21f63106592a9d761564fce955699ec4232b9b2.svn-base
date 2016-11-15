@@ -1,0 +1,1000 @@
+package com.yishanxiu.yishang.fragment;
+
+import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.activity.MainActivity2;
+import com.yishanxiu.yishang.activity.ShopAddOrderActivity;
+import com.yishanxiu.yishang.adapter.ShopCartAdapter;
+import com.yishanxiu.yishang.getdata.GetDataConfing;
+import com.yishanxiu.yishang.getdata.GetDataQueue;
+import com.yishanxiu.yishang.getdata.IGetServicesDataCallBack;
+import com.yishanxiu.yishang.getdata.JsonKeys;
+import com.yishanxiu.yishang.getdata.ShowGetDataError;
+import com.yishanxiu.yishang.utils.Constant;
+import com.yishanxiu.yishang.utils.ExtraKeys;
+import com.yishanxiu.yishang.utils.StringUtils;
+import com.yishanxiu.yishang.utils.Utils;
+import com.yishanxiu.yishang.view.WihteRoundCornersDialog;
+
+import net.tsz.afinal.json.JsonMap;
+import net.tsz.afinal.json.JsonMapOrListJsonMap2JsonUtil;
+import net.tsz.afinal.json.JsonParseHelper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 购物车
+ * 
+ * @author FangDongzhang 2016/7/28
+ *
+ */
+public class ShopCartFragment extends LazyFragment {
+	private boolean back_status = false;
+
+	private final int MAX_NUM = 999;
+	/**
+	 * 刷新布局
+	 */
+	// @ViewInject(R.id.refresh_shopcart)
+	// private SwipeRefreshLayout refresh_shopcart;
+	/**
+	 * 底部全选
+	 */
+	@ViewInject(R.id.totle_selected_cb)
+	private CheckBox totle_selected_id;
+	/**
+	 * 显示总价格
+	 */
+	@ViewInject(R.id.totle_money_tv)
+	private TextView totle_money;
+	/**
+	 * 结算
+	 */
+	@ViewInject(R.id.ensure_order_tv)
+	private TextView ensure_order_tv;
+	/**
+	 * 去逛逛
+	 */
+	@ViewInject(R.id.go_shopping)
+	private TextView go_shopping;
+
+	/**
+	 * 商品的列表页
+	 */
+	@ViewInject(R.id.goods_list)
+	private PullToRefreshListView goods_list;
+	@ViewInject(R.id.nodata_layout)
+	private RelativeLayout nodata_layout;
+
+	@ViewInject(R.id.totle_info)
+	private LinearLayout totle_info;
+
+	private ShopCartAdapter shopCartAdapter;
+
+	/**
+	 * 总价格
+	 */
+	private String totleMoney;
+	private double proTotleMoney;
+	/**
+	 * 商品集合
+	 */
+	private static List<JsonMap<String, Object>> datas = new ArrayList<JsonMap<String, Object>>();
+
+	private boolean isRequestData = false;
+
+	private static int pos, ind;
+	/**
+	 * title
+	 */
+	@ViewInject(R.id.head_title)
+	private TextView tv_title;
+
+	@ViewInject(R.id.menu_tv)
+	private TextView menu_tv;
+
+	@ViewInject(R.id.title_menu_iv)
+	private ImageView btn_menu;
+
+	@ViewInject(R.id.all_layout_back)
+	private ImageView btn_back;
+
+	/**
+	 * 删除商品shopcartId
+	 */
+	private String shopcartIds;
+	/**
+	 * 商品数量
+	 */
+	private int productCount;
+	private JsonMapOrListJsonMap2JsonUtil<String, Object> util = new JsonMapOrListJsonMap2JsonUtil<String, Object>();
+
+	private List<JsonMap<String, Object>> goodsList;
+
+	@Override
+	protected void onCreateViewLazy(Bundle savedInstanceState) {
+		super.onCreateViewLazy(savedInstanceState);
+		setContentView(R.layout.shopcart_layout);
+		// View view = inflater.inflate(R.layout.shopcart_layout, container,
+		// false);
+		ViewUtils.inject(this, getContentView());
+		Bundle bundle = getArguments();
+		back_status = bundle.getBoolean("back_status");
+	}
+
+	@Override
+	protected void onFragmentStartLazy() {
+		super.onFragmentStartLazy();
+		setCenterTitle(R.string.shopcart);
+		setBtn_menuText(R.string.edit, getData_deleteToUserCart);
+		totle_money.setText(R.string.total_m);
+
+		init();
+		// initRefresh();
+
+		getServerData();
+	}
+
+	@OnClick(R.id.all_layout_back)
+	public void all_layout_back(View v) {
+		activity.finish();
+	}
+
+	private void init() {
+		if (back_status == false) {
+			btn_back.setVisibility(View.GONE);
+		} else if (back_status == true) {
+			btn_back.setVisibility(View.VISIBLE);
+
+		}
+		shopCartAdapter = new ShopCartAdapter(activity, datas);
+		goods_list.setAdapter(shopCartAdapter);
+		goods_list.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+		goods_list.setOnRefreshListener(loadMoreListener);
+		// goods_list.setEmptyView(activity.getLayoutInflater().inflate(R.layout.noshopcart_layout,
+		// null));
+		shopCartAdapter.setOnItemClickListener(onItemClickListener);
+	}
+
+	/**
+	 * 跳转到商品
+	 * @param v
+     */
+	@OnClick(R.id.go_shopping)
+	public void go_shopping_click(View v) {
+		if (back_status == true) {
+			Intent intent = new Intent(activity, MainActivity2.class);
+			intent.putExtra(ExtraKeys.Key_Msg1, 1);
+			intent.putExtra(ExtraKeys.Key_Msg2, 1);
+			activity.jumpTo(intent);
+		} else if (back_status == false) {
+			((MainActivity2) activity).setCurrentItem(1,1);
+		}
+	}
+
+	private PullToRefreshBase.OnRefreshListener2<ListView> loadMoreListener = new PullToRefreshBase.OnRefreshListener2<ListView>() {
+		@Override
+		public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+			getServerData();
+		}
+
+		@Override
+		public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+		}
+	};
+
+	/**
+	 * 设置标题
+	 */
+	private void setCenterTitle(int value) {
+		tv_title.setText(value);
+	}
+
+	private void setBtn_menuText(int res, View.OnClickListener onClickListener) {
+		menu_tv.setVisibility(View.VISIBLE);
+		btn_menu.setVisibility(View.GONE);
+		menu_tv.setText(res);
+		menu_tv.setOnClickListener(onClickListener);
+
+	}
+
+	// private void initRefresh() {
+	// refresh_shopcart.setOnRefreshListener(new OnRefreshListener() {
+	//
+	// @Override
+	// public void onRefresh() {
+	// new Handler().postDelayed(new Runnable() {
+	//
+	// @Override
+	// public void run() {
+	// // 刷新具体方法
+	// getServerData();
+	// refresh_shopcart.setRefreshing(false);
+	// }
+	// }, 1500);
+	//
+	// }
+	// });
+	// }
+
+	/**
+	 * 接口回掉
+	 * 
+	 */
+	private ShopCartAdapter.OnItemClickListener onItemClickListener = new ShopCartAdapter.OnItemClickListener() {
+		@Override
+		public void onItemClick(int position, Constant.ShopCartItemCompontType shopCartitemType, int index) {
+			if (shopCartitemType == Constant.ShopCartItemCompontType.SELECT_GOODS_BRAND) {
+				selectBrandStauChange(position, index, 1);
+			} else if (shopCartitemType == Constant.ShopCartItemCompontType.SELECT_GOODS_ITEM) {
+				selectStauChange(position, index);
+				pos = position;
+				ind = index;
+			} else if (shopCartitemType == Constant.ShopCartItemCompontType.ADD_NUM) {
+				goodsNumChange(position, shopCartitemType, index);
+			} else if (shopCartitemType == Constant.ShopCartItemCompontType.SUB_NUM) {
+				goodsNumChange(position, shopCartitemType, index);
+			} else if (shopCartitemType == Constant.ShopCartItemCompontType.NUM_EDIT) {
+				showEditNumDialog(position, shopCartitemType, index);
+			} else if (shopCartitemType == Constant.ShopCartItemCompontType.CLICK_GOODS_ITEM) {
+				showGoodsDetail(position, index);
+			} else if (shopCartitemType == Constant.ShopCartItemCompontType.CLICK_BRAND_NAME) {
+				showShopDetail(position, index);
+			} else if (shopCartitemType == Constant.ShopCartItemCompontType.CLICK_EDIT_ITEM) {
+				editClick(position, index);
+			} else if (shopCartitemType == Constant.ShopCartItemCompontType.DELETE_GOODS_ITEM) {
+				shopcartIds = datas.get(position).getList_JsonMap("skuShopCartVo").get(index)
+						.getStringNoNull("shopcartId");
+				showDeleteDialog();
+			} else if (shopCartitemType == Constant.ShopCartItemCompontType.LONG_CLICK_GOODS_ITEM) {
+				shopcartIds = datas.get(position).getList_JsonMap("skuShopCartVo").get(index)
+						.getStringNoNull("shopcartId");
+				showDeleteDialog();
+			}
+		}
+	};
+
+	/**
+	 * 获取购物车信息
+	 */
+	private void getServerData() {
+		if(Utils.isHasLogin(activity)){
+			activity.loadingToast.show();
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("userId", Utils.getUserId(activity));
+			GetDataQueue queue = new GetDataQueue();
+			queue.setActionName(GetDataConfing.GetAction_GetShoppingCartByUserId);
+			queue.setParamsNoJson(params);
+			queue.setCallBack(callBack);
+			queue.setWhat(GetDataConfing.What_GetShoppingCartByUserId);
+			getDataUtil.getData(queue);
+		}else{
+			validateData();
+		}
+
+	}
+
+	/**
+	 * 通知其他页面 购物车数量改变
+	 */
+	private void sendShopCartNumChangeBroadCast() {
+		activity.sendBroadcast(new Intent(Constant.ACAT_SHOPCARTNUMCHANGE));
+	}
+
+	private IGetServicesDataCallBack callBack = new IGetServicesDataCallBack() {
+		@Override
+		public void onLoaded(GetDataQueue entity) {
+			goods_list.onRefreshComplete();
+			activity.loadingToast.dismiss();
+			if (entity.isOk()) {
+				if (ShowGetDataError.isCodeSuccess(activity, entity.getInfo())) {
+					if (entity.what == GetDataConfing.What_GetShoppingCartByUserId) {
+						if (datas != null) {
+							datas.clear();
+							// refresh_shopcart.setRefreshing(false);
+						}
+						JsonMap<String, Object> jsonMap = JsonParseHelper.getJsonMap_JsonMap(entity.getInfo(),
+								JsonKeys.Key_Info);
+						datas = jsonMap.getList_JsonMap("shopCartVoList");
+						initTotleSelect(datas);
+						refrenshDatas(datas);
+						setEnsure_order_tv(jsonMap.getDouble("productTotalPrice"));
+						sendShopCartNumChangeBroadCast();
+					} else if (entity.what == GetDataConfing.What_DeleteShoppingCartProduct) {
+						getServerData();
+					} else if (entity.what == GetDataConfing.What_updateShoppingCartProductAmountById) {
+						JsonMap<String, Object> datas = JsonParseHelper.getJsonMap_JsonMap(entity.getInfo(),
+								JsonKeys.Key_Info);
+						if (datas.size() == 0) {
+							// JsonMap<String, Object> data =
+							// JsonParseHelper.getJsonMap(entity.getInfo());
+							// toast.showToast(data.getString(JsonKeys.Key_Msg));
+						}
+					} else if (entity.what == GetDataConfing.What_UpdateShoppingCartByShopId) {
+						setCheckBox();
+					} else if (entity.what == GetDataConfing.What_UpdateShoppingCartListByProductId) {
+						setCheckBox();
+					} else if (entity.what == GetDataConfing.What_UpdateShoppingCartListByProductIdtype3) {
+					} else if (entity.what == GetDataConfing.What_UpdateShoppingCartListByProductIdtype2) {
+						// JsonMap<String, Object> selectDatas =
+						// JsonParseHelper.getJsonMap_JsonMap(entity.getInfo(),
+						// JsonKeys.Key_Info);
+						// if (selectDatas.size() > 0) {
+						// setEnsure_order_tv(selectDatas.getDouble("productTotalPrice"));
+						// shopCartAdapter.notifyDataSetChanged();
+					}
+				}else {
+					if (entity.what == GetDataConfing.What_updateShoppingCartProductAmountById){
+						
+					}
+				}
+			} else {
+				ShowGetDataError.showNetError(activity);
+			}
+			validateData();
+			loadingToast.dismiss();
+		}
+
+	};
+
+	/**
+	 * @author FangDongzhang 设置checkbox状态
+	 */
+	private void setCheckBox() {
+		List<JsonMap<String, Object>> jsonMaps = (List<JsonMap<String, Object>>) datas.get(pos)
+				.getList_JsonMap("skuShopCartVo");
+		productCount = jsonMaps.get(ind).getInt("productCount");
+		if (jsonMaps.get(ind).getInt("isSelected") == 0) {
+			jsonMaps.get(ind).put("isSelected", 1);
+			setEnsure_order_tv(proTotleMoney + jsonMaps.get(ind).getDouble("prices") * productCount);
+			datas.get(pos).put("skuShopCartVo", util.listJsonMap2Json(jsonMaps));
+		} else if (jsonMaps.get(ind).getInt("isSelected") == 1) {
+			jsonMaps.get(ind).put("isSelected", 0);
+			setEnsure_order_tv(proTotleMoney - jsonMaps.get(ind).getDouble("prices") * productCount);
+			datas.get(pos).put("skuShopCartVo", util.listJsonMap2Json(jsonMaps));
+		}
+		shopCartAdapter.notifyDataSetChanged();
+		initTotleSelect(datas);
+
+	}
+
+	private void validateData() {
+		if (datas == null || datas.size() == 0) {
+			nodata_layout.setVisibility(View.VISIBLE);
+			goods_list.setVisibility(View.GONE);
+		} else {
+			goods_list.setVisibility(View.VISIBLE);
+			nodata_layout.setVisibility(View.GONE);
+		}
+	}
+
+	private void refrenshDatas(List<JsonMap<String, Object>> datas) {
+		shopCartAdapter.setDatas(datas);
+		shopCartAdapter.setEdit(false);
+		shopCartAdapter.notifyDataSetChanged();
+	}
+
+	/**
+	 * 底部全选
+	 *
+	 * @param view
+	 */
+	private static int isClick;
+
+	@OnClick(R.id.totle_selected_cb)
+	public void totle_selected_cb_click(View v) {
+		if (totle_selected_id.isSelected() == false) {
+			totle_selected_id.setSelected(true);
+			isClick = 1;
+			for (int j = 0; j < datas.size(); j++) {
+				goodsList = datas.get(j).getList_JsonMap("skuShopCartVo");
+				for (int a = 0; a < goodsList.size(); a++) {
+					goodsList.get(a).put("isSelected", 1);
+				}
+				datas.get(j).put("skuShopCartVo", util.listJsonMap2Json(goodsList));
+				selectBrandSetTotalMoney(datas, j);
+				shopCartAdapter.notifyDataSetChanged();
+			}
+
+		} else if (totle_selected_id.isSelected() == true) {
+			totle_selected_id.setSelected(false);
+			isClick = 0;
+			for (int j = 0; j < datas.size(); j++) {
+				goodsList = datas.get(j).getList_JsonMap("skuShopCartVo");
+				for (int a = 0; a < goodsList.size(); a++) {
+					goodsList.get(a).put("isSelected", 0);
+				}
+				datas.get(j).put("skuShopCartVo", util.listJsonMap2Json(goodsList));
+				selectBrandSetTotalMoney(datas, j);
+				shopCartAdapter.notifyDataSetChanged();
+			}
+		}
+		updateIsOrNotIsSelect(Utils.getUserId(activity), "", "", isClick, 1,
+				GetDataConfing.What_UpdateShoppingCartListByProductIdtype2);
+
+	}
+
+	/**
+	 * 初始化底部全选
+	 * 
+	 * @author FangDongzhang
+	 */
+	private void initTotleSelect(List<JsonMap<String, Object>> datas) {
+		int num = 0;
+		int size = 0;
+		if (datas.size() > 0) {
+			totle_info.setVisibility(View.VISIBLE);
+			for (int i = 0; i < datas.size(); i++) {
+				List<JsonMap<String, Object>> list = (List<JsonMap<String, Object>>) datas.get(i)
+						.getList_JsonMap("skuShopCartVo");
+				size += list.size();
+				for (int j = 0; j < list.size(); j++) {
+					if (list.get(j).getInt("isSelected") == 1) {
+						num++;
+					}
+				}
+			}
+			if (num == size) {
+				totle_selected_id.setSelected(true);
+			} else {
+				totle_selected_id.setSelected(false);
+
+			}
+		} else {
+			totle_info.setVisibility(View.GONE);
+			totle_selected_id.setSelected(false);
+		}
+	}
+
+	/**
+	 * 确认订单
+	 *
+	 * @param view
+	 */
+	@OnClick(R.id.ensure_order_tv)
+	public void ensure_order_tv_click(View view) {
+		// if (Utils.isHasLogin(activity)) {
+		// // &&TextUtils.isEmpty(Utils.getUserPhone(this)) isRequestData =
+		// // true;
+		// activity.gotoLogin();
+		// return;
+		// }
+		if (proTotleMoney < 0.01) {
+			toast.showToast(R.string.shopingcart_empty);
+			return;
+		}
+
+		// List<JsonMap<String, Object>> brandGoodsList =
+		// datas.get("skuShopCartVo");
+		List<JsonMap<String, Object>> selectProductList = new ArrayList<JsonMap<String, Object>>();
+		boolean isAllValidate = true;
+		for (JsonMap<String, Object> shopGoods : datas) {
+			List<JsonMap<String, Object>> goodsList = shopGoods.getList_JsonMap("skuShopCartVo");
+			for (JsonMap<String, Object> jsonMap : goodsList) {
+				if (jsonMap.getBoolean("isChecked")) {
+					selectProductList.add(jsonMap);
+					boolean isEnable = jsonMap.getBoolean("isEnable");
+					if (isEnable) {
+						int stock = jsonMap.getInt("stock");
+						if (stock < 0) {
+							isAllValidate = false;
+							break;
+						}
+					} else {
+						isAllValidate = false;
+						break;
+					}
+
+				}
+			}
+		}
+		if (!isAllValidate) {
+			toast.showToast(R.string.shopcart_container_invalidate);
+			return;
+		}
+		JsonMapOrListJsonMap2JsonUtil<String, Object> util = new JsonMapOrListJsonMap2JsonUtil<String, Object>();
+		Intent intent = new Intent(activity, ShopAddOrderActivity.class);
+		intent.putExtra(ExtraKeys.Key_Msg1, totleMoney);
+		intent.putExtra(ExtraKeys.Key_Msg2, util.listJsonMap2Json(selectProductList));
+		// zongjia = intent.getDoubleExtra(ExtraKeys.Key_Msg1, 0.00);
+		// selectProJson = intent.getStringExtra(ExtraKeys.Key_Msg2);
+		startActivityForResult(intent, 1);
+	}
+
+	//
+	// @Override
+	// protected void onActivityResult(int requestCode, int resultCode, Intent
+	// data) {
+	// if (resultCode == RESULT_OK) {
+	// getServerData();
+	// }
+	// }
+	/**
+	 * 得到double 总价
+	 */
+	public void setEnsure_order_tv(double money) {
+		try {
+			proTotleMoney = money;
+			totleMoney = StringUtils.getFormatMoneyWithSignMust(money);
+			// totleMoney = "0.00";
+			setTotalMoney(totleMoney);
+
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			ensure_order_tv.setEnabled(false);
+		}
+	}
+
+	/**
+	 * 设置总价
+	 * 
+	 * @param money
+	 */
+	private void setTotalMoney(String money) {
+		String totle_money_formart = String.format(getString(R.string.totle_money), money);
+		totle_money.setText(totle_money_formart);
+	}
+
+	// String productIds = "";
+
+	/**
+	 * @author FangDongzhang title 编辑
+	 */
+	private View.OnClickListener getData_deleteToUserCart = new View.OnClickListener() {
+
+		boolean isClick = false;
+
+		@Override
+		public void onClick(View v) {
+			if (datas.size() > 0) {
+				if (isClick == false) {
+					isClick = true;
+					for (int j = 0; j < datas.size(); j++) {
+						goodsList = datas.get(j).getList_JsonMap("skuShopCartVo");
+						if (datas.get(j).containsKey("editstatus")) {
+							// goodsList.get(i).remove("select_delete");
+							datas.get(j).put("editstatus", 1);
+						} else {
+							datas.get(j).put("editstatus", 1);
+						}
+						for (int i = 0; i < goodsList.size(); i++) {
+
+							if (goodsList.get(i).containsKey("select_delete")) {
+								// goodsList.get(i).remove("select_delete");
+								goodsList.get(i).put("select_delete", 1);
+							} else {
+								goodsList.get(i).put("select_delete", 1);
+							}
+						}
+						datas.get(j).put("skuShopCartVo", util.listJsonMap2Json(goodsList));
+						shopCartAdapter.setEdit(isClick);
+						shopCartAdapter.notifyDataSetChanged();
+					}
+
+				} else if (isClick == true) {
+					isClick = false;
+					for (int j = 0; j < datas.size(); j++) {
+						goodsList = datas.get(j).getList_JsonMap("skuShopCartVo");
+						if (datas.get(j).containsKey("editstatus")) {
+							// goodsList.get(i).remove("select_delete");
+							datas.get(j).put("editstatus", 2);
+						} else {
+							datas.get(j).put("editstatus", 2);
+						}
+						for (int i = 0; i < goodsList.size(); i++) {
+							if (goodsList.get(i).containsKey("select_delete")) {
+								// goodsList.get(i).remove("select_delete");
+								goodsList.get(i).put("select_delete", 2);
+							} else {
+								goodsList.get(i).put("select_delete", 2);
+							}
+						}
+						datas.get(j).put("skuShopCartVo", util.listJsonMap2Json(goodsList));
+						getServerData();
+						shopCartAdapter.setEdit(isClick);
+						shopCartAdapter.notifyDataSetChanged();
+					}
+				}
+			} else {
+				isClick = false;
+			}
+			setBtn_menuText(isClick ? R.string.finish : R.string.edit, getData_deleteToUserCart);
+
+		}
+	};
+
+	/**
+	 * 删除dialog
+	 */
+	private WihteRoundCornersDialog roundCornersDialog;
+
+	private void showDeleteDialog() {
+		roundCornersDialog = new WihteRoundCornersDialog(activity, R.style.ExitDialogStyle, 2, callBackdialog);
+		roundCornersDialog.setMessagetext(getResources().getString(R.string.delete_goods_item));
+		roundCornersDialog.setButtonText(getResources().getString(R.string.cancel),
+				getResources().getString(R.string.ensure));
+		roundCornersDialog.show();
+	}
+
+	private WihteRoundCornersDialog.DialogCallBack callBackdialog = new WihteRoundCornersDialog.DialogCallBack() {
+
+		@Override
+		public void bttonclick(int index, int what) {
+
+		}
+
+		@Override
+		public void bttonclick(int index) {
+			roundCornersDialog.dismiss();
+			switch (index) {
+			case 1:
+
+				break;
+			case 2:
+				deleteShopGoods();
+				break;
+			default:
+				break;
+			}
+		}
+
+	};
+
+	/**
+	 * 删除商品
+	 */
+	private void deleteShopGoods() {
+		loadingToast.show();
+		Map<String, Object> params = new HashMap<String, Object>();
+		// params.put("userId", Utils.getUserId(mContext));
+		params.put("shopcartIds", shopcartIds);
+		GetDataQueue queue = new GetDataQueue();
+		queue.setActionName(GetDataConfing.Action_DeleteShoppingCartProduct);
+		queue.setCallBack(callBack);
+		queue.setParamsNoJson(params);
+		queue.setWhat(GetDataConfing.What_DeleteShoppingCartProduct);
+		getDataUtil.getData(queue);
+	}
+
+	/**
+	 * item编辑点击
+	 *
+	 * @param position
+	 * @param index
+	 */
+	private void editClick(int position, int index) {
+		goodsList = datas.get(position).getList_JsonMap("skuShopCartVo");
+		if (index == 0) {
+			for (int i = 0; i < goodsList.size(); i++) {
+
+				if (goodsList.get(i).containsKey("select_delete")) {
+					// goodsList.get(i).remove("select_delete");
+					goodsList.get(i).put("select_delete", 1);
+				} else {
+					goodsList.get(i).put("select_delete", 1);
+				}
+			}
+		} else if (index == 1) {
+			// getServerData();
+			goodsList = datas.get(position).getList_JsonMap("skuShopCartVo");
+			for (int i = 0; i < goodsList.size(); i++) {
+				if (goodsList.get(i).containsKey("select_delete")) {
+					// goodsList.get(i).remove("select_delete");
+					goodsList.get(i).put("select_delete", 2);
+				} else {
+					goodsList.get(i).put("select_delete", 2);
+				}
+			}
+		}
+		// datas.get(position).remove("skuShopCartVo");
+
+		datas.get(position).put("skuShopCartVo", util.listJsonMap2Json(goodsList));
+		shopCartAdapter.notifyDataSetChanged();
+	}
+
+	/**
+	 * 跳转到店铺详情页
+	 *
+	 * @param position
+	 * @param index
+	 */
+	private void showShopDetail(int position, int index) {
+		// JsonMap jsonMap = productList.get(position);
+		// String vendorId = jsonMap.getStringNoNull("shopId");
+		// seeShopDetail(vendorId);
+	}
+
+	/**
+	 * 跳转到商品详情
+	 *
+	 * @param position
+	 * @param index
+	 */
+	private void showGoodsDetail(int position, int index) {
+		JsonMap<String, Object> jsonMap = datas.get(position).getList_JsonMap("skuShopCartVo").get(index);
+		activity.seeProductDetail(jsonMap.getStringNoNull("productId"),
+				datas.get(position).getStringNoNull("brandName"));
+	}
+
+	/**
+	 * 一级或者二级列表 状态改变
+	 *
+	 * @param position
+	 * @param i
+	 *            0：一级 底部选项 1:2级
+	 */
+	private void selectBrandStauChange(int position, int index, int i) {
+		int isChecked = 0;
+		if (datas.size() > 0) {
+			if (i == 1) {
+				goodsList = datas.get(position).getList_JsonMap("skuShopCartVo");
+				if (index == 1) {
+					for (int j = 0; j < goodsList.size(); j++) {
+						goodsList.get(j).put("isSelected", 1);
+					}
+					isChecked = 1;
+					datas.get(position).put("skuShopCartVo", util.listJsonMap2Json(goodsList));
+					selectBrandSetTotalMoney(datas, position);
+				} else if (index == 2) {
+					for (int j = 0; j < goodsList.size(); j++) {
+						goodsList.get(j).put("isSelected", 0);
+					}
+					isChecked = 0;
+					datas.get(position).put("skuShopCartVo", util.listJsonMap2Json(goodsList));
+					selectBrandSetTotalMoney(datas, position);
+				}
+				shopCartAdapter.notifyDataSetChanged();
+				initTotleSelect(datas);
+				updateIsOrNotIsSelect(Utils.getUserId(activity), datas.get(position).getStringNoNull("shopId"), "",
+						isChecked, 2, GetDataConfing.What_UpdateShoppingCartListByProductIdtype3);
+			} else {
+			}
+		}
+	}
+
+	/**
+	 * 点击商店计算总价
+	 *
+	 */
+	private void selectBrandSetTotalMoney(List<JsonMap<String, Object>> datas, int position) {
+		double money = 0;
+
+		if (datas.size() > 0) {
+
+			for (int j = 0; j < datas.size(); j++) {
+				List<JsonMap<String, Object>> shopcarts = datas.get(position).getList_JsonMap("skuShopCartVo");
+				for (int k = 0; k < shopcarts.size(); k++) {
+					JsonMap<String, Object> shopcartPro = shopcarts.get(k);
+					if (shopcartPro.getInt("isSelected") == 1) {
+						money += shopcartPro.getDouble("prices") * shopcartPro.getInt("productCount");
+					}
+				}
+			}
+		}
+		setEnsure_order_tv(money);
+	}
+
+	private Dialog dialogLogin;
+	private EditText et_product_pronum;
+	private ImageView iv_pronum_jian;
+	private ImageView iv_pronum_jia;
+	private ImageView bt_quxiao;
+	private ImageView bt_queding;
+	private TextView tv_price;
+	private TextView tv_pronum;
+	int pronum;
+	private String productId;
+
+	@SuppressLint("InflateParams")
+	private void showEditNumDialog(int position, Constant.ShopCartItemCompontType shopCartitemType, int index) {
+		@SuppressWarnings("unchecked")
+		List<JsonMap<String, Object>> goodsList = ((JsonMap<String, Object>) datas).getList_JsonMap("skuShopCartVo");
+		JsonMap<String, Object> jsonMap = goodsList.get(position).getList_JsonMap("skuShopCartVo").get(index);
+		// JsonMap jsonMap = goodsList.get(position);
+		productId = jsonMap.getStringNoNull("productId");
+		dialogLogin = new Dialog(activity, R.style.ShopDialogStyle);
+		dialogLogin.setCanceledOnTouchOutside(false);
+		dialogLogin.setCancelable(true);
+		View view = activity.getLayoutInflater().inflate(R.layout.item_shoppingcart_editnum, null);
+		et_product_pronum = (EditText) view.findViewById(R.id.i_s_et_product_pronum);
+		iv_pronum_jian = (ImageView) view.findViewById(R.id.i_s_iv_pronum_jian);
+		iv_pronum_jia = (ImageView) view.findViewById(R.id.i_s_iv_pronum_jia);
+		bt_quxiao = (ImageView) view.findViewById(R.id.i_s_bt_quxiao);
+		bt_queding = (ImageView) view.findViewById(R.id.i_s_bt_queding);
+		tv_price = (TextView) view.findViewById(R.id.i_s_tv_price);
+		tv_pronum = (TextView) view.findViewById(R.id.i_s_tv_pronum);
+		dialogLogin.setContentView(view);
+
+		tv_price.setText(StringUtils.getFormatMoneyWithSign(jsonMap.getStringNoNull("prices")));
+		et_product_pronum.setText(jsonMap.getStringNoNull("productCount"));
+		tv_pronum.setVisibility(View.GONE);
+		// tv_pronum.setText("x" + et_product_pronum.getText());
+		dialogLogin.show();
+
+		iv_pronum_jia.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				pronum = Integer.parseInt(et_product_pronum.getText().toString());
+				if (pronum < MAX_NUM) {
+					pronum = pronum + 1;
+				}
+				// pronum = 1000;
+				show();
+			}
+		});
+		iv_pronum_jian.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				pronum = Integer.parseInt(et_product_pronum.getText().toString());
+				if (pronum > 1) {
+					pronum = pronum - 1;
+				}
+				show();
+			}
+		});
+		bt_quxiao.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				dialogLogin.cancel();
+			}
+		});
+
+		bt_queding.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (!"".equals(et_product_pronum.getText().toString())) {
+					pronum = Integer.parseInt(et_product_pronum.getText().toString());
+					if (pronum > 0) {
+						dialogLogin.cancel();
+						updateGoodsNum(pronum, productId);
+					}
+				}
+
+			}
+		});
+	}
+
+	public void show() {
+		et_product_pronum.setText(pronum + "");
+		tv_pronum.setText(pronum + "");
+	}
+
+	private void goodsNumChange(int position, Constant.ShopCartItemCompontType shopCartitemType, int index) {
+
+		List<JsonMap<String, Object>> goodsList = datas.get(position).getList_JsonMap("skuShopCartVo");
+		// JsonMap<String, Object> jsonMap = goodsList.get(index);
+		int num = goodsList.get(index).getInt("productCount");
+		if (shopCartitemType == Constant.ShopCartItemCompontType.ADD_NUM) {
+			if (num >= MAX_NUM) {
+				return;
+			}
+			num++;
+		} else {
+			if (num <= 1) {
+				return;
+			}
+			num--;
+		}
+		String shopcartId = goodsList.get(index).getStringNoNull("shopcartId");
+
+		// productId = jsonMap.getStringNoNull("productId");
+		updateGoodsNum(num, shopcartId);
+		refreshShopcartDatas(position, index, num);
+
+	}
+
+	/**
+	 * 更新数量 订单编号
+	 */
+	private void updateGoodsNum(int num, String shopcartId) {
+		loadingToast.show();
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("shopcartId", shopcartId);
+		params.put("productCount", String.valueOf(num));
+		// params.put("userId", Utils.getUserId(this));
+		GetDataQueue queue = new GetDataQueue();
+		queue.setActionName(GetDataConfing.Action_updateShoppingCartProductAmountById);
+		queue.setCallBack(callBack);
+		queue.setTag(num);
+		queue.setParamsNoJson(params);
+		queue.setWhat(GetDataConfing.What_updateShoppingCartProductAmountById);
+		getDataUtil.getData(queue);
+	}
+
+	/**
+	 * 刷新修改后的购物车数量
+	 */
+	private void refreshShopcartDatas(int position, int index, int num) {
+		goodsList.get(index).put("productCount", num);
+		datas.get(position).put("skuShopCartVo", util.listJsonMap2Json(goodsList));
+		shopCartAdapter.notifyDataSetChanged();
+		selectBrandSetTotalMoney(datas, position);
+	}
+
+	/**
+	 * 商品状态的变化 {CheckendVO:[{id:80450},{id:80456}]}
+	 *
+	 * @param position
+	 * @param index
+	 */
+	private void selectStauChange(int position, int index) {
+		int isChecked = 0; // 1是全不选否则就全选
+
+		String shopcartId = datas.get(position).getList_JsonMap("skuShopCartVo").get(index)
+				.getStringNoNull("shopcartId");
+
+		if (datas.get(position).getList_JsonMap("skuShopCartVo").get(index).getInt("isSelected") == 0) {
+			isChecked = 1;
+
+		} else if (datas.get(position).getList_JsonMap("skuShopCartVo").get(index).getInt("isSelected") == 1) {
+			isChecked = 0;
+		}
+		updateIsOrNotIsSelect(Utils.getUserId(activity), "", shopcartId, isChecked, 3,
+				GetDataConfing.What_UpdateShoppingCartListByProductId);
+	}
+
+	/**
+	 * @author FangDongzhang
+	 * 
+	 * @param userId
+	 *            用户id
+	 * @param shopId
+	 *            店铺id
+	 * @param shopcartId
+	 *            购物车id
+	 * @param isChecked
+	 *            是否选中 1：选中，0：未选中
+	 * @param type
+	 *            类型
+	 *            全选type为1，userId、isSelect必输；选择店铺type为2，userId、shopId、isSelect必输
+	 *            ；单选type为3，userId、shopcartId、isSelect必输
+	 */
+
+	private void updateIsOrNotIsSelect(String userId, String shopId, String shopcartId, int isChecked, int type,
+			int request) {
+		activity.loadingToast.show();
+		Map<String, Object> params = new HashMap<String, Object>();
+		if (!userId.equals("")) {
+			params.put("userId", userId);
+		}
+		if (!shopId.equals("")) {
+			params.put("shopId", shopId);
+		}
+		if (!shopcartId.equals("")) {
+			params.put("shopCartId", shopcartId);
+		}
+		params.put("isSelect", String.valueOf(isChecked));
+		params.put("type", String.valueOf(type));
+		GetDataQueue queue = new GetDataQueue();
+		queue.setActionName(GetDataConfing.GetAction_UpdateShoppingCartListByProductId);
+		queue.setParamsNoJson(params);
+		queue.setCallBack(callBack);
+		queue.setWhat(request);
+		getDataUtil.getData(queue);
+	}
+}

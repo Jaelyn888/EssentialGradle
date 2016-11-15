@@ -1,0 +1,331 @@
+package com.yishanxiu.yishang.adapter;
+
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+import com.lidroid.xutils.view.annotation.event.OnItemClick;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+import com.yishanxiu.yishang.utils.Constant;
+import com.yishanxiu.yishang.utils.StringUtils;
+import com.yishanxiu.yishang.view.ListViewNoScroll;
+
+import net.tsz.afinal.json.JsonMap;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 2016/7/6 我的订单详情的适配器
+ * 
+ * @author FangDongzhang
+ */
+public class MyorderdDetailAdapter extends MyBaseAdapter
+		implements MyOrderDetailProductAdapter.ItemCompountClickListener {
+
+	public MyorderdDetailAdapter(Context context) {
+		super(context);
+	}
+
+	public MyorderdDetailAdapter(Context context, List<? extends Map<String, ?>> datas) {
+		super(context, datas);
+	}
+
+	@Override
+	public View getView(int i, View view, ViewGroup viewGroup) {
+		ShopCartAdapterViewHolder shopCartAdapterViewHolder;
+		if (view == null) {
+			view = layoutInflater.inflate(R.layout.my_order_detail_item, viewGroup, false);
+			shopCartAdapterViewHolder = new ShopCartAdapterViewHolder();
+			ViewUtils.inject(shopCartAdapterViewHolder, view);
+			view.setTag(shopCartAdapterViewHolder);
+		} else {
+			shopCartAdapterViewHolder = (ShopCartAdapterViewHolder) view.getTag();
+		}
+		setTags(i, shopCartAdapterViewHolder);
+		bindDatas(i, shopCartAdapterViewHolder);
+		return view;
+	}
+
+	private void setTags(int i, ShopCartAdapterViewHolder shopCartAdapterViewHolder) {
+		shopCartAdapterViewHolder.lv_noScrool.setTag(i);
+		shopCartAdapterViewHolder.brandName_tv.setTag(i);
+		shopCartAdapterViewHolder.cancel_order.setTag(i);
+		shopCartAdapterViewHolder.pro_count.setTag(i);
+		shopCartAdapterViewHolder.payment.setTag(i);
+		shopCartAdapterViewHolder.total_price.setTag(i);
+		shopCartAdapterViewHolder.order_number.setTag(i);
+		shopCartAdapterViewHolder.freight.setTag(i);
+		shopCartAdapterViewHolder.modify_time.setTag(i);
+		shopCartAdapterViewHolder.create_time.setTag(i);
+		shopCartAdapterViewHolder.llt_cancelorder_payment.setTag(i);
+		shopCartAdapterViewHolder.msg.setTag(i);
+	}
+
+	private List<JsonMap<String, Object>> jsonMaps;
+	private JsonMap<String, Object> jsonMap;
+	private MyOrderDetailProductAdapter goodsListAdapter;
+
+	private void bindDatas(int i, ShopCartAdapterViewHolder shopCartAdapterViewHolder) {
+		jsonMap = (JsonMap<String, Object>) datas.get(i);
+		BitmapHelper.loadImage(context, jsonMap.getStringNoNull("logoPath"),
+				shopCartAdapterViewHolder.brand_logo, BitmapHelper.LoadImgOption.BrandLogo,true);
+
+		shopCartAdapterViewHolder.brandName_tv.setText(jsonMap.getStringNoNull("name"));
+		String tmpStr=context.getString(R.string.totle_pro_count);
+		tmpStr=String.format(tmpStr,jsonMap.getStringNoNull("orderProductCount"));
+		shopCartAdapterViewHolder.pro_count.setText(tmpStr);
+
+
+		shopCartAdapterViewHolder.total_price.setText(StringUtils.getFormatMoneyWithSign(jsonMap.getStringNoNull("finalPrice")));
+		shopCartAdapterViewHolder.freight.setText(StringUtils.getFormatMoneyWithSign(jsonMap.getStringNoNull("freight")));
+		shopCartAdapterViewHolder.order_number.setText("订单编号：" + jsonMap.getStringNoNull("orderNumber"));
+		int status = jsonMap.getInt("orderStatus");
+		switch (status) {
+		case 1:
+			shopCartAdapterViewHolder.modify_time.setVisibility(View.GONE);
+			shopCartAdapterViewHolder.create_time.setText("创建时间：" + StringUtils.getTimeFormatFull(jsonMap.getStringNoNull("createTime")));
+			break;
+		case 2:
+			shopCartAdapterViewHolder.modify_time.setVisibility(View.GONE);
+			shopCartAdapterViewHolder.create_time.setText("付款时间：" + StringUtils.getTimeFormatFull(jsonMap.getStringNoNull("modifyTime")));
+			break;
+		case 3:
+			shopCartAdapterViewHolder.create_time.setText("创建时间：" + StringUtils.getTimeFormatFull(jsonMap.getStringNoNull("createTime")));
+			shopCartAdapterViewHolder.modify_time.setVisibility(View.VISIBLE);
+			shopCartAdapterViewHolder.modify_time.setText("发货时间：" + StringUtils.getTimeFormatFull(jsonMap.getStringNoNull("modifyTime")));
+			break;
+		case 4:
+			shopCartAdapterViewHolder.create_time.setText("创建时间：" + StringUtils.getTimeFormatFull(jsonMap.getStringNoNull("createTime")));
+			shopCartAdapterViewHolder.modify_time.setVisibility(View.VISIBLE);
+			shopCartAdapterViewHolder.modify_time.setText("成交时间：" + StringUtils.getTimeFormatFull(jsonMap.getStringNoNull("modifyTime")));
+			break;
+		case 5:
+			shopCartAdapterViewHolder.create_time.setText("创建时间：" + StringUtils.getTimeFormatFull(jsonMap.getStringNoNull("createTime")));
+			shopCartAdapterViewHolder.modify_time.setVisibility(View.VISIBLE);
+			shopCartAdapterViewHolder.modify_time.setText("关闭时间：" + StringUtils.getTimeFormatFull(jsonMap.getStringNoNull("modifyTime")));
+			break;
+
+		default:
+			break;
+		}
+		shopCartAdapterViewHolder.msg.setText("买家留言：" + jsonMap.getStringNoNull("buyerNote"));
+		shopCartAdapterViewHolder.brand_totle_price
+				.setText(StringUtils.getFormatMoneyWithSign(jsonMap.getStringNoNull("totalPrice")));
+
+		if (jsonMap.containsKey("returnRefundOrderNumber")) {
+			switch (jsonMap.getInt("orderStatus")) {
+			case 0:
+				shopCartAdapterViewHolder.order_status.setText("交易关闭");
+				shopCartAdapterViewHolder.llt_cancelorder_payment.setVisibility(View.GONE);
+				break;
+			case 1:
+				shopCartAdapterViewHolder.order_status
+						.setText(context.getResources().getString(R.string.pending_payment));
+				shopCartAdapterViewHolder.cancel_order.setText("取消订单");
+				shopCartAdapterViewHolder.payment.setText(R.string.pay);
+				break;
+			case 2:
+				shopCartAdapterViewHolder.order_status.setText(context.getResources().getString(R.string.delivering));
+				shopCartAdapterViewHolder.payment.setText("查看进度");
+				shopCartAdapterViewHolder.payment.setTextColor(ContextCompat.getColor(context, R.color.TextColorBlack));
+				shopCartAdapterViewHolder.payment.setBackgroundResource(R.drawable.cus_black_white_bt);
+				shopCartAdapterViewHolder.cancel_order.setVisibility(View.GONE);
+				break;
+			case 3:
+				shopCartAdapterViewHolder.order_status.setText(context.getResources().getString(R.string.inbound));
+				shopCartAdapterViewHolder.payment.setTextColor(ContextCompat.getColor(context, R.color.white));
+				shopCartAdapterViewHolder.cancel_order.setText("查看物流");
+				shopCartAdapterViewHolder.payment.setText("确认收货");
+				break;
+			case 4:
+				shopCartAdapterViewHolder.order_status
+						.setText(context.getResources().getString(R.string.pending_reviews));
+				shopCartAdapterViewHolder.cancel_order.setText("查看物流");
+				shopCartAdapterViewHolder.payment.setTextColor(ContextCompat.getColor(context, R.color.white));
+				shopCartAdapterViewHolder.payment.setBackgroundResource(R.drawable.cus_black_bt);
+				if (jsonMap.getInt("isComment") == 0) {
+					shopCartAdapterViewHolder.payment.setText("评价");
+				} else {
+					shopCartAdapterViewHolder.payment.setText("查看评价");
+
+				}
+				break;
+
+			default:
+				break;
+			}
+
+		} else {
+
+			switch (jsonMap.getInt("orderStatus")) {
+			case 0:
+				shopCartAdapterViewHolder.order_status.setText("交易关闭");
+				shopCartAdapterViewHolder.llt_cancelorder_payment.setVisibility(View.GONE);
+				break;
+			case 1:
+				shopCartAdapterViewHolder.order_status
+						.setText(context.getResources().getString(R.string.pending_payment));
+				shopCartAdapterViewHolder.cancel_order.setText("取消订单");
+				shopCartAdapterViewHolder.payment.setText(R.string.pay);
+				break;
+			case 2:
+				shopCartAdapterViewHolder.order_status.setText(context.getResources().getString(R.string.delivering));
+				shopCartAdapterViewHolder.llt_cancelorder_payment.setVisibility(View.GONE);
+				break;
+			case 3:
+				shopCartAdapterViewHolder.order_status.setText(context.getResources().getString(R.string.inbound));
+				shopCartAdapterViewHolder.cancel_order.setText("查看物流");
+				shopCartAdapterViewHolder.payment.setText("确认收货");
+				break;
+			case 4:
+				shopCartAdapterViewHolder.order_status
+						.setText(context.getResources().getString(R.string.trasaction_complete));
+				shopCartAdapterViewHolder.cancel_order.setText("查看物流");
+				if (jsonMap.getInt("isComment") == 0) {
+					shopCartAdapterViewHolder.payment.setText("评价");
+				} else {
+					shopCartAdapterViewHolder.payment.setText("查看评价");
+
+				}
+				break;
+			case 5:
+				shopCartAdapterViewHolder.order_status.setText("交易关闭");
+				shopCartAdapterViewHolder.llt_cancelorder_payment.setVisibility(View.GONE);
+				break;
+
+			default:
+				break;
+			}
+
+		}
+		bindGoodsList(i, shopCartAdapterViewHolder, jsonMap);
+	}
+
+	private void bindGoodsList(int i, ShopCartAdapterViewHolder shopCartAdapterViewHolder,
+			JsonMap<String, Object> jsonMap) {
+		goodsListAdapter = new MyOrderDetailProductAdapter(context);
+		jsonMaps = jsonMap.getList_JsonMap("orderProducts");
+		goodsListAdapter.setDatas(jsonMaps);
+		goodsListAdapter.setParentPosition(i);
+		goodsListAdapter.setItemCompountClickListener(this);
+		goodsListAdapter.setDataOrderStatus(jsonMap.getInt("orderStatus"));
+		shopCartAdapterViewHolder.lv_noScrool.setAdapter(goodsListAdapter);
+
+	}
+
+	@Override
+	public void itemCompountClick(int itemPosition, Constant.ShopCartItemCompontType type, int childIndex) {
+		if (itemClickListener != null) {
+			itemClickListener.onItemClick(itemPosition, type, childIndex);
+		}
+	}
+
+	private class ShopCartAdapterViewHolder {
+		@ViewInject(R.id.brand_logo)
+		ImageView brand_logo;
+
+		@ViewInject(R.id.brandName_tv)
+		TextView brandName_tv;
+		@ViewInject(R.id.freight)
+		TextView freight;
+
+		@ViewInject(R.id.order_status)
+		TextView order_status;
+
+		@ViewInject(R.id.pro_count)
+		TextView pro_count;
+
+		@ViewInject(R.id.total_price)
+		TextView total_price;
+
+		@ViewInject(R.id.order_number)
+		TextView order_number;
+
+		@ViewInject(R.id.modify_time)
+		TextView modify_time;
+		
+		@ViewInject(R.id.create_time)
+		TextView create_time;
+
+		@ViewInject(R.id.msg)
+		TextView msg;
+
+		@OnClick(R.id.brandName_tv)
+		public void brandName_tv_click(View view) {
+			if (itemClickListener != null) {
+				itemClickListener.onItemClick((Integer) lv_noScrool.getTag(),
+						Constant.ShopCartItemCompontType.CLICK_BRAND_NAME, -1);
+			}
+		}
+
+		@ViewInject(R.id.lv_noScrool)
+		ListViewNoScroll lv_noScrool;
+
+		@OnItemClick(R.id.lv_noScrool)
+		public void lv_noScrool_item_click(AdapterView<?> adapterView, View view, int i, long l) {
+			if (itemClickListener != null) {
+				itemClickListener.onItemClick((Integer) lv_noScrool.getTag(),
+						Constant.ShopCartItemCompontType.CLICK_GOODS_ITEM, i);
+			}
+		}
+
+		@ViewInject(R.id.llt_cancelorder_payment)
+		LinearLayout llt_cancelorder_payment;
+
+		@ViewInject(R.id.cancel_order)
+		TextView cancel_order;
+
+		@OnClick(R.id.cancel_order)
+		public void cancel_order_click(View view) {
+			if (itemClickListener != null) {
+				itemClickListener.onItemClick((Integer) lv_noScrool.getTag(),
+						Constant.ShopCartItemCompontType.CANCEL_ORDER, (Integer) view.getTag());
+			}
+		}
+
+		@ViewInject(R.id.payment)
+		TextView payment;
+
+
+		@OnClick(R.id.payment)
+		public void payment_click(View view) {
+			if (itemClickListener != null) {
+				itemClickListener.onItemClick((Integer) lv_noScrool.getTag(), Constant.ShopCartItemCompontType.PAYMENT,
+						(Integer) view.getTag());
+			}
+		}
+		@ViewInject(R.id.brand_totle_price)
+		TextView brand_totle_price;
+
+	}
+
+	private OnItemClickListener itemClickListener;
+
+	public interface OnItemClickListener {
+		/**
+		 *
+		 * @param position
+		 *            根位置
+		 * @param shopCartitemType
+		 *            类别
+		 * @param index
+		 *            点击具体的商品位置
+		 */
+		void onItemClick(int position, Constant.ShopCartItemCompontType shopCartitemType, int index);
+
+	}
+
+	public void setOnItemClickListener(OnItemClickListener listener) {
+		this.itemClickListener = listener;
+	}
+}

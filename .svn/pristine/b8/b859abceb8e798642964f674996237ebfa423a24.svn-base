@@ -1,0 +1,91 @@
+package com.yishanxiu.yishang.adapter;
+
+import android.text.TextUtils;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.pic.util.BitmpUtil;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+
+/**
+ * 上传图片
+ */
+public class GridViewAdapter extends BaseAdapter {
+	private LayoutInflater inflater; // 视图容器
+	private Context context;
+	//最大展示数量
+	private int maxNum=Integer.MAX_VALUE;
+
+	public void setMaxNum(int maxNum) {
+		this.maxNum = maxNum;
+	}
+
+	public GridViewAdapter(Context context) {
+		inflater = LayoutInflater.from(context);
+		this.context = context;
+	}
+
+	public int getCount() {
+		int num= BitmpUtil.drr.size();
+		if(num>maxNum){
+			return maxNum;
+		} else {
+			return num;
+		}
+	}
+
+	public Object getItem(int arg0) {
+		return BitmpUtil.drr.get(arg0);
+	}
+
+	@Override
+	public long getItemId(int i) {
+		return i;
+	}
+
+	/**
+	 * ListView Item设置
+	 */
+	public View getView(final int position, View convertView, ViewGroup parent) {
+		ViewHolder holder = null;
+
+
+			convertView = inflater.inflate(R.layout.item_published_grida, parent, false);
+			holder = new ViewHolder();
+			holder.image = (ImageView) convertView.findViewById(R.id.item_grida_image);
+			holder.delete = (ImageView) convertView.findViewById(R.id.delete_img);
+			convertView.setTag(holder);
+
+
+		String path = BitmpUtil.drr.get(position);
+		if (!TextUtils.isEmpty(path) && path.equals(BitmpUtil.ADDPIC)) {
+			holder.delete.setVisibility(View.GONE);
+			holder.image.setImageResource(R.drawable.icon_addpic_unfocused);
+		} else {
+			holder.delete.setVisibility(View.VISIBLE);
+			BitmapHelper.loadLocalImage(context,null, path,holder.image, BitmapHelper.LoadImgOption.SquareMiddle, true);
+		}
+
+		holder.delete.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				BitmpUtil.drr.remove(position);
+				notifyDataSetChanged();
+			}
+		});
+		return convertView;
+	}
+
+	public class ViewHolder {
+		public ImageView image;
+		public ImageView delete;
+	}
+
+}

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_marginBottom="@dimen/common_double_margin"
+	android:background="@color/gray_bg"
+	android:orientation="vertical">
+
+	<TextView
+		android:id="@+id/sys_msg_tv"
+		android:drawableLeft="@drawable/center_msg"
+		android:drawablePadding="@dimen/common_margin"
+		style="@style/userCenterItemMsgStyle"
+		android:background="@color/white"
+		android:gravity="left|center_vertical"
+		android:text="@string/system_msg" />
+	<ImageView style="@style/hor_line_style" />
+
+	<!--IM列表-->
+	<fragment class="com.hyphenate.chatuidemo.ui.ConversationListFragment"
+		android:id="@+id/ease_conversation_list"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		/>
+
+</LinearLayout>

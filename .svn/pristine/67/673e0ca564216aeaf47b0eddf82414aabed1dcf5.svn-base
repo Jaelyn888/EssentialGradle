@@ -1,0 +1,354 @@
+package com.yishanxiu.yishang.activity;
+
+import java.util.HashMap;
+import java.util.Map;
+
+
+import android.Manifest;
+import android.content.DialogInterface;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
+import com.google.gson.reflect.TypeToken;
+import com.hyphenate.EMCallBack;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chatuidemo.utils.PreferenceManager;
+import com.hyphenate.exceptions.HyphenateException;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.activity.base.BaseActivity;
+import com.yishanxiu.yishang.bean.ApkInfo;
+import com.yishanxiu.yishang.getdata.GetDataConfing;
+import com.yishanxiu.yishang.getdata.GetDataQueue;
+import com.yishanxiu.yishang.getdata.IGetServicesDataCallBack;
+import com.yishanxiu.yishang.getdata.ShowGetDataError;
+import com.yishanxiu.yishang.model.BaseResponse;
+import com.yishanxiu.yishang.utils.*;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import net.tsz.afinal.annotation.view.ViewInject;
+import net.tsz.afinal.sdcard.SdcardHelper;
+import pub.devrel.easypermissions.EasyPermissions;
+
+/**
+ * Created by Administrator on 2015/8/17 0017.
+ */
+public class SplashActivity extends BaseActivity {
+
+	@ViewInject(id = R.id.logo_msg_iv)
+	private ImageView logo_msg_iv;
+	@ViewInject(id = R.id.splash_line_iv)
+	private ImageView splash_line_iv;
+	// 等待网络请求个数
+	private int isCanNextActivity = 2;
+	private boolean isStart = true;
+
+	private int Start_Set_Request = 100;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.splash_activity_layout);
+		// if (Utils.isHasLogin(mContext)) {
+		// isCanNextActivity = 3;
+		// getData_UserBrand(false);
+		// } else {
+		// isCanNextActivity = 2;
+		// }
+
+		WindowManager wm = this.getWindowManager();
+		int width = wm.getDefaultDisplay().getWidth();
+		int height = wm.getDefaultDisplay().getHeight();
+		DisplayMetrics metric = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(metric);
+		float density = metric.density; // 屏幕密度（0.75 / 1.0 / 1.5）
+
+
+		DisplayUtil.screenWidth = width;
+		DisplayUtil.screenHeight = height;
+		DisplayUtil.density = density;
+		isCanNextActivity = 2;
+		// 设置列表每页加载数量
+		upversion();
+		initHX();
+		// Intent intent = this.getIntent();
+		// if (intent != null) {
+		// Uri uridata = intent.getData();
+		// String mydata = uridata.getQueryParameter("data");
+		// }
+		// Intent intent=new Intent(mContext,LoginActivity.class) ;
+		// intent.putExtra(ExtraKeys.Key_Msg1,1) ;
+		// jumpTo(intent, true);
+	}
+
+	//登录环信
+	private void initHX() {
+		if (Utils.isHasLogin(mContext)) {
+			String chatId = Utils.getChatId(mContext);
+			String chatPwd = Utils.getChatPwd(mContext);
+			if (TextUtils.isEmpty(chatId) || TextUtils.isEmpty(chatPwd)) {
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						String userId = Utils.getUserId(mContext);
+						try {
+							EMClient.getInstance().createAccount(userId, "Essential" + userId);
+							modifyInfo("8", userId, "Essential" + userId);
+						} catch (HyphenateException e) {
+							e.printStackTrace();
+						}
+						EMClient.getInstance().login(userId, "Essential" + userId, new EMCallBack() {// 回调
+							@Override
+							public void onSuccess() {
+								EMClient.getInstance().groupManager().loadAllGroups();
+								EMClient.getInstance().chatManager().loadAllConversations();
+								LogUtil.d(TAG, "登录聊天服务器成功！");
+							}
+
+							@Override
+							public void onProgress(int progress, String status) {
+
+							}
+
+							@Override
+							public void onError(int code, String message) {
+								LogUtil.d(TAG, "登录聊天服务器失败！");
+							}
+						});
+						Utils.setChatIdAndPwd(mContext, userId, "Essential" + userId);
+
+					}
+				}).start();
+			} else {
+				loginHX(chatId, chatPwd);
+			}
+		}
+	}
+
+	private void loginHX(String chatUserName, String chatPwd) {
+		EMClient.getInstance().login(chatUserName, chatPwd, new EMCallBack() {// 回调
+			@Override
+			public void onSuccess() {
+				EMClient.getInstance().groupManager().loadAllGroups();
+				EMClient.getInstance().chatManager().loadAllConversations();
+			}
+
+			@Override
+			public void onProgress(int progress, String status) {
+
+			}
+
+			@Override
+			public void onError(int code, String message) {
+				LogUtil.d(TAG, "登录聊天服务器失败！");
+			}
+		});
+
+		PreferenceManager.getInstance().setCurrentUserName(chatUserName);
+		PreferenceManager.getInstance().setCurrentUserNick(Utils.getUserNickName(mContext));
+		PreferenceManager.getInstance().setCurrentUserAvatar(Utils.getUserPic(mContext));
+	}
+
+	private void modifyInfo(String requestType, String chatId, String chatPwd) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("requestType", requestType);
+		params.put("userId", Utils.getUserId(mContext));
+		params.put("chatId", chatId);
+		params.put("chatPwd", chatPwd);
+
+		GetDataQueue queue = new GetDataQueue();
+		queue.setCallBack(updateInfoCallBack);
+		queue.setActionName(GetDataConfing.UserInfo_ModUserBaseInfo);
+		queue.setWhat(GetDataConfing.What_UserInfo_ModUserBaseInfo);
+		queue.setParamsNoJson(params);
+		getDataUtil.getData(queue);
+	}
+
+	/**
+	 * 获取服务器数据的返回信息
+	 */
+	private IGetServicesDataCallBack updateInfoCallBack = new IGetServicesDataCallBack() {
+		@Override
+		public void onLoaded(GetDataQueue entity) {
+
+		}
+	};
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (isStart) {
+			isStart = false;
+			startAnimation();
+		}
+	}
+
+	Animation animin;
+	Animation animAlphaIn;
+
+	private void startAnimation() {
+		animAlphaIn = AnimationUtils.loadAnimation(this, R.anim.alpha_in);
+		animin = AnimationUtils.loadAnimation(this, R.anim.zoom_enter);
+		animin.setAnimationListener(new Animation.AnimationListener() {
+			@Override
+			public void onAnimationStart(Animation animation) {
+
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				jumpToNextOrSetCanJump();
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+
+			}
+		});
+		startNextAnimation();
+	}
+
+	private void startNextAnimation() {
+		logo_msg_iv.setVisibility(View.VISIBLE);
+		splash_line_iv.startAnimation(animin);
+		logo_msg_iv.startAnimation(animAlphaIn);
+		splash_line_iv.setVisibility(View.VISIBLE);
+	}
+
+
+	/**
+	 * 检测版本
+	 */
+	private void upversion() {
+		if (SdcardHelper.ExistSDCard()) {
+			String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+			if (EasyPermissions.hasPermissions(mContext, perms)) {
+				GetDataQueue queue = new GetDataQueue();
+				queue.setActionName(GetDataConfing.Action_selectAppVersionInfo);
+				queue.setParams(new HashMap<String, Object>());
+				queue.setCallBack(callBack);
+				queue.setWhat(GetDataConfing.What_selectAppVersionInfo);
+				getDataUtil.getData(queue);
+			} else {
+				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+				builder.setMessage(R.string.no_extrastorage_permissions_tips);
+				builder.setNegativeButton(R.string.cancel, permissionDialogClickListener);
+				builder.setPositiveButton(R.string.set, permissionDialogClickListener);
+				builder.setCancelable(true);
+				builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						jumpToNextOrSetCanJump();
+					}
+				});
+				alertDialog = builder.show();
+			}
+		} else {
+			jumpToNextOrSetCanJump();
+		}
+
+	}
+
+	/**
+	 * 提示用户有新版本
+	 */
+
+	private boolean updateApp = false;
+	private String apkDownLoadPath;
+	private AlertDialog alertDialog;
+
+	/**
+	 * 提示用户有新版本
+	 */
+	private void showNewVersion(String filePath, String appUpdateDiscri) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+		builder.setMessage(appUpdateDiscri);
+		builder.setNegativeButton(R.string.app_version_iknow, dialogClickListener);
+		builder.setPositiveButton(R.string.app_version_update, dialogClickListener);
+		builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				jumpToNextOrSetCanJump();
+			}
+		});
+		alertDialog = builder.show();
+		apkDownLoadPath = filePath;
+	}
+
+	DialogInterface.OnClickListener permissionDialogClickListener = new DialogInterface.OnClickListener() {
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			if (which == AlertDialog.BUTTON_POSITIVE) {
+				Intent intent = new Intent(Settings.ACTION_SETTINGS);
+				startActivityForResult(intent, Start_Set_Request);
+			} else {
+				jumpToNextOrSetCanJump();
+			}
+			alertDialog.dismiss();
+		}
+	};
+
+	DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			if (which == AlertDialog.BUTTON_POSITIVE) {
+				updateApp=true;
+			}
+			alertDialog.dismiss();
+		}
+	};
+
+
+	private IGetServicesDataCallBack callBack = new IGetServicesDataCallBack() {
+		@Override
+		public void onLoaded(GetDataQueue entity) {
+			if (entity.what == GetDataConfing.What_selectAppVersionInfo) {
+				TypeToken<BaseResponse<ApkInfo>> typeToken=new TypeToken<BaseResponse<ApkInfo>>(){};
+				BaseResponse<ApkInfo> baseResponse = new ModleUtils().mapTo(entity, typeToken);
+				if (ShowGetDataError.isCodeSuccess(mContext, baseResponse)) {
+					ApkInfo apkInfo = baseResponse.getInfo();
+					String versionCode = apkInfo.getVersionNumber();
+					String filePath = apkInfo.getVersionFilePath();
+					String versionContent = apkInfo.getVersionContent();
+					if (TextUtils.isEmpty(versionCode) || TextUtils.isEmpty(filePath)
+							|| versionCode.equalsIgnoreCase(Utils.getVersionName(mContext))) {
+						jumpToNextOrSetCanJump();
+					} else {
+						showNewVersion(filePath, versionContent);
+					}
+				} else {
+					jumpToNextOrSetCanJump();
+				}
+			}
+		}
+	};
+
+	private void jumpToNextOrSetCanJump() {
+		isCanNextActivity--;
+		if (isCanNextActivity <= 0) {
+			Intent intent = new Intent(mContext, MainActivity2.class);
+			if(updateApp) {
+				intent.putExtra(ExtraKeys.Key_Msg1, apkDownLoadPath);
+			} else {
+				intent.putExtra(ExtraKeys.Key_Msg1,"");
+			}
+			jumpTo(intent, true);
+
+		} else {
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == Start_Set_Request) {
+			jumpToNextOrSetCanJump();
+		}
+	}
+
+}

@@ -1,0 +1,60 @@
+package com.yishanxiu.yishang.adapter;
+
+import java.util.List;
+import java.util.Map;
+
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+import com.yishanxiu.yishang.view.CustomImageView;
+
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import net.tsz.afinal.json.JsonMap;
+import com.yishanxiu.yishang.R;
+
+/**
+ * Created by Jaelyn on 2015/9/7.
+ */
+public class ProductCategoryAdapter extends MyBaseAdapter {
+
+	//private ItemAttentionChange attentionChange;
+
+	public ProductCategoryAdapter(Context context, List<? extends Map<String, ?>> datas) {
+		super(context, datas);
+		//this.attentionChange = callback2;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public View getView(final int position, View view, ViewGroup viewGroup) {
+        GoodsCategoryAdapterViewHolder goodsCategoryAdapterViewHolder;
+		if (view == null) {
+			view = layoutInflater.inflate(R.layout.product_category_item, viewGroup, false);
+            goodsCategoryAdapterViewHolder = new GoodsCategoryAdapterViewHolder(view);
+			view.setTag(goodsCategoryAdapterViewHolder);
+		} else {
+            goodsCategoryAdapterViewHolder = (GoodsCategoryAdapterViewHolder) view.getTag();
+		}
+		 JsonMap<String,Object> data = (JsonMap<String, Object>) datas.get(position);      //brandLog
+		// goodsCategoryAdapterViewHolder.classfy_name_tv.setText(data.getStringNoNull("categoryName"));
+		// goodsCategoryAdapterViewHolder.classfy_name_tv.setTextColor(Color.parseColor("#"+data.getStringNoNull("textColor","ffffff")));
+		BitmapHelper.loadImage(context, data.getStr("pic"),	goodsCategoryAdapterViewHolder.classfy_logo_iv, BitmapHelper.LoadImgOption.SquareMiddle,true);
+		return view;
+	}
+
+	private  class GoodsCategoryAdapterViewHolder {
+		@ViewInject(R.id.classfy_logo_iv)
+		private CustomImageView classfy_logo_iv;
+		@ViewInject(R.id.classfy_name_tv)
+		private TextView classfy_name_tv;
+
+		public GoodsCategoryAdapterViewHolder(View view) {
+			ViewUtils.inject(this, view);
+		}
+	}
+
+}

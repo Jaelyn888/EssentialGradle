@@ -1,0 +1,2 @@
+include ':app', ':social_sdk_library', ':easeui', ':aymUtilUsed2', ':imagepicker'
+include ':ptrLibs'

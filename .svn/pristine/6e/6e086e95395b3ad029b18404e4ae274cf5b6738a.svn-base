@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.hyphenate.easeui"
+    >
+
+    <uses-sdk
+        android:minSdkVersion="19"
+        android:targetSdkVersion="20" />
+      <application>
+          <activity
+              android:name="com.hyphenate.easeui.ui.EaseShowBigImageActivity"
+              android:screenOrientation="portrait"
+              android:theme="@style/horizontal_slide" >
+          </activity>
+          <!-- 下载文件 -->
+          <activity
+              android:name="com.hyphenate.easeui.ui.EaseShowNormalFileActivity"
+              android:screenOrientation="portrait"
+              android:theme="@style/horizontal_slide" >
+          </activity>
+          <activity
+              android:name="com.hyphenate.easeui.ui.EaseShowVideoActivity"
+              android:screenOrientation="portrait"
+              android:theme="@style/horizontal_slide"
+              android:windowSoftInputMode="stateAlwaysHidden" >
+          </activity>
+
+          <meta-data
+              android:name="EASEMOB_APPKEY"
+              android:value="essential#essential" />
+          <!-- 声明sdk所需的service SDK核心功能 -->
+          <service
+              android:name="com.hyphenate.chat.EMChatService"
+              android:exported="true" />
+          <!-- 声明sdk所需的receiver -->
+          <receiver android:name="com.hyphenate.chat.EMMonitorReceiver" >
+              <intent-filter>
+                  <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                  <data android:scheme="package" />
+              </intent-filter>
+              <!-- 可选filter -->
+              <intent-filter>
+                  <action android:name="android.intent.action.BOOT_COMPLETED" />
+                  <action android:name="android.intent.action.USER_PRESENT" />
+              </intent-filter>
+          </receiver>
+
+          <!-- gcm start -->
+          <receiver
+              android:name="com.hyphenate.chat.EMGCMBroadcastReceiver"
+              android:exported="true"
+              android:permission="com.google.android.c2dm.permission.SEND" >
+              <intent-filter>
+                  <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                  <category android:name="com.hyphenate.chatuidemo" />
+              </intent-filter>
+          </receiver>
+
+          <service
+              android:name="com.hyphenate.chat.EMGCMListenerService"
+              android:exported="false" >
+          </service>
+
+          <!-- gcm end -->
+
+          <receiver
+              android:name="com.hyphenate.chat.EMMipushReceiver"
+              android:exported="true" >
+              <intent-filter>
+                  <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE" />
+              </intent-filter>
+              <intent-filter>
+                  <action android:name="com.xiaomi.mipush.MESSAGE_ARRIVED" />
+              </intent-filter>
+              <intent-filter>
+                  <action android:name="com.xiaomi.mipush.ERROR" />
+              </intent-filter>
+          </receiver>
+          <!-- mi push end -->
+
+
+          <!-- huawei push 第三方相关 :接收Push消息（注册、Push消息、Push连接状态、标签，LBS上报结果）广播 -->
+          <receiver android:name="com.hyphenate.chat.EMHuaweiPushReceiver" >
+              <intent-filter>
+
+                  <!-- 必须,用于接收token -->
+                  <action android:name="com.huawei.android.push.intent.REGISTRATION" />
+                  <!-- 必须，用于接收消息 -->
+                  <action android:name="com.huawei.android.push.intent.RECEIVE" />
+              </intent-filter>
+              />
+
+              <meta-data
+                  android:name="CS_cloud_ablitity"
+                  android:value="successRateAnalytics" />
+          </receiver>
+
+          <!-- PushSDK:PushSDK接收外部请求事件入口 -->
+          <receiver
+              android:name="com.huawei.android.pushagent.PushEventReceiver"
+              android:process=":pushservice" >
+              <intent-filter>
+                  <action android:name="com.huawei.android.push.intent.REFRESH_PUSH_CHANNEL" />
+                  <action android:name="com.huawei.intent.action.PUSH" />
+                  <action android:name="com.huawei.intent.action.PUSH_ON" />
+                  <action android:name="com.huawei.android.push.PLUGIN" />
+              </intent-filter>
+          </receiver>
+
+          <!-- PushSDK:Push服务 -->
+          <service
+              android:name="com.huawei.android.pushagent.PushService"
+              android:process=":pushservice" >
+          </service>
+          <!-- huawei push end -->
+
+
+
+          <!-- 百度地图所需的service -->
+          <!--
+			  <service
+			  android:name="com.baidu.location.f"
+			  android:enabled="true"
+			  android:process=":remote" />
+		  <meta-data
+			  android:name="com.baidu.lbsapi.API_KEY"
+			  android:value="3ecea51f560650b1ed8a4b99808f52e8" />
+		  -->
+      </application>
+</manifest>

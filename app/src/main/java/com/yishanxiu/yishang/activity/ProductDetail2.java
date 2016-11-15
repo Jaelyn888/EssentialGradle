@@ -1,0 +1,226 @@
+package com.yishanxiu.yishang.activity;
+
+
+import com.hyphenate.util.EasyUtils;
+import com.shizhefei.view.indicator.IndicatorViewPager;
+import com.shizhefei.view.indicator.ScrollIndicatorView;
+import com.shizhefei.view.indicator.slidebar.TextWidthColorBar;
+import com.shizhefei.view.indicator.transition.OnTransitionTextListener;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.activity.base.BaseUIActivity;
+import com.yishanxiu.yishang.app.MyApplication;
+import com.yishanxiu.yishang.fragment.ProductDetailFragment;
+import com.yishanxiu.yishang.fragment.WebViewFragment;
+import com.yishanxiu.yishang.getdata.GetDataConfing;
+import com.yishanxiu.yishang.model.shopmall.ProductInfoModel;
+import com.yishanxiu.yishang.utils.Constant;
+import com.yishanxiu.yishang.utils.ExtraKeys;
+import com.yishanxiu.yishang.view.BadgeView;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import net.tsz.afinal.annotation.view.ViewInject;
+
+/**
+ * 商品详情
+ *
+ * @author FangDongzhang 2016/8/3
+ */
+public class ProductDetail2 extends BaseUIActivity {
+	private IndicatorViewPager indicatorViewPager;
+	@ViewInject(id = R.id.moretab_indicator)
+	private ScrollIndicatorView scrollIndicatorView;
+	@ViewInject(id = R.id.moretab_viewPager)
+	private ViewPager viewPager;
+	private String[] strings = {"商品", "详情", "售后"};
+	private String[] stringsId = new String[2];
+	private ProductInfoModel productInfoModel;
+	private BadgeView shopping_cart_badge;
+	//商品介绍也
+	private ProductDetailFragment productDetailFragment;
+
+
+	@Override
+	public void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.indicator_viewpager_line_layout);
+		setBtn_backListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (EasyUtils.isSingleActivity(mContext)) {
+					Intent intent = new Intent(mContext, SplashActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+					startActivity(intent);
+				}
+				finish();
+			}
+		});
+		setMenuRes();
+		Intent intent = getIntent();
+		productInfoModel = (ProductInfoModel) intent.getSerializableExtra(ExtraKeys.Key_Msg1);
+		//productInfoModel.setProductId("16315");
+		setCenter_title(productInfoModel.getBrandName());
+		stringsId[0] = GetDataConfing.Url_Base + "pages/busi_platform/business/discovery/productDetails.html?productId=" + productInfoModel.getProductId() + "&type=0";
+		stringsId[1] = GetDataConfing.Url_Base + "pages/busi_platform/business/discovery/productDetails.html?productId=" + productInfoModel.getProductId() + "&type=1";
+		initView();
+	}
+
+	// 设置头部右上角购物车
+	public void setMenuRes() {
+		menu_layout.removeAllViews();
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+				LinearLayout.LayoutParams.MATCH_PARENT);
+		ImageView imageView1 = new ImageView(mContext);
+		imageView1.setOnClickListener(menuClick);
+		imageView1.setTag(1);
+		imageView1.setImageResource(R.drawable.shopcart_white);
+		imageView1.setPadding(getResources().getDimensionPixelSize(R.dimen.comon_half_margin), 0, getResources().getDimensionPixelSize(R.dimen.margin_27dp), 0);
+		imageView1.setOnClickListener(menuClick);
+		menu_layout.addView(imageView1, params);
+		ImageView imageView2 = new ImageView(mContext);
+		imageView2.setOnClickListener(menuClick);
+		imageView2.setTag(2);
+		imageView2.setImageResource(R.drawable.share_white);
+		imageView2.setPadding(0, 0, getResources().getDimensionPixelSize(R.dimen.common_margin), 0);
+		menu_layout.addView(imageView2, params);
+
+		shopping_cart_badge = new BadgeView(this, imageView1);
+		shopping_cart_badge.setTextSize(10);
+	}
+
+	// 购物车的点击事件
+	View.OnClickListener menuClick = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			int tag = (Integer) v.getTag();
+			if (tag == 1) {
+				jumpToShopCart();
+			} else if (tag == 2) {
+				share_iv_click(v);
+			}
+		}
+	};
+
+	/**
+	 * 分享的点击事件
+	 *
+	 * @param view
+	 */
+	public void share_iv_click(View view) {
+		productDetailFragment.share_iv_click(view);
+	}
+
+	public void refreshShoppingCartNum() {
+		int shopCartNum = MyApplication.getInstance().getShopcart_num();
+		if (shopCartNum > 99) {
+			shopping_cart_badge.setText("...");
+			shopping_cart_badge.show();
+		} else if (shopCartNum == 0) {
+			shopping_cart_badge.hide();
+		} else {
+			shopping_cart_badge.setText("" + shopCartNum);
+			shopping_cart_badge.show();
+		}
+
+	}
+
+	/**
+	 * 初始化控件
+	 */
+	private void initView() {
+		int indicatorColor = getResources().getColor(R.color.black_deep);
+		scrollIndicatorView.setOnTransitionListener(
+				new OnTransitionTextListener().setColorId(mContext, R.color.black_deep, R.color.darkGray));
+		scrollIndicatorView.setScrollBar(new TextWidthColorBar(mContext, scrollIndicatorView, indicatorColor, 5));
+		indicatorViewPager = new IndicatorViewPager(scrollIndicatorView, viewPager);
+		indicatorViewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
+		indicatorViewPager.setPageOffscreenLimit(3);
+	}
+
+
+	private class MyAdapter extends IndicatorViewPager.IndicatorFragmentPagerAdapter {
+		private LayoutInflater inflater = null;
+
+		public MyAdapter(FragmentManager fragmentManager) {
+			super(fragmentManager);
+			inflater = LayoutInflater.from(getApplicationContext());
+		}
+
+		@Override
+		public int getCount() {
+			return strings.length;
+		}
+
+		@Override
+		public View getViewForTab(int position, View convertView, ViewGroup container) {
+			if (convertView == null) {
+				convertView = getLayoutInflater().inflate(R.layout.tab_top, container, false);
+			}
+			TextView textView = (TextView) convertView;
+			textView.setText(strings[position]);
+			return convertView;
+		}
+
+		/**
+		 * 获取每一个界面
+		 */
+		@Override
+		public int getItemPosition(Object object) {
+			// 这是ViewPager适配器的特点,有两个值
+			// POSITION_NONE，POSITION_UNCHANGED，默认就是POSITION_UNCHANGED,
+			// 表示数据没变化不用更新.notifyDataChange的时候重新调用getViewForPage
+			return PagerAdapter.POSITION_UNCHANGED;
+		}
+
+		@Override
+		public Fragment getFragmentForPage(int position) {
+			Bundle bundle = new Bundle();
+			if (position == 0) {
+				productDetailFragment = new ProductDetailFragment();
+				bundle.putSerializable(ExtraKeys.Key_Msg1, productInfoModel);
+				productDetailFragment.setArguments(bundle);
+				return productDetailFragment;
+			} else if (position == 1) {
+				WebViewFragment mainFragment = new WebViewFragment();
+				bundle.putString(Constant.INTENT_URL, stringsId[0]);
+				mainFragment.setArguments(bundle);
+				return mainFragment;
+			} else {
+				WebViewFragment mainFragment = new WebViewFragment();
+				bundle.putString(Constant.INTENT_URL, stringsId[1]);
+				mainFragment.setArguments(bundle);
+				return mainFragment;
+			}
+		}
+
+	}
+
+	@Override
+	public void onBackPressed() {
+		int currentItem = indicatorViewPager.getCurrentItem();
+		if (currentItem == 0) {
+			if (productDetailFragment.backKeyClick()) {
+				super.onBackPressed();
+			} else {
+			}
+		} else {
+			if (EasyUtils.isSingleActivity(mContext)) {
+				Intent intent = new Intent(mContext, SplashActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				startActivity(intent);
+			}
+			super.onBackPressed();
+		}
+	}
+
+}

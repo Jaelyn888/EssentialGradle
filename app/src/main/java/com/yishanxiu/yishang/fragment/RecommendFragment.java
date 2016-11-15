@@ -1,0 +1,230 @@
+package com.yishanxiu.yishang.fragment;
+
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.ListView;
+
+import com.google.gson.reflect.TypeToken;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.adapter.RecommendAdapter;
+import com.yishanxiu.yishang.getdata.GetDataConfing;
+import com.yishanxiu.yishang.getdata.GetDataQueue;
+import com.yishanxiu.yishang.getdata.IGetServicesDataCallBack;
+import com.yishanxiu.yishang.getdata.ShowGetDataError;
+import com.yishanxiu.yishang.model.BaseResponse;
+import com.yishanxiu.yishang.model.recommend.RecommendModel;
+import com.yishanxiu.yishang.model.shopmall.ProductInfoModel;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+import com.yishanxiu.yishang.utils.Constant;
+import com.yishanxiu.yishang.utils.DisplayUtil;
+import com.yishanxiu.yishang.utils.ModleUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import cn.bingoogolapple.bgabanner.BGABanner;
+
+/**
+ * Created by FangDongzhang on 2016/9/5.
+ * <p/>
+ * 推荐
+ */
+public class RecommendFragment extends LazyFragment implements BGABanner.Adapter, BGABanner.OnItemClickListener {
+	private PullToRefreshListView ptr_list;
+
+	private BGABanner mBanner;
+	private RecommendAdapter recommendAdapter;
+	private List<RecommendModel> jsonMaps;
+	private List<RecommendModel> recommendModelList = new ArrayList<>();
+
+	@Override
+	protected void onCreateViewLazy(Bundle savedInstanceState) {
+		super.onCreateViewLazy(savedInstanceState);
+		setContentView(R.layout.recommend_layout);
+		ptr_list = (PullToRefreshListView) getContentView().findViewById(R.id.ptr_list);
+		initListView();
+		setOnclick();
+		getServerData();
+
+		getListData(0);
+	}
+
+	/**
+	 * 初始化ListView
+	 */
+	private void initListView() {
+
+		ptr_list.setMode(PullToRefreshBase.Mode.BOTH);
+		ptr_list.setOnRefreshListener(loadMoreListener);
+		// 初始化HeaderView
+		View headerView = View.inflate(activity, R.layout.layout_header_recommend, null);
+		mBanner = (BGABanner) headerView.findViewById(R.id.banner);
+		ViewGroup.LayoutParams lp;
+		lp = mBanner.getLayoutParams();
+		lp.width = DisplayUtil.screenWidth;
+		lp.height = (int) (DisplayUtil.screenWidth / 1.8);
+		mBanner.setLayoutParams(lp);
+		// 添加头部
+		ptr_list.getRefreshableView().addHeaderView(headerView);
+		recommendAdapter = new RecommendAdapter(activity);
+		recommendAdapter.setItemChildClickListener(itemChildClickListener);
+		ptr_list.setAdapter(recommendAdapter);
+		ptr_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				RecommendModel recommendModel = recommendModelList.get(position);
+				activity.seeRecommendDetail(recommendModel);
+			}
+		});
+	}
+
+
+	private PullToRefreshBase.OnRefreshListener2<ListView> loadMoreListener = new PullToRefreshBase.OnRefreshListener2<ListView>() {
+		@Override
+		public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+			getServerData();
+			getListData(1);
+		}
+
+		@Override
+		public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+			getListData(2);
+		}
+	};
+
+	private void setOnclick() {
+		mBanner.setOnItemClickListener(this);
+	}
+
+	@Override
+	public void onBannerItemClick(BGABanner banner, View view, Object model, int position) {
+		RecommendModel recommendModel = jsonMaps.get(position);
+		activity.seeRecommendDetail(recommendModel);
+	}
+
+	@Override
+	public void fillBannerItem(BGABanner banner, View view, Object model, int position) {
+		RecommendModel recommendModel = (RecommendModel) model;
+		BitmapHelper.loadImage(banner.getContext(), recommendModel.getCoverPic(), (ImageView) view, BitmapHelper.LoadImgOption.Rectangle);
+	}
+
+	private void initData(List<RecommendModel> recommendModels) {
+		jsonMaps = recommendModels;
+		mBanner.setAdapter(this);
+		mBanner.setData(recommendModels, null);
+	}
+
+	/**
+	 * 获取轮播图
+	 */
+	private void getServerData() {
+		Map<String, Object> params = new HashMap<>();
+		GetDataQueue queue = new GetDataQueue();
+		queue.setActionName(GetDataConfing.Recommend_QueryRecommendCarouselPic);
+		queue.setParamsNoJson(params);
+		queue.setCallBack(callBack);
+		queue.setWhat(GetDataConfing.What_Recommend_QueryRecommendCarouselPic);
+		getDataUtil.getData(queue);
+	}
+
+	/**
+	 * 获取list数据
+	 */
+	private void getListData(int requestType) {
+		Map<String, Object> params = new HashMap<>();
+
+		GetDataQueue queue = new GetDataQueue();
+		params.put("requestType", String.valueOf(requestType));
+		queue.setTag(requestType);
+		if (requestType == 0) {
+		} else if (requestType == 1) {
+			params.put("statusTime", recommendModelList.get(0).getStatusTime());
+		} else if (requestType == 2) {
+			params.put("statusTime", recommendModelList.get(recommendModelList.size() - 1).getStatusTime());
+		}
+
+		queue.setActionName(GetDataConfing.Recommend_QueryRecommendListForApp);
+		queue.setParamsNoJson(params);
+		queue.setCallBack(callBack);
+		queue.setWhat(GetDataConfing.What_Recommend_QueryRecommendListForApp);
+		getDataUtil.getData(queue);
+	}
+
+	private IGetServicesDataCallBack callBack = new IGetServicesDataCallBack() {
+		@Override
+		public void onLoaded(GetDataQueue entity) {
+			ptr_list.onRefreshComplete();
+			activity.loadingToast.dismiss();
+			if (entity.what == GetDataConfing.What_Recommend_QueryRecommendCarouselPic) {
+				TypeToken<BaseResponse<List<RecommendModel>>> typeToken = new TypeToken<BaseResponse<List<RecommendModel>>>() {};
+				BaseResponse<List<RecommendModel>> baseResponse = new ModleUtils().mapTo(entity, typeToken);
+				if (ShowGetDataError.isCodeSuccess(activity, baseResponse)) {
+					initData(baseResponse.getInfo());
+				}
+			} else if (entity.what == GetDataConfing.What_Recommend_QueryRecommendListForApp) {
+				TypeToken<BaseResponse<List<RecommendModel>>> typeToken = new TypeToken<BaseResponse<List<RecommendModel>>>() {};
+				BaseResponse<List<RecommendModel>> baseResponse = new ModleUtils().mapTo(entity, typeToken);
+				if (ShowGetDataError.isCodeSuccess(activity, baseResponse)) {
+					setAdapterData(baseResponse.getInfo(), (Integer) entity.getTag());
+				}
+			}
+		}
+
+	};
+
+	private void setAdapterData(List<RecommendModel> temp_data, int requestType) {
+		if (requestType == 0) {
+			if (temp_data.size() == 0) {
+				ptr_list.setMode(PullToRefreshBase.Mode.BOTH);
+			} else {
+				ptr_list.setMode(PullToRefreshBase.Mode.BOTH);
+				recommendModelList.addAll(0, temp_data);
+				recommendAdapter.setDatas(recommendModelList);
+			}
+
+		} else if (requestType == 1) {
+			if (!temp_data.isEmpty()) {
+				if (temp_data.size() >= 0) {
+					recommendModelList.clear();
+				}
+				recommendModelList.addAll(0, temp_data);
+				recommendAdapter.setDatas(recommendModelList);
+			}
+		} else if (requestType == 2) {
+			if (temp_data.size() == 0) {
+				ptr_list.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+			} else {
+				ptr_list.setMode(PullToRefreshBase.Mode.BOTH);
+				recommendModelList.addAll(temp_data);
+				recommendAdapter.setDatas(recommendModelList);
+			}
+		}
+	}
+
+	public RecommendAdapter.ItemChildClickListener itemChildClickListener = new RecommendAdapter.ItemChildClickListener() {
+		@Override
+		public void onItemClickListener(int itemPosition, Constant.RecommendItem type, int childIndex) {
+			RecommendModel recommendModel = recommendModelList.get(itemPosition);
+			if (type == Constant.RecommendItem.RELATION_PRODUCT) {
+				List<ProductInfoModel> productInfoModelList = recommendModel.getRelatedProductList();
+				if (childIndex>-1&&childIndex <productInfoModelList.size()) {
+					ProductInfoModel productInfoModel = productInfoModelList.get(childIndex);
+					activity.seeProductDetail(productInfoModel);
+				} else {
+					activity.seeRecommendDetail(recommendModel);
+				}
+
+			} else if (type == Constant.RecommendItem.MAIN_IMAG) {
+				activity.seeRecommendDetail(recommendModel);
+			}
+		}
+	};
+
+}

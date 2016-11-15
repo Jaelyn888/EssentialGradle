@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/white"
+	android:descendantFocusability="blocksDescendants">
+
+	<!-- style="@style/activity_content_padding" -->
+
+	<com.lzy.widget.OverScrollDecor
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:overScrollMode="never"
+		android:scrollbars="none">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			android:visibility="visible">
+
+			<requestFocus />
+
+			<!-- 收获信息 -->
+			<include layout="@layout/receiver_address_layout" />
+
+			<!-- 商品清单 -->
+
+			<View
+				android:id="@+id/view1"
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/margin_5dp"
+				android:background="@color/gray_bg" />
+
+			<com.yishanxiu.yishang.view.ListViewNoScroll
+				android:id="@+id/s_a_o_lvns_prolist"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="@color/white"
+				android:cacheColorHint="@color/white"
+				android:focusable="true"
+				android:listSelector="@color/white" />
+
+		</LinearLayout>
+	</com.lzy.widget.OverScrollDecor>
+
+</RelativeLayout>

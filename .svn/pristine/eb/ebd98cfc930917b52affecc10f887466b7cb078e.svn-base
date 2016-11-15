@@ -1,0 +1,200 @@
+package com.yishanxiu.yishang.activity;
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import com.shizhefei.view.indicator.IndicatorViewPager;
+import com.shizhefei.view.indicator.ScrollIndicatorView;
+import com.shizhefei.view.indicator.slidebar.MyTextWidthColorBar;
+import com.shizhefei.view.indicator.transition.MyOnTransitionTextListener;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.activity.base.BaseUIActivity;
+import com.yishanxiu.yishang.fragment.MyOrderFragment;
+import com.yishanxiu.yishang.getdata.GetDataConfing;
+import com.yishanxiu.yishang.getdata.GetDataQueue;
+import com.yishanxiu.yishang.getdata.IGetServicesDataCallBack;
+import com.yishanxiu.yishang.getdata.JsonKeys;
+import com.yishanxiu.yishang.utils.Constant;
+import com.yishanxiu.yishang.utils.ExtraKeys;
+import com.yishanxiu.yishang.utils.Utils;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import net.tsz.afinal.annotation.view.ViewInject;
+import net.tsz.afinal.json.JsonMap;
+import net.tsz.afinal.json.JsonParseHelper;
+
+public class MyOrderActivity2 extends BaseUIActivity {
+
+	/**
+	 * @author FangDongzhang 我的订单 2016/7/8
+	 */
+	private IndicatorViewPager indicatorViewPager;
+	@ViewInject(id=R.id.moretab_indicator)
+	private ScrollIndicatorView fixed_indicator;
+	@ViewInject(id=R.id.moretab_viewPager)
+	private ViewPager viewPager;
+	private String[] strings = {"全部", "待付款", "待收货", "待评价", "售后"};
+	private String[] stringsId = {"", "1", "110", "4", "5"};
+	private ArrayList<TextView> tagViews = new ArrayList<TextView>();
+
+	@Override
+	public void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.indicator_viewpager_line_layout);
+
+		setCenter_title(R.string.user_order);
+		setBtn_menu(R.drawable.search_white, onClickListener);
+		// loadingToast.show();
+
+		initView();
+		getServrData();
+	}
+
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		getServrData();
+	}
+
+	/**
+	 * 初始化控件
+	 */
+	private void initView() {
+		int indicatorColor = getResources().getColor(R.color.black_deep);
+		fixed_indicator.setOnTransitionListener(
+				new MyOnTransitionTextListener().setColorId(mContext, R.color.black_deep, R.color.darkGray));
+		fixed_indicator.setScrollBar(new MyTextWidthColorBar(mContext, fixed_indicator, indicatorColor, 5));
+		indicatorViewPager = new IndicatorViewPager(fixed_indicator, viewPager);
+		indicatorViewPager.setAdapter(new MyAdapter(getSupportFragmentManager(), mContext));
+	}
+
+	/**
+	 * 搜索监听
+	 */
+	private OnClickListener onClickListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			Intent intent = new Intent(mContext, MyOrderSearchActivity.class);
+			intent.putExtra(ExtraKeys.Key_Msg1, "");
+			jumpTo(intent);
+
+		}
+	};
+
+	/**
+	 * 获取服务器端数据
+	 * 请求类型
+	 */
+	public void getServrData() {
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", Utils.getUserId(mContext));
+		GetDataQueue queue = new GetDataQueue();
+		queue.setActionName(GetDataConfing.Action_QueryMyOrderNumberPerLabelCount);
+		queue.setParamsNoJson(params);
+		queue.setCallBack(callBack);
+		queue.setWhat(GetDataConfing.What_queryMyOrderNumberPerLabelCount);
+		getDataUtil.getData(queue);
+	}
+
+	private IGetServicesDataCallBack callBack = new IGetServicesDataCallBack() {
+		@Override
+		public void onLoaded(GetDataQueue entity) {
+			if (entity.isOk()) {
+				if (entity.what == GetDataConfing.What_queryMyOrderNumberPerLabelCount) {
+					JsonMap<String, Object> dataInfo = JsonParseHelper.getJsonMap_JsonMap(entity.getInfo(),
+							JsonKeys.Key_Info);
+					//pendingPaymentCount---待付款订单数量
+					//	waitEvaluateCount---待评价订单数量
+					//waitReciveGoodsCount---待收货订单数量
+					//totalReturnRefundOrderCount---退货退款订单数量
+					//totalOrderCount---所以订单数量(不含退货退款订单)
+					boolean pendingPaymentCount = dataInfo.getBoolean("pendingPaymentCount");
+					boolean waitEvaluateCount = dataInfo.getBoolean("waitEvaluateCount");
+					boolean waitReciveGoodsCount = dataInfo.getBoolean("waitReciveGoodsCount");
+					boolean totalReturnRefundOrderCount = dataInfo.getBoolean("totalReturnRefundOrderCount");
+					if (pendingPaymentCount) {
+						tagViews.get(1).setVisibility(View.VISIBLE);
+					} else {
+						tagViews.get(1).setVisibility(View.INVISIBLE);
+					}
+					if (waitReciveGoodsCount) {
+						tagViews.get(2).setVisibility(View.VISIBLE);
+					} else {
+						tagViews.get(2).setVisibility(View.INVISIBLE);
+					}
+					if (waitEvaluateCount) {
+						tagViews.get(3).setVisibility(View.VISIBLE);
+					} else {
+						tagViews.get(3).setVisibility(View.INVISIBLE);
+					}
+					if (totalReturnRefundOrderCount) {
+						tagViews.get(4).setVisibility(View.VISIBLE);
+					} else {
+						tagViews.get(4).setVisibility(View.INVISIBLE);
+					}
+				}
+			}
+		}
+
+	};
+
+	private class MyAdapter extends IndicatorViewPager.IndicatorFragmentPagerAdapter {
+
+		public MyAdapter(FragmentManager fragmentManager, Context context) {
+			super(fragmentManager);
+		}
+
+		@Override
+		public int getCount() {
+			return strings.length;
+		}
+
+		@Override
+		public View getViewForTab(int position, View convertView, ViewGroup container) {
+			if (convertView == null) {
+				convertView = getLayoutInflater().inflate(R.layout.tab_top_fragment2, container, false);
+			}
+			TextView textView = (TextView) convertView.findViewById(android.R.id.text1);
+			textView.setText(strings[position]);
+			tagViews.add((TextView) convertView.findViewById(R.id.tag));
+			return convertView;
+		}
+
+		/**
+		 * 获取每一个界面
+		 */
+		@Override
+		public int getItemPosition(Object object) {
+			/*
+			 * 这是ViewPager适配器的特点,有两个值
+			 * POSITION_NONE，POSITION_UNCHANGED，默认就是POSITION_UNCHANGED,
+			 * 表示数据没变化不用更新.notifyDataChange的时候重新调用getViewForPage
+			 */
+			return PagerAdapter.POSITION_UNCHANGED;
+		}
+
+		@Override
+		public Fragment getFragmentForPage(int position) {
+			MyOrderFragment mainFragment = new MyOrderFragment();
+			Bundle bundle = new Bundle();
+			bundle.putString(Constant.ORDER_STATUS, stringsId[position]);
+			bundle.putBoolean("isSearch",false);
+			mainFragment.setArguments(bundle);
+			return mainFragment;
+		}
+
+	}
+
+}

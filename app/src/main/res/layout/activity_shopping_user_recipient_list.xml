@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:background="@color/gray_bg">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_marginBottom="40dp"
+		>
+		<ListView
+			android:id="@+id/ptr_list"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:cacheColorHint="@color/transparent"
+			android:listSelector="@color/transparent"
+			android:dividerHeight="@dimen/margin_8dp"
+			android:divider="@color/transparent"
+			android:fadingEdge="none"
+			android:footerDividersEnabled="true"
+			/>
+	</LinearLayout>
+
+
+
+	<LinearLayout
+		android:id="@+id/add_address_layout"
+		android:layout_width="match_parent"
+		android:layout_height="40dp"
+		android:layout_alignParentBottom="true"
+		android:background="@color/TextColorBlack"
+		android:gravity="center"
+		android:orientation="vertical">
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:gravity="center"
+			android:text="@string/add_address"
+			android:textColor="@color/TextColorWhite" />
+	</LinearLayout>
+
+</RelativeLayout>

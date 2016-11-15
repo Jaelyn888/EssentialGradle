@@ -1,0 +1,68 @@
+package com.yishanxiu.yishang.fragment;
+
+import com.hyphenate.chat.EMConversation;
+import com.hyphenate.easeui.ui.EaseConversationListFragment;
+import com.hyphenate.easeui.widget.EaseAlertDialog;
+import com.hyphenate.easeui.widget.EaseAlertDialog.AlertDialogUser;
+import com.yishanxiu.yishang.activity.ChatActivity;
+import com.yishanxiu.yishang.activity.ForwardMessageActivity;
+import com.hyphenate.easeui.widget.EaseChatPrimaryMenu;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import com.yishanxiu.yishang.R;
+
+public class ForwardMsgFragment extends EaseConversationListFragment {
+
+
+	@Override
+	protected void initView() {
+		// TODO Auto-generated method stub
+		super.initView();
+		
+		//EaseChatPrimaryMenu e = new EaseChatPrimaryMenu(getContext(), 1);//(EaseChatPrimaryMenu) inputMenu.getPrimaryMenu();
+	}
+
+	@Override
+	protected void setUpView() {
+		// TODO Auto-generated method stub
+		super.setUpView();
+		// 注册上下文菜单
+        registerForContextMenu(conversationListView);
+        conversationListView.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            	itentChat(position);
+            }
+        });
+	}
+	
+	public void itentChat(int position){
+		EMConversation conversation = conversationListView.getItem(position);
+		final String username = conversation.getUserName();
+			new EaseAlertDialog(getContext(), null, getString(R.string.confirm_forward_to, username),null, new AlertDialogUser() {
+                @Override
+                public void onResult(boolean confirmed, Bundle bundle) {
+                    if (confirmed) {
+                        if (username == null)
+                            return;
+                        try {
+//                            ChatActivity.activityInstance.finish();
+                        } catch (Exception e) {
+                        }
+                        Intent intent = new Intent(getContext(), ChatActivity.class);
+                        // it is single chat
+                        intent.putExtra("userId", username);
+                        intent.putExtra("forward_msg_id", ForwardMessageActivity.getInstance().forward_msg_id);
+                        startActivity(intent);
+                        ForwardMessageActivity.getInstance().finish();
+                    }
+                }
+            }, true).show();
+	}
+
+}

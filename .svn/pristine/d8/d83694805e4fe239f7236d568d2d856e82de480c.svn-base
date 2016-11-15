@@ -1,0 +1,15 @@
+package com.yishanxiu.yishang.receiver;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+
+/**
+ * Created by Jaelyn on 2016/9/18.
+ */
+public class CheckVersionReceiver extends BroadcastReceiver {
+	@Override
+	public void onReceive(Context context, Intent intent) {
+
+	}
+}

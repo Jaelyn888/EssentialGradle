@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" 
+    android:descendantFocusability="afterDescendants">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/t_delete"
+        android:descendantFocusability="blocksDescendants"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/common_margin"
+        android:paddingRight="@dimen/common_margin"
+        android:paddingTop="@dimen/common_margin" >
+
+        <CheckBox
+            android:id="@+id/select_goods_cb"
+            style="@style/shopcartChckBoxStyle" 
+            android:padding="@dimen/margin_5dp"
+            />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/goods_logo"
+                android:layout_width="@dimen/brand_logo_height"
+                android:layout_height="@dimen/brand_logo_height"
+                android:src="@drawable/brand_log_load_error" />
+
+            <TextView
+                android:id="@+id/sales_over"
+                android:layout_width="@dimen/brand_logo_height"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="#aa000000"
+                android:paddingLeft="@dimen/default_drawpadding"
+                android:text="@string/sales_off"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_s" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/common_margin"
+            android:paddingRight="@dimen/comon_half_margin" >
+
+            <FrameLayout
+                android:layout_marginTop="@dimen/margin_8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/product_name_tv"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/add_sub_llt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone" >
+
+                    <ImageView
+                        android:id="@+id/i_s_iv_pronum_jian"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/white_subtract46" />
+
+                    <EditText
+                        android:id="@+id/i_s_et_product_pronum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/white_input46"
+                        android:cursorVisible="false"
+                        android:gravity="center"
+                        android:hint="@string/zero"
+                        android:inputType="number"
+                        android:textColorHint="@color/black"
+                        android:textColor="@color/black"
+                        android:maxLength="3" >
+
+                        <requestFocus />
+                    </EditText>
+
+                    <ImageView
+                        android:id="@+id/i_s_iv_pronum_jia"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/white_add46" />
+                </LinearLayout>
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/comon_three_margin"
+                android:gravity="center"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/productBrand_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/darkGray"
+                    android:textSize="@dimen/textsize_tw" />
+
+                <TextView
+                    android:id="@+id/num_sub_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/white_subtract46"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/num_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/white_input46"
+                    android:gravity="center"
+                    android:text="@string/shopping_prolist_pronum"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/num_add_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/white_add46"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/comon_three_margin"
+                android:gravity="bottom|center_vertical"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/goods_price_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/productCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/t_delete"
+        android:layout_width="@dimen/delete_width"
+        android:layout_height="@dimen/delete_height"
+        android:layout_alignParentRight="true"
+        android:background="@color/shopcar_delete"
+        android:gravity="center"
+        android:text="@string/delete"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize"
+        android:visibility="gone" />
+
+</RelativeLayout>

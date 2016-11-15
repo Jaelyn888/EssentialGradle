@@ -1,0 +1,55 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_height="match_parent"
+	android:layout_width="match_parent"
+	android:orientation="vertical">
+
+	<com.yishanxiu.yishang.view.PullToZoomView
+		android:id="@+id/pullToZoomViewLayout"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="@color/gray_bg"
+		android:overScrollMode="never"
+		android:descendantFocusability="blocksDescendants"
+		android:scrollbars="none"
+		android:fadingEdge="none"
+		app:isParallax="false"
+		app:headerView="@layout/user_center_head_layout"
+		app:zoomView="@layout/user_center_zoom_view"
+		app:contentView="@layout/user_center_content_layout"/>
+
+	<RelativeLayout
+		android:id="@+id/scrollview_topic_layout"
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/titlebar_height"
+		android:background="@color/transparent"
+		android:gravity="center_vertical">
+
+
+		<ImageView
+			android:id="@+id/logo_msg_iv"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_marginLeft="@dimen/common_margin"
+			android:src="@drawable/cus_user_center_msg" />
+
+		<TextView
+			android:id="@+id/text_center_name"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerHorizontal="true"
+			android:layout_centerVertical="true"
+			android:textColor="@color/white"
+			android:textSize="@dimen/title_center_size"
+			android:visibility="gone" />
+
+		<ImageView
+			android:id="@+id/custom_service_iv"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentRight="true"
+			android:layout_marginRight="@dimen/common_margin"
+			android:src="@drawable/custom_service" />
+	</RelativeLayout>
+</RelativeLayout>

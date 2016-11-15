@@ -1,0 +1,844 @@
+package com.yishanxiu.yishang.getdata;
+
+/**
+ * Created by Administrator on 2015/9/9.
+ */
+public class GetDataConfing {
+
+    /**
+     * 分享 帮助中心等网页基址
+     * <p/>
+     * 获取数据的服务器地址
+     */
+    // public final static String Url_Base =
+    // "http://10.0.1.158:8081/essential-front/";
+    // public static final String Url_Base1 = "http://10.0.1.158:8080/";
+    // public final static String ip = Url_Base1 + "essential/";
+
+	public static final String Url_Base = "http://10.0.1.153/";
+//    public static final String Url_Base = "http://b.essential01.com.cn/";
+
+    public final static String ip = Url_Base + "essential/";
+
+    /**
+     * 关于我们
+     */
+    public static final String ABOUTUS = GetDataConfing.Url_Base + "pages/mobile_page/H5aboutUs.html";
+    public static final String registerAgreeMentUrl = GetDataConfing.Url_Base + "LoginManager/AppRegistAgreement";
+    /**
+     * 帮助中心
+     */
+    public static final String help_url = GetDataConfing.Url_Base + "pages/mobile_page/H5helpCenter.html";
+
+     public static final String Product_Share_Url=GetDataConfing.Url_Base + "pages/busi_platform/business/sharepages/gods_detail.html?productId=";
+    /**
+     * 注册获取验证码
+     */
+    public final static String GetAction_GetCode = "sms/sendSms";
+    public final static int What_GetCode = 1;
+    /**
+     * 注册
+     */
+    public final static String GetAction_CheckRegister = "userInfo/appRegister";
+    public final static int what_CheckRegister = 2;
+    /**
+     * 登录
+     */
+    public final static String GetAction_CheckLogin = "userInfo/checkLogin";
+    public final static int what_CheckLogin = 3;
+    /**
+     * 退出登录
+     */
+    public static final String Action_LogOut = "/logout";
+
+    /**
+     * 更新用户资料
+     */
+    public final static String GetAction_UpdateUserInfo = "/UpdateUserInfo";
+    public final static int what_UpdateUserInfo = 4;
+
+    /**
+     * 修改密码发送验证码
+     */
+    public final static String GetAction_SendMessagePasswrod = "/SendMessagePasswrod";
+    public final static int what_SendMessagePasswrod = 5;
+
+    /**
+     * 修改密码验证验证码
+     */
+    public final static String GetAction_SubmitPassWrod = "/SubmitPassWrod";
+    public final static int what_SubmitPassWrod = 6;
+
+    /**
+     * 修改密码验证验证码
+     */
+    public final static String GetAction_UpdateUserPassword = "/UpdateUserPassword";
+    public final static int what_UpdateUserPassword = 7;
+
+    /**
+     * 更改图片
+     */
+    public final static String GetAction_uploadPictureOrFile = "pictureOrFilePathController/uploadPictureOrFile";
+    public final static int what_uploadPictureOrFile = 8;
+
+    /**
+     * 一级列表(商城页头部男士女士生活筛选)
+     */
+    public final static String GetAction_SelectProudctCategroyList = "/SelectProudctCategroyList";
+    /**
+     * 商城页头部男士女士生活筛选what
+     */
+    public final static int what_SelectProudctCategroyList = 9;
+    /**
+     * 三级列表 (分类)
+     */
+    public final static String GetAction_SelectTheThirdCategroyList = "/SelectTheThirdCategroyList";
+    /**
+     * 三级列表（品牌）
+     */
+    public final static String GetAction_ShopingSelectBrandList = "/SelectBrandList";
+    /**
+     * 三级列表（品牌）what
+     */
+    public final static int what_ShopingSelectBrandList = 10;
+    /**
+     * 三级列表what
+     */
+    public final static int what_SelectTheThirdCategroyList = 11;
+    /**
+     * 省名称
+     */
+    public final static String GetAction_GetProvince = "province/queryProvinceList";
+    public final static int what_GetProvince = 12;
+    /**
+     * 市名称
+     */
+    public final static String GetAction_GetCityByProvinceID = "/GetCityByProvinceID";
+    public final static int what_GetCityByProvinceID = 13;
+    /**
+     * 县名称
+     */
+    public final static String GetAction_GetDistrictByCityID = "/GetDistrictByCityID";
+    public final static int what_GetDistrictByCityID = 14;
+
+    /**
+     * 关注品牌去购物
+     */
+    public final static String GetAction_GetVendorList = "/GetVendorList";
+    public final static int what_GetVendorList = 15;
+    /**
+     * 设置默认收货地址
+     */
+    public final static String GetAction_setDefaultAddress = "userReceiptAddress/setDefaultAddress";
+    public final static int what_setDefaultAddress = 16;
+    /**
+     * 收货人信息
+     */
+    public final static String GetAction_GetAddresslistByUsername = "userReceiptAddress/queryAddressListByUserId";
+    public final static int what_GetAddresslistByUsername = 17;
+    /**
+     * 查询用户当前优惠券
+     */
+    public final static String GetAction_GetShoppingCartCouponInfoVO = "/GetShoppingCartCouponInfoVO";
+    public final static int What_GetShoppingCartCouponInfoVO = 18;
+    /**
+     * 搜索产品页
+     */
+    public final static String GetAction_SelectsearchProductList = "/SelectsearchProductList";
+    public final static int what_SelectsearchProductList = 19;
+
+    /**
+     * 二级列表
+     */
+    public final static String GetAction_SelectSecondCategroyList = "/SelectSecondCategroyList";
+    public final static int what_SelectSecondCategroyList = 20;
+    /**
+     * 访客默认进入商城
+     */
+    public final static String GetAction_RegisterTempUserInfo = "/RegisterTempUserInfo";
+    public final static int what_RegisterTempUserInfo = 21;
+
+    /**
+     * 根据大分类 获取相关商品
+     */
+    public final static String GetAction_SelectSearchProductList = "product/query";
+    public final static int what_SelectSearchProductList = 22;
+
+    /**
+     * 获取商品热门搜索
+     */
+    public final static String GetAction_HotProductSearch = "/hotProductSearch";
+    public final static int what_HotProductSearch = 23;
+
+    /**
+     * 搜索商品
+     */
+    // public final static String GetAction_SearchProductList =
+    // "/searchProductList";
+    public final static String GetAction_SearchProductList = "product/queryLast";
+    public final static int what_SearchProductList = 24;
+
+    /**
+     * 我的优惠券
+     */
+    public final static String GetAction_GetCouponItemVO = "/GetCouponItemVO";
+    public final static int what_GetCouponItemVO = 25;
+
+    /**
+     * 关于我们
+     */
+    public final static String GetAction_SelectAppAbout = "/SelectAppAbout";
+    public final static int what_SelectAppAbout = 26;
+
+    /**
+     * 更换手机验证码
+     */
+    public final static String GetAction_SendMessagePhone = "/SendMessagePhone";
+    public final static int what_SendMessagePhone = 27;
+    /**
+     * 更换手机
+     */
+    public final static String GetAction_SumitForgetphone = "/SumitForgetphone";
+    public final static int what_SumitForgetphone = 28;
+
+    /**
+     * 反馈信息
+     */
+    public final static String GetAction_AddUserOpinion = "opinonAutoController/addOpinion";
+    public final static int what_AddUserOpinion = 29;
+
+    /**
+     * 店铺介绍
+     */
+    public final static String GetAction_GetShopDescribeInfo = "/getShopDescribeInfo";
+    public final static int what_GetShopDescribeInfo = 30;
+
+    /**
+     * 帮助中心
+     */
+    public final static String GetAction_GetHelpCenter = "/GetHelpCenter";
+    public final static int what_GetHelpCenter = 31;
+
+    /**
+     * 商品详情或退货
+     */
+    // public final static String GetAction_GetProdctInfo =
+    // "/GetProudctInfo";
+    public final static String GetAction_GetProdctInfo = "refundOrder/add";
+    public final static int what_GetProdctInfo = 32;
+
+    /**
+     * 我的订单
+     */
+    public final static String GetAction_GetOrderByCreateTime = "/GetOrderByCreateTime";
+    public final static int what_GetOrderByCreateTime = 33;
+    /**
+     * 订单详情
+     */
+    public final static String GetAction_GetOrderByOrderNum = "/GetOrderByOrderNum";
+    public final static int what_GetOrderByOrderNum = 34;
+    /**
+     * 取消订单
+     */
+    public final static String GetAction_CancelOrderbyOrderNum = "buyOrder/cancel";
+    public final static int What_CancelOrderbyOrderNum = 35;
+    /**
+     * 确认订单
+     */
+    public final static String GetAction_BuyOrderUpdateOrderStatus = "buyOrder/updateOrderStatus";
+    public final static int What_BuyOrderUpdateOrderStatus = 305;
+
+    /**
+     * 搜索订单
+     */
+    public final static String GetAction_SelectOrdersBySearch = "/SelectOrdersBySearch";
+    public final static int what_SelectOrdersBySearch = 36;
+
+    /**
+     * 根据发现评论编号获得评论列表
+     */
+    public static final String Action_GetArticalCommentsListAt = "/getArticalCommentsListAt";
+    public static final int What_GetArticalCommentsListAt = 37;
+
+    /**
+     * 忘记密码
+     */
+    public static final String Action_querySmsValidate = "sms/querySmsValidate";
+    public static final int What_querySmsValidate = 38;
+
+    /**
+     * 忘记密码第二部 校验密码
+     */
+    public static final String Action_updateInfoByUserName = "userInfo/updateInfoByUserName";
+    public static final int What_updateInfoByUserName = 39;
+
+    /**
+     * 联系我们
+     */
+    public static final String Action_GetContact_Us = "/GetContact_Us";
+    public static final int What_GetContact_Us = 40;
+
+    /**
+     * 获取历史的订单
+     */
+    public static final String Action_GetHistoryUserOrderByPageNum = "/GetOrderByCreateTime";
+    public static final int What_GetHistoryUserOrderByPageNum = 41;
+    /**
+     * 申请退款
+     */
+    public static final String Action_ReturnFundByOrderNum = "/returnFundByOrderNum";
+    public static final int What_ReturnFundByOrderNum = 42;
+    /**
+     * 申请退款列表
+     */
+    public static final String Action_ReturnFundByOrderList = "refundOrder/queryList";
+    public static final int What_ReturnFundByOrderList = 421;
+    /**
+     * 物流查询
+     */
+    public static final String Action_QueryLogisticsByOrderNum = "/queryLogisticsByOrderNum";
+    public static final int What_QueryLogisticsByOrderNum = 43;
+
+    /**
+     * 确认订单
+     */
+    public static final String Action_ConfirmOrdersByOrderNum = "/confirmOrdersByOrderNum";
+    public static final int What_ConfirmOrdersByOrderNum = 44;
+
+    /**
+     * 填写拖货物流信息
+     */
+    public static final String Action_QueryMyOrderNumberPerLabelCount = "queryOrder/queryMyOrderNumberPerLabelCount";
+    public static final int What_queryMyOrderNumberPerLabelCount = 45;
+
+    /**
+     * 根据订单类型获取相应订单
+     */
+    public static final String Action_GetOrderByOrderStatus = "queryOrder/queryOrderByUserId";
+    public static final int What_GetOrderByOrderStatus = 46;
+
+    /**
+     * 查询进度
+     */
+    public static final String Query_progress = "queryOrderStatus/queryReturnRefundStatus";
+    public static final int What_Query_progress = 461;
+    /**
+     * 查询收件人信息
+     */
+    public static final String Query_queryDefaultAddress = "returnRightsAddressController/queryDefaultAddress";
+    public static final int What_Query_queryDefaultAddress = 491;
+    /**
+     * 查询收件人信息
+     */
+    public static final String RefundOrder_Update = "refundOrder/update";
+    public static final int What_RefundOrder_Update = 492;
+
+    /**
+     * 查询订单评论
+     */
+    public static final String QueryOrder_QueryOrderComment = "queryOrder/queryOrderComment";
+    public static final int What_QueryOrder_QueryOrderComment = 493;
+
+    /**
+     * 查询物流进度
+     */
+    public static final String Express_query = "express/enterPriseQuery";
+    public static final int What_Express_query = 460;
+    /**
+     * 售后订单列表
+     */
+    public static final String Action_GetAftermarketOrderByUid = "/getAftermarketOrderByUid";
+    public static final int What_GetAftermarketOrderByUid = 47;
+
+    /**
+     * 申请退货 获取订单信息
+     */
+    public static final String Action_RetunGoods = "/getRetunProducts";
+    public static final int What_RetunGoods = 48;
+    /**
+     * 申请退货 获取订单信息
+     */
+    public static final String ProductComment_SaveProductComment = "productComment/saveProductComment";
+    public static final int What_ProductComment_SaveProductComment = 481;
+    /**
+     * 售后 上传图片
+     */
+    public static final String Action_ImgUp = "/ImgUp";
+    public static final int What_ImgUp = 50;
+
+    /**
+     * 售后 申请退货
+     */
+    public static final String Action_ApplyReturnGoods = "/commitReturnProductApply";
+    public static final int What_ApplyReturnGoods = 51;
+
+    /**
+     * 售后 根据用户id查询售后进度列表
+     */
+    public static final String Action_SelectReturnProductOrder = "/selectReturnProductOrder";
+    public static final int What_SelectReturnProductOrder = 52;
+
+    /**
+     * 品牌列表页
+     */
+    // public final static String GetAction_SelectBrandList =
+    // "/selectBrandList";
+    public final static String GetAction_SelectBrandList = "bussinessBrand/queryTotalBrandOrHotBrand";
+    public static final int What_SelectBrandList = 53;
+    /**
+     * 商品大分类
+     */
+    // public final static String GetAction_SelectGoodsCategoryList =
+    //
+    // "/selectGoodsCategoryList";
+    public final static String GetAction_SelectGoodsCategoryList = "productCategory/query";
+    public static final int What_SelectGoodsCategoryList = 54;
+
+    /**
+     * 根据商品大分类获取对应商品的小分类和品牌
+     */
+    // public final static String GetAction_GetClassfyDataByProductCategoryId =
+    //
+    // "/GetSecondeCategory";
+    public final static String GetAction_GetClassfyDataByProductCategoryId = "bussinessBrand/queryBrandAndProductType";
+    public static final int What_GetClassfyDataByProductCategoryId = 55;
+
+    /**
+     * 商品专题
+     */
+    public final static String GetAction_SelectGoodsThemes = "/selectGoodsThemes";
+    public static final int What_SelectGoodsThemes = 56;
+
+    /**
+     * 文章分组
+     */
+    public final static String GetAction_GetMoreRelationPersion = "articleGroup/queryGroupList";
+    public static final int What_GetMoreRelationPersion = 57;
+    /**
+     * 普通专栏详情
+     */
+    public final static String GetAction_GetCommonThemeDetail = "/getCommonThemeDetail";
+    public static final int What_GetCommonThemeDetail = 58;
+    /**
+     * 普通专栏相关商品
+     */
+    public final static String GetAction_GetThemeRelationGoods = "/getThemeRelationGoods";
+    public static final int What_GetThemeRelationGoods = 59;
+
+    /**
+     * 收藏精选专题
+     */
+    public final static String GetAction_CollectionProductTheme = "/collectionThemeArtical";
+    public static final int What_CollectionProductTheme = 60;
+
+    /**
+     * 根据品牌 查找对应的分类，店铺
+     */
+    public final static String GetAction_GetClassfyDataByBrandId = "/getClassfyDataByBrandId";
+    public static final int What_GetClassfyDataByBrandId = 61;
+
+    /**
+     * 根据品牌 查找商品，
+     */
+    public final static String GetAction_SelectCategoryProductList = "product/queryLast";
+    public static final int What_SelectCategoryProductList = 62;
+
+    /**
+     * 根据类型 查询收藏
+     */
+    public final static String GetAction_queryCollectionByType = "userCollection/queryCollectionByType";
+    public static final int What_queryCollectionByType = 63;
+
+    /**
+     * 根据品牌 查找商品，
+     */
+    public final static String GetAction_GetUserCollectionSpecailSubjects = "/getUserCollectionSpecailSubjects";
+    public static final int What_GetUserCollectionSpecailSubjects = 64;
+    /**
+     * 根据品牌 查找商品，
+     */
+    public final static String GetAction_GetUserCollectionShop = "/getUserCollectionShop";
+    public static final int What_GetUserCollectionShop = 65;
+    /**
+     * 根据品牌 查找商品，
+     */
+    public final static String GetAction_GetUserCollectionProducts = "/getUserCollectionProducts";
+    public static final int What_GetUserCollectionProducts = 66;
+
+    /**
+     * 获取推送消息的数量
+     */
+    // public static final String GetAction_GetProductCommentsList =
+    // "/GetProductCommentsList";
+    public static final String GetAction_GetProductCommentsList = "productComment/queryCommentList";
+    public static final int What_GetProductCommentsList = 98;
+    /**
+     * 获取购物车数量
+     */
+    public static final String GetAction_GetShoppingCartCount = "/GetShoppingCartCount";
+    public static final int What_GetShoppingCartCount = 99;
+    /**
+     * 首页推荐商品
+     */
+    public static final String GetAction_SelectVendorPostList = "/SelectVendorPostList";
+    public static final int What_SelectVendorPostList = 100;
+
+    /**
+     * 根据商品Id查询商品详情
+     */
+    // public final static String GetAction_GetProductDetails =
+    // "/GetProductDetails";
+    public final static String GetAction_GetProductDetails = "product/queryByProductId";
+    public static final int What_GetProductDetails = 101;
+
+    /**
+     * 根据商品分类查询同类商品列表
+     */
+    // public final static String GetAction_GetProudctCategroyList =
+    //
+    // "/GetProudctCategroyList";
+    public final static String GetAction_GetProudctCategroyList = "productRelatedGoodsController/queryRelatedGoods";
+    public static final int What_GetProudctCategroyList = 102;
+
+    /**
+     * 获得店铺信息
+     */
+    public final static String GetAction_GetVendorDetails = "/bussinessBrand/queryBrandAndProductList";
+    public static final int What_GetVendorDetails = 103;
+    /**
+     * 获得系统消息
+     */
+    public final static String GetAction_PushMsg_QueryUserPushMsg = "pushMsg/queryUserPushMsg";
+    public static final int What_PushMsg_QueryUserPushMsg = 193;
+    /**
+     * 获得店铺商品列表
+     */
+    public final static String GetAction_SelectVendorProductList = "/bussinessBrand/queryBrandAndProductList";
+    public static final int What_SelectVendorProductList = 104;
+
+    /**
+     * 关注店铺和取消关注
+     */
+    public final static String GetAction_GetFocusOn = "userCollection/saveOrCancleCollection";
+    public final static int WHAT_GET_FOCUS_ON = 105;
+
+    /**
+     * 获取购物车列表
+     */
+    // public static final String GetAction_GetShoppingCartByUserId =
+    // "/getShoppingCartByUserId";
+    public static final String GetAction_GetShoppingCartByUserId = "shopCart/query";
+    public static final int What_GetShoppingCartByUserId = 106;
+
+    /**
+     * 添加购物车
+     */
+    // public static final String GetAction_AddShoppingCart =
+    // "/addShoppingCart";
+    public static final String GetAction_AddShoppingCart = "shopCart/add";
+    public static final int What_AddShoppingCart = 107;
+
+    /**
+     * 根据当前商品编号，规格再次查询该商品信息的actionname
+     */
+    // public final static String Action_GetProductSpec =
+    // "/GetProductByproidandSpec";
+    public final static String Action_GetProducSpec = "specification/byProductId";
+    public static final int What_GetProductSpec = 1008;
+
+    /**
+     * 根据当前商品编号，规格再次查询该商品信息的actionname
+     */
+    // public final static String Action_GetProductByproidandSpec =
+    // "/GetProductByproidandSpec";
+    public final static String Action_GetProductByproidandSpec = "specification/selectSkuCount";
+    public static final int What_GetProductByproidandSpec = 108;
+
+    /**
+     * 商品选中状态变化,更新购物车选中状态
+     */
+    // public static final String GetAction_UpdateShoppingCartListByProductId =
+    //
+    // "/updateShoppingCartByProductId";
+    public static final String GetAction_UpdateShoppingCartListByProductId = "shopCart/updateIsOrNotIsSelect";
+    public static final int What_UpdateShoppingCartListByProductId = 109;
+    public static final int What_UpdateShoppingCartListByProductIdtype2 = 1091;
+    public static final int What_UpdateShoppingCartListByProductIdtype3 = 1092;
+
+    /**
+     * 修改购物车商品数量的actionname
+     */
+    // public final static String Action_updateShoppingCartProductAmountById =
+    //
+    // "/updateShoppingCartAmountById";
+    public final static String Action_updateShoppingCartProductAmountById = "shopCart/updateShopCartCount";
+    public final static int What_updateShoppingCartProductAmountById = 110;
+
+    /**
+     * 点选店铺
+     */
+    // public static final String GetAction_UpdateShoppingCartByShopId =
+    // "/updateShoppingCartByShopId";
+    public static final String GetAction_UpdateShoppingCartByShopId = "shopCart/updateIsOrNotIsSelect";
+    public static final int What_UpdateShoppingCartByShopId = 111;
+
+    /**
+     * 批量删除购物车的actionname
+     */
+    // public final static String Action_DeleteShoppingCartProduct =
+    // "/deleteShoppingCart";
+    public final static String Action_DeleteShoppingCartProduct = "shopCart/delete";
+    public static final int What_DeleteShoppingCartProduct = 112;
+
+    /**
+     * 使用优惠券的actionname
+     */
+    public final static String Action_shoppingUsedCoupon = "/checkUseCoupon";
+    public static final int What_CheckUseCoupon = 113;
+
+    /**
+     * 填写订单信息的actionname
+     */
+    // public final static String Action_shoppingEditOrderInformation =
+    // "/addOrderInformation";
+    public final static String Action_shoppingEditOrderInformation = "buyOrder/confirm";
+    public static final int What_shoppingEditOrderInformation = 114;
+
+    /**
+     * 提交订单
+     */
+    public final static String Action_shoppingAddOrderInformation = "buyOrder/add";
+    public static final int What_shoppingAddOrderInformation = 115;
+
+    /**
+     * 查询运费
+     */
+    public final static String Action_queryFreightByAddressId = "freightTemplate/queryFreightByAddressId";
+    public static final int What_queryFreightByAddressId = 116;
+
+    /**
+     * (根据订单编号更新支付类型)
+     */
+    public final static String Action_GetOrderByOrderNumUpdatePayType = "/GetOrderByOrderNumUpdatePayType";
+    public static final int What_GetOrderByOrderNumUpdatePayType = 117;
+
+    /**
+     * 购物车优惠劵的actionname
+     */
+    public final static String Action_ShoppingUserCoupon = "/GetShoppingCartCouponInfoVO";
+
+    /**
+     * 添加用户收藏的actionname
+     */
+    public final static String Action_collectionProduct = "userCollection/saveOrCancleCollection";
+    public static final int What_productAddUserAttention = 118;
+    /**
+     * 用户收藏的actionname
+     */
+    public final static String UserCollection_QueryCollectionByType = "userCollection/queryCollectionByType";
+    public static final int What_UserCollection_QueryCollectionByType = 231;
+    /**
+     * 删除地址的actionname
+     */
+    public final static String Action_userDeleteAddressById = "userReceiptAddress/ deleteAddress";
+    public static final int What_userDeleteAddressById = 119;
+
+    /**
+     * 发现首页获取商品信息
+     */
+    public final static String Action_GetArticals = "article/queryArticleList";
+    public static final int What_GetArticals = 120;
+
+    /**
+     * 文章搜索
+     */
+    public final static String Action_GetSearchArtical = "article/queryArticleSearchList";
+    public static final int What_GetSearchArtical = 121;
+    /**
+     * 订单搜索
+     */
+    public final static String QueryOrder_SearchOrderByProductName = "queryOrder/searchOrderByProductName";
+    public static final int What_QueryOrder_SearchOrderByProductName = 131;
+    /**
+     * 发现详情页
+     */
+    public final static String Action_GetArticalDetail = "article/queryArticleDetail";
+    public static final int What_GetArticalDetail = 122;
+
+    /**
+     * 发现
+     */
+    public final static String Action_GetArticalRelationGoods = "article/queryRelationProductList";
+    public static final int What_GetArticalRelationGoods = 123;
+
+    /**
+     * 点赞
+     */
+    public final static String Action_CollectionArtical = "/collectionArtical";
+    public static final int What_CollectionArtical = 124;
+
+    /**
+     * 获取评论
+     */
+    public final static String Action_GetArticalCommentsList = "articleComments/queryCommentsByArticleId";
+    public static final int What_GetArticalCommentsList = 125;
+
+    /**
+     * 发表评论
+     */
+    public final static String Action_SendArticalComment = "articleComments/saveComment";
+    public static final int What_SendArticalComment = 126;
+
+    /**
+     * 第三方登录
+     */
+    public static final String Action_ThirdPlatformLogin = "userInfo/thirdPartyLogin";
+    public static final int What_ThirdPlatformLogin = 127;
+
+    /**
+     * 更新用户绑定的极光的id
+     */
+    public static final String Action_UpdateUserTag = "/updateUserTag";
+    public static final int What_GetUpdUser = 128;
+
+    /**
+     * 推送消息 详情
+     */
+    public static final String Action_GetPushMessageDetails = "/GetPushMessageDetails";
+    public static final int What_GetPushMessageDetails = 129;
+
+    /**
+     * 更新消息一度
+     */
+    public static final String Action_GetUpdPushMessage = "/UpdatePushMessage";
+    public static final int What_GetUpdPushMessage = 130;
+
+    /**
+     * 获取消息
+     */
+    public static final String Action_SelectPushMessage = "/SelectPushMessage";
+    public static final int What_SelectPushMessage = 131;
+    /**
+     * 图片上传
+     */
+    public static final String Picture_Upload = "pictureOrFilePathController/uploadPictureOrFile";
+    public static final int What_Picture_Upload = 1311;
+
+    /**
+     * 发现顶部类别获取
+     */
+    public static final String Action_GetFindTopCategoryData = "/findTopGroup/queryGroupData";
+    public static final int What_GetFindTopCategoryData = 132;
+
+    /**
+     * 退货详情
+     */
+    public static final String Action_GoodsReturnDetail = "/getProductsReturnDetail";
+    public static final int What_GoodsReturnDetail = 133;
+
+    /**
+     * 获取退货地址
+     */
+    public static final String Action_GetReturnAddress = "/GetReturnAddress";
+    public static final int What_GetReturnAddress = 134;
+
+    /**
+     * 查看服务器的最新版本
+     */
+    public final static String Action_selectAppVersionInfo = "versionAutoController/queryNewVersion";
+    public static final int What_selectAppVersionInfo = 135;
+
+    /**
+     * 获取支付配置信息
+     */
+    public final static String Action_GetConfigInfo = "payment/obtainAlipaySign";
+    public static final int What_GetConfigInfo = 136;
+
+    /**
+     * 修改个人信息
+     */
+    public final static String UserInfo_ModUserBaseInfo = "userInfo/modUserBaseInfo";
+    public static final int What_UserInfo_ModUserBaseInfo = 236;
+
+    /**
+     * 设置默认地址的Action
+     */
+    public final static String Action_GetAddressIsDefault = "/SetAddressDefault";
+
+    /**
+     * 根据地址Id查询详细信息的actionname 查询当前用户可用积分兑换的优惠劵
+     */
+    public final static String Action_userAddressById = "/GetAddressById";
+
+    /**
+     * 修改地址信息的actionname
+     */
+    public final static String Action_userUpdateAddressById = "/UpdateAddressById";
+
+    /**
+     * 添加地址信息的actionname
+     */
+    public final static String Action_userInserAddress = "userReceiptAddress/saveOrUpdateAddress";
+    public static final int What_Action_userInserAddress = 240;
+
+    /**
+     * 查询商品配送所有省份的actionname
+     */
+    public final static String Action_userGetProvince = "province/queryAreaList";
+    public static final int What_Action_userGetProvince = 241;
+
+    /**
+     * 根据省份查询市 的actionname
+     */
+    public final static String Action_userGetCityByProvinceID = "city/queryCityListByParentId";
+    public static final int What_Action_userGetCityByProvinceID = 242;
+
+    /**
+     * 根据市查询县 的actionname
+     */
+    public final static String Action_userGetDistrictByCityID = "district/queryDistrictListByParentId";
+    public static final int What_Action_userGetDistrictByCityID = 243;
+    /**
+     * 推荐轮播图
+     */
+    public final static String Recommend_QueryRecommendCarouselPic = "recommend/queryRecommendCarouselPic";
+    public static final int What_Recommend_QueryRecommendCarouselPic = 23281;
+    /**
+     * 推荐
+     */
+    public final static String Recommend_QueryRecommendListForApp = "recommend/queryRecommendListForApp";
+    public static final int What_Recommend_QueryRecommendListForApp = 23282;
+
+    /**
+     * 推荐详情
+     */
+    public final static String Recommend_QueryProductDetails = "recommend/queryProductDetails";
+    public static final int What_Recommend_QueryProductDetails = 23283;
+
+    /**
+     * 根据用户账号查询用户信息的actionname
+     */
+    public final static String Action_userGetUserInfoByuserName = "/GetUserInfoByuserName";
+
+    /**
+     * 更新用户信息的actionname
+     */
+    public final static String Action_userUpdateUserInfo = "/UpdateUserInfo";
+
+    /**
+     * 根据县查询区域 的actionname
+     */
+    public final static String Action_SubDistrictByDistrictId = "/GetSubDistrictByDistrictId";
+
+    // -----------------------------------银联支付---------------------
+    /**
+     * 获取银联流水号的的Action
+     */
+    public final static String GetAction_GetYinLianOrderPrePayNum = "payment/queryUnionNum";
+    // -----------------------------------微信---------------------
+    /**
+     * 获取微信id值的的Action
+     */
+    public final static String GetAction_GetWeiXinPrePayNum = "payment/queryWeChatPreNum";
+
+}

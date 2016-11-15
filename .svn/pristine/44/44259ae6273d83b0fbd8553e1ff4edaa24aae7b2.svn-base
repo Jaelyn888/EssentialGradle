@@ -1,0 +1,100 @@
+package com.yishanxiu.yishang.view;
+
+import android.app.Dialog;
+import android.content.Context;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+import com.yishanxiu.yishang.R;
+
+/**
+ * Created by Jaelyn on 2016/8/4.
+ */
+public class RoundCornersDialogNoTitle extends Dialog {
+
+	private Context mContext;
+	private RoundCornersDialogNoTitle.DialogCallBack callBack;
+	private int count;
+
+	private TextView tv_message, tv_onebutton;
+	private String message, btn1;
+	private int messageid = 0, btn1id = 0;
+
+	public RoundCornersDialogNoTitle(Context context) {
+		super(context);
+		this.mContext = context;
+	}
+
+	public RoundCornersDialogNoTitle(Context context, int theme, int num,
+	                                 RoundCornersDialogNoTitle.DialogCallBack callBack) {
+		super(context, theme);
+		this.mContext = context;
+		this.count = num;
+		this.callBack = callBack;
+
+	}
+
+	public RoundCornersDialogNoTitle(Context context, int theme, int num,
+	                                 RoundCornersDialogNoTitle.DialogCallBack callBack, int what) {
+		super(context, theme);
+		this.mContext = context;
+		this.count = num;
+		this.callBack = callBack;
+	}
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		this.setContentView(R.layout.whiteroundcornersdialog_notitle);
+
+		tv_message = (TextView) findViewById(R.id.white_dialog_message);
+		tv_onebutton = (TextView) findViewById(R.id.white_one_button);
+
+		if (btn1 != null) {
+			tv_onebutton.setText(btn1);
+		} else if (btn1id != 0) {
+			tv_onebutton.setText(btn1id);
+		}
+		if (message != null) {
+			tv_message.setText(message);
+		} else if (messageid != 0) {
+			tv_message.setText(messageid);
+		}
+		if (tv_onebutton != null) {
+			tv_onebutton
+					.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							callBack.bttonclick(1);
+						}
+					});
+		}
+	}
+
+
+	public void setMessagetext(String message) {
+		this.message = message;
+		// tv_message.setText(message);
+	}
+
+	public void setMessagetext(int message) {
+		this.messageid = message;
+		// tv_message.setText(message);
+	}
+
+	public void setButtonText(String btn1) {
+		this.btn1 = btn1;
+		// tv_onebutton.setText(btn1);
+	}
+
+	public void setButtonText(int btn1) {
+		this.btn1id = btn1;
+		// tv_onebutton.setText(btn1);
+	}
+
+	public interface DialogCallBack {
+		void bttonclick(int index);
+	}
+
+}

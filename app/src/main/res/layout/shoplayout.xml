@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+
+
+	<!-- <com.yishanxiu.yishang.view.ScalRefreshScrollView
+		 android:id="@+id/ptr_scrollview"
+		 android:layout_width="match_parent"
+		 android:layout_height="match_parent"
+		 android:scrollbars="none"
+		 android:fadingEdge="none"
+		 android:fillViewport="true"
+		 android:descendantFocusability="blocksDescendants"
+		 app:headerView="@layout/shop_head_layout"
+		 app:zoomView="@layout/shop_zoom_view"
+		 app:contentView="@layout/shop_content_layout"/>
+	 -->
+	<com.handmark.pulltorefresh.library.PullToRefreshScrollView
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:scrollbars="none"
+		android:fadingEdge="none"
+		android:fillViewport="true"
+		android:descendantFocusability="blocksDescendants"
+		android:id="@+id/ptr_scrollview">
+
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			android:background="@color/white">
+
+			<include layout="@layout/shop_head_layout"/>
+
+			<com.yishanxiu.yishang.view.GridViewNoScroll
+				android:id="@+id/xgv"
+				style="@style/relation_product_style" />
+			<!--<include layout="@layout/shop_content_layout" />-->
+
+		</LinearLayout>
+	</com.handmark.pulltorefresh.library.PullToRefreshScrollView>
+
+</RelativeLayout>

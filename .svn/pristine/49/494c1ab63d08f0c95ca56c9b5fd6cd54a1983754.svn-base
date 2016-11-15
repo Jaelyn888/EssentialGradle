@@ -1,0 +1,69 @@
+package com.yishanxiu.yishang.model.shopmall;
+
+import com.yishanxiu.yishang.model.BaseModel;
+
+/**
+ * Created by Jaelyn on 2016/9/9.
+ * 发送给客服商品信息
+ */
+public class CustomServiceProductInfo extends BaseModel {
+	private String productId;
+	// 消息标题
+	private String title;
+	// 商品价格
+	private String  costPrice;//"¥: 235.00",
+	// 商品描述
+	private String  desc;//        "女装小香风气质蕾丝假两件短袖",
+	// 商品图片链接
+	private String  path;//     "http://yourdomain.com/img/a.jpg",
+	// 商品页面链接
+	private String  productUrl;//    "http://yourdomain.com/item/a.html"
+
+	public String getProductId() {
+		return productId;
+	}
+
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getCostPrice() {
+		return costPrice;
+	}
+
+	public void setCostPrice(String costPrice) {
+		this.costPrice = costPrice;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public String getProductUrl() {
+		return productUrl;
+	}
+
+	public void setProductUrl(String productUrl) {
+		this.productUrl = productUrl;
+	}
+}

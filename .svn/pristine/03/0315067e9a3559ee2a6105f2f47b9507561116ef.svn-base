@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlt_pop"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_transparent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_popup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/white"
+         android:layout_alignParentBottom="true"
+        android:orientation="vertical" >
+        <TextView
+            android:id="@+id/select_photo_camera_bt"
+            style="@style/mydata_select_photo"
+            android:text="@string/take_photograph" />
+
+        <ImageView style="@style/hor_line_style" />
+
+        <TextView
+            android:id="@+id/select_photo_local_bt"
+            style="@style/mydata_select_photo"
+            android:text="@string/select_local" />
+
+        <ImageView style="@style/hor_line_style" />
+
+        <TextView
+            android:id="@+id/item_popupwindows_cancel"
+            style="@style/mydata_select_photo"
+            android:text="@string/cancel"
+            android:textColor="@color/TextColorRed"
+             />
+    </LinearLayout>
+ </RelativeLayout>

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/gray_bg">
+
+	<!-- 商品评价 -->
+
+	<TextView
+		android:id="@+id/err_t"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="@color/white"
+		android:gravity="center"
+		android:text="商品详情数据加载失败。。。"
+		android:visibility="gone" />
+
+	<LinearLayout
+		android:id="@+id/llt_pro_datail"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:descendantFocusability="blocksDescendants"
+		android:orientation="vertical">
+
+		<FrameLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:background="@color/white"
+			android:orientation="vertical">
+
+			<cn.bingoogolapple.bgabanner.BGABanner
+				android:id="@+id/banner"
+				style="@style/BannerDefaultStyle"
+				app:banner_placeholderDrawable="@drawable/loading_error_square"
+				app:banner_pointTopBottomMargin="@dimen/margin_3dp"
+				app:banner_pointLeftRightMargin="@dimen/margin_2dp"
+				app:banner_transitionEffect="defaultEffect" />
+
+			<TextView
+				android:id="@+id/goods_retain_tv"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="left|bottom"
+				android:background="@drawable/lable_bg"
+				android:gravity="center_vertical"
+				android:paddingBottom="4dp"
+				android:paddingLeft="3dp"
+				android:paddingTop="4dp"
+				android:visibility="gone"
+				android:textColor="@color/white" />
+		</FrameLayout>
+
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:background="@color/white"
+			android:orientation="vertical"
+			android:paddingBottom="@dimen/comon_half_margin"
+			android:paddingLeft="@dimen/common_margin"
+			android:paddingRight="@dimen/common_margin">
+
+			<TextView
+				android:id="@+id/product_name_tv"
+				style="@style/home_dis_tv_style"
+				android:lineSpacingExtra="3dp"
+				android:maxLines="2"
+				android:selectAllOnFocus="true"
+				android:textIsSelectable="true"
+				android:textSize="@dimen/textsize" />
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="@color/white"
+				android:gravity="center_vertical"
+				android:paddingTop="@dimen/margin_3dp"
+				android:paddingBottom="@dimen/comon_half_margin">
+
+				<TextView
+					android:id="@+id/product_price_discount_tv"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="@color/black"
+					android:textSize="@dimen/font_size16" />
+
+				<TextView
+					android:id="@+id/promotion_tv"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="@dimen/common_margin"
+					android:layout_marginRight="@dimen/common_margin"
+					android:background="@color/textbg_red"
+					android:paddingLeft="@dimen/margin_3dp"
+					android:paddingRight="@dimen/margin_3dp"
+					android:paddingTop="@dimen/margin_2dp"
+					android:paddingBottom="@dimen/margin_2dp"
+					android:text="@string/promotion"
+					android:textColor="@color/white"
+					android:visibility="gone" />
+
+				<TextView
+					android:id="@+id/product_price_tv"
+					style="@style/text_16_darkgrey"
+					android:textSize="@dimen/common_textsize"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/goods_price_test"
+					android:visibility="gone" />
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/countdownLayout"
+				android:paddingBottom="@dimen/comon_half_margin"
+				android:visibility="gone">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:gravity="bottom"
+					android:text="@string/distance_restore_the_original_price" />
+
+				<cn.iwgang.countdownview.CountdownView
+					android:id="@+id/countdownView"
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					app:isShowDay="true"
+					app:isShowHour="true"
+					app:isShowMillisecond="false"
+					app:isShowMinute="true"
+					app:isShowSecond="true"
+					app:isTimeTextBold="true"
+					app:suffixDay="天"
+					app:suffixHour="小时"
+					app:suffixMinute="分钟"
+					app:suffixSecond="秒"
+					app:suffixTextColor="@color/TextColorGray"
+					app:suffixTextSize="14sp"
+					app:timeTextColor="@color/TextColorBlack"
+					app:timeTextSize="14sp" />
+			</LinearLayout>
+		</LinearLayout>
+
+		<LinearLayout
+			android:id="@+id/llt_s_color_size"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/comon_half_margin"
+			android:background="@color/white"
+			android:gravity="center_vertical"
+			android:orientation="horizontal"
+			android:padding="@dimen/common_margin">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/select_color" />
+
+			<TextView
+				android:id="@+id/product_specifiction_tv"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical"
+				android:drawableRight="@drawable/right_bt"
+				android:gravity="center_vertical"
+				android:paddingLeft="@dimen/common_margin_more" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:id="@+id/goods_comments_layout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/comon_half_margin"
+			android:background="@color/white"
+			android:orientation="vertical"
+			android:visibility="gone">
+
+			<TextView
+				android:id="@+id/goods_comments_tv"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="@dimen/common_margin"
+				android:text="@string/goods_comments" />
+
+			<ImageView style="@style/hor_line_style" />
+
+			<include layout="@layout/product_comments_item" />
+
+			<TextView
+				android:id="@+id/scan_all_comments_tv"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:layout_margin="@dimen/common_margin"
+				android:background="@drawable/cus_red_border_btn"
+				android:paddingBottom="@dimen/comon_half_margin"
+				android:paddingLeft="40dp"
+				android:paddingRight="40dp"
+				android:paddingTop="@dimen/comon_half_margin"
+				android:text="@string/scan_all_comments"
+				android:textColor="@color/TextColorBlack" />
+		</LinearLayout>
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/comon_half_margin"
+			android:background="@color/white"
+			android:gravity="center"
+			android:padding="@dimen/common_margin"
+			android:text="@string/same_store"
+			android:textSize="@dimen/textsize" />
+
+		<ImageView style="@style/hor_line_style" />
+	</LinearLayout>
+
+</FrameLayout>

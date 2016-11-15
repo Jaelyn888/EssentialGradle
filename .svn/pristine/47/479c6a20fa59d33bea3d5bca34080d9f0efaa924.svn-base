@@ -1,0 +1,85 @@
+package com.yishanxiu.yishang.adapter;
+
+import android.content.Context;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import net.tsz.afinal.json.JsonMap;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+import com.yishanxiu.yishang.R;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Administrator on 2015/9/25.
+ */
+public class ShopIntroductAdapter extends MyBaseAdapter {
+
+
+	public ShopIntroductAdapter(Context context) {
+		super(context);
+	}
+
+	public ShopIntroductAdapter(Context context, List<? extends Map<String, ?>> datas) {
+		super(context, datas);
+	}
+
+
+
+	@Override
+	public View getView(int i, View view, ViewGroup viewGroup) {
+		ViewHolder viewHolder = null;
+		if (view == null) {
+			view = layoutInflater.inflate(R.layout.item_shop_introduct, viewGroup, false);
+			viewHolder = new ViewHolder(view);
+			view.setTag(viewHolder);
+		} else {
+			viewHolder = (ViewHolder) view.getTag();
+		}
+		JsonMap jsonMap = (JsonMap) datas.get(i);
+		viewHolder.tv_shopintroduct_name.setText(jsonMap.getStringNoNull("StoreName"));
+		String phone=jsonMap.getStringNoNull("StoreTel");
+		if(TextUtils.isEmpty(phone)){
+			viewHolder.tv_shopintroduct_phone.setVisibility(View.GONE);
+		} else {
+			viewHolder.tv_shopintroduct_phone.setVisibility(View.VISIBLE);
+			viewHolder.tv_shopintroduct_phone.setText(phone);
+		}
+		viewHolder.tv_shopintroduct_address.setText(jsonMap.getStringNoNull("StoreAddress"));
+
+		return view;
+	}
+
+	private class ViewHolder {
+		@ViewInject(R.id.tv_shopintroduct_name)
+		private TextView tv_shopintroduct_name;
+		@ViewInject(R.id.tv_shopintroduct_phone)
+		private TextView tv_shopintroduct_phone;
+		@OnClick(R.id.tv_shopintroduct_phone)
+		public void tv_shopintroduct_phone(View view){
+			 if(telPhoneClick!=null){
+				 telPhoneClick.telPhoneClick(((TextView)view).getText().toString());
+			 }
+		}
+		@ViewInject(R.id.tv_shopintroduct_address)
+		private TextView tv_shopintroduct_address;
+
+		public ViewHolder(View view) {
+			ViewUtils.inject(this, view);
+		}
+	}
+
+	private TelPhoneClick telPhoneClick;
+
+	public void setTelPhoneClick(TelPhoneClick telPhoneClick) {
+		this.telPhoneClick = telPhoneClick;
+	}
+
+	public interface TelPhoneClick{
+		void telPhoneClick(String phone);
+	}
+}

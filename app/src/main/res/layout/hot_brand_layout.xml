@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:id="@+id/hot_goods_layout">
+   <ImageView
+   style="@style/hor_line_style"
+   android:layout_height="@dimen/margin_2dp"/>
+	<TextView
+		android:paddingTop="@dimen/comon_half_margin"
+		android:layout_marginLeft="@dimen/common_margin_more"
+		android:layout_marginBottom="@dimen/comon_half_margin"
+		android:textSize="@dimen/font_size16"
+		android:text="@string/hot_brands"
+		android:textColor="@color/darkGray1"
+		style="@style/common_textview_style" />
+
+	<com.yishanxiu.yishang.view.GridViewNoScroll
+		android:id="@+id/hot_brand_gv"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:numColumns="4"
+		android:verticalSpacing="@dimen/common_margin_more"
+		android:horizontalSpacing="@dimen/common_margin_more"
+		android:layout_marginLeft="@dimen/common_margin_more"
+		android:layout_marginTop="@dimen/margin_3dp"
+		android:layout_marginRight="@dimen/common_margin_more"
+		android:layout_marginBottom="@dimen/common_margin_more"/>
+	<ImageView
+		style="@style/hor_line_style"
+		android:layout_height="@dimen/margin_2dp"/>
+</LinearLayout>

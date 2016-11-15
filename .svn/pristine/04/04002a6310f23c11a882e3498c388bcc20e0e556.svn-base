@@ -1,0 +1,350 @@
+package com.yishanxiu.yishang.activity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
+import com.umeng.socialize.UMShareAPI;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.activity.base.BaseUIActivity;
+import com.yishanxiu.yishang.adapter.RelationProductAdapter;
+import com.yishanxiu.yishang.getdata.GetDataConfing;
+import com.yishanxiu.yishang.getdata.GetDataQueue;
+import com.yishanxiu.yishang.getdata.IGetServicesDataCallBack;
+import com.yishanxiu.yishang.getdata.JsonKeys;
+import com.yishanxiu.yishang.getdata.ShowGetDataError;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+import com.yishanxiu.yishang.utils.Constant;
+import com.yishanxiu.yishang.utils.ExtraKeys;
+import com.yishanxiu.yishang.utils.ShareSocialUtils;
+import com.yishanxiu.yishang.utils.Utils;
+import com.yishanxiu.yishang.view.GridViewNoScroll;
+
+import net.tsz.afinal.annotation.view.ViewInject;
+import net.tsz.afinal.json.JsonMap;
+import net.tsz.afinal.json.JsonParseHelper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by FangDongzhang on 2016/9/9 0016. 推荐详情
+ */
+public class RecommendDerailActivity extends BaseUIActivity {
+    /**
+     * 刷新的
+     */
+    @ViewInject(id = R.id.ptr_scrollview)
+    private PullToRefreshScrollView ptr_scrollview;
+    @ViewInject(id = R.id.xgv)
+    private GridViewNoScroll xgv;
+
+    @ViewInject(id = R.id.scroll_view_head)
+    private LinearLayout scroll_view_head;
+    //head view
+    @ViewInject(id = R.id.shop_bg_iv)
+    private ImageView shop_bg_iv;// 商品图片
+    @ViewInject(id = R.id.shop_detail_discri_tv)
+    private TextView shop_detail_discri_tv;
+
+    private List<JsonMap<String, Object>> dataList = new ArrayList<JsonMap<String, Object>>();
+    private String recommendId = ""; // 店铺的id
+    private String recommendTitle = "";
+    private String shopName = "";// 店铺名字
+    private String shopDiscri = "";
+    private int nPage = 0;
+    /**
+     * 下拉刷新Gridview适配器
+     */
+    private RelationProductAdapter relationProductAdapter;
+    private JsonMap<String, Object> shopDatas; // 店铺信息
+    private String shopStr;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.recommend_detial);
+        setBtn_menu(/*R.drawable.search_white, new View.OnClickListener() {
+            @Override
+			public void onClick(View view) {
+				jumpToSearchProduct();
+			}
+		},*/ R.drawable.share_white, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                share();
+            }
+        });
+        Intent intent = getIntent();
+        if (intent != null) {
+            shopStr = intent.getStringExtra(ExtraKeys.Key_Msg1);
+//            if (TextUtils.isEmpty(shopStr)) {
+            recommendId = intent.getStringExtra(Constant.ID);
+            recommendTitle = intent.getStringExtra(Constant.VENDOR_NAME);
+//                shopDatas = new JsonMap();
+//                shopDatas.put("brandId", recommendId);
+//            } else {
+//                shopDatas = JsonParseHelper.getJsonMap(shopStr);
+//            }
+
+        } else {
+            finish();
+        }
+
+        setCenter_title(recommendTitle);
+
+        addHeadView();
+        getServerData();
+    }
+
+    private void initHead() {
+        String backImge = shopDatas.getStringNoNull("mainPicPath"); // 背景大图
+        BitmapHelper.loadImage(mContext, backImge, shop_bg_iv, BitmapHelper.LoadImgOption.Rectangle);
+        shop_detail_discri_tv.setText(shopDatas.getStringNoNull("recommendDescription"));
+//        shopName = shopDatas.getStringNoNull("brandName");
+//        recommendId = shopDatas.getStringNoNull("brandId");
+//        shopDiscri = shopDatas.getStringNoNull("pageDesc");
+//
+//        shop_name_tv.setText(shopName);
+//        shop_discri_tv.setText(shopDiscri);
+
+    }
+
+    /**
+     * 拉取店铺信息
+     */
+    private void getServerData() {
+        loadingToast.show();
+        Map<String, Object> params = new HashMap<>();
+        if (Utils.isHasLogin(this)) {
+            params.put("userId", Utils.getUserId(this));
+        }
+        params.put("recommendId", recommendId);
+        params.put("pageIndex", String.valueOf(nPage + 1));
+        GetDataQueue queue = new GetDataQueue();
+        queue.setActionName(GetDataConfing.Recommend_QueryProductDetails);
+        queue.setParamsNoJson(params);
+        queue.setCallBack(callBack);
+        queue.setWhat(GetDataConfing.What_Recommend_QueryProductDetails);
+        getDataUtil.getData(queue);
+    }
+
+
+    /**
+     * 详情显示
+     */
+    public void detail_more_click(View view) {
+        Intent intent = new Intent(mContext, ShopIntroductionActivity.class);
+        intent.putExtra(ExtraKeys.Key_Msg1, shopStr);
+        jumpTo(intent);
+    }
+
+    /**
+     * 关注按钮点击
+     */
+    public void attention_tag_iv_click(View view) {
+        getDate_GetFocusOn(callBack, recommendId, Constant.CollectionType.Brand, this);
+    }
+
+    /**
+     * 添加头部
+     */
+    private void addHeadView() {
+        relationProductAdapter = new RelationProductAdapter(this);
+        relationProductAdapter.setShowDiscri(true);
+        relationProductAdapter.setDatas(dataList);
+        xgv.setAdapter(relationProductAdapter);
+        xgv.setOnItemClickListener(onItemClickListener);
+        //ptr_scrollview.setHeader(shop_bg_iv);
+        ptr_scrollview.setMode(PullToRefreshBase.Mode.PULL_FROM_END);
+        //ptr_scrollview.setOnTurnListener(this);
+        ptr_scrollview.setOnRefreshListener(loadMoreListener);
+    }
+
+    /**
+     * 刷洗监听
+     */
+/*	private MyPullToRefreshScrollView.OnRefreshListener loadMoreListener = new MyPullToRefreshScrollView.OnRefreshListener() {
+
+		@Override
+		public void onHeaderRefresh(MyPullToRefreshScrollView view) {
+			ptr_scrollview.onRefreshComplete();
+		}
+
+		@Override
+		public void onFooterRefresh(MyPullToRefreshScrollView view) {
+			getRelationGoods();
+		}
+	};*/
+
+    private PullToRefreshScrollView.OnRefreshListener2<ScrollView> loadMoreListener = new PullToRefreshScrollView.OnRefreshListener2<ScrollView>() {
+        @Override
+        public void onPullDownToRefresh(PullToRefreshBase<ScrollView> refreshView) {
+            ptr_scrollview.onRefreshComplete();
+        }
+
+        @Override
+        public void onPullUpToRefresh(PullToRefreshBase<ScrollView> refreshView) {
+//            getRelationGoods();
+            getServerData();
+        }
+
+    };
+
+    /**
+     * item的点击
+     */
+    AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            JsonMap<String, Object> jsonmap = dataList.get(position);
+            String goodsId = jsonmap.getStringNoNull("productId");
+            String brandName = jsonmap.getStringNoNull("brandName");
+            seeProductDetail(goodsId, brandName);
+
+        }
+    };
+
+    /**
+     * 获取商品 {shopId:165,typeId:2,nPage:1}
+     */
+    private void getRelationGoods() {
+        // xgv.setBoolInterceptTouchEvent(true);
+        Map<String, Object> params = new HashMap<>();
+        params.put("brandId", recommendId);
+        params.put("pageIndex", String.valueOf(nPage + 1));
+        GetDataQueue queue = new GetDataQueue();
+        queue.setActionName(GetDataConfing.GetAction_SelectVendorProductList);
+        queue.setParamsNoJson(params);
+        queue.setCallBack(callBack);
+        queue.setWhat(GetDataConfing.What_SelectVendorProductList);
+        getDataUtil.getData(queue);
+    }
+
+    private IGetServicesDataCallBack callBack = new IGetServicesDataCallBack() {
+        @Override
+        public void onLoaded(GetDataQueue entity) {
+            ptr_scrollview.onRefreshComplete();
+            if (entity.isOk()) {
+                if (ShowGetDataError.isCodeSuccess(mContext, entity.getInfo())) {
+                    if (entity.what == GetDataConfing.What_Recommend_QueryProductDetails) {
+
+                        JsonMap<String, Object> jsonMap = JsonParseHelper.getJsonMap_JsonMap(entity.getInfo(), JsonKeys.Key_Info);
+                        List<JsonMap<String, Object>> productList = jsonMap.getList_JsonMap("relatedProduct");
+                        shopDatas=jsonMap.getJsonMap("recommendDetail");
+                        initHead();
+                        setData(productList);
+                        validateData(productList);
+//                    } else if (entity.what == GetDataConfing.What_GetVendorDetails) {
+//                        try {
+//                            JsonMap<String, Object> data = JsonParseHelper.getJsonMap_JsonMap(entity.getInfo(), JsonKeys.Key_Info);
+//                            shopStr = data.getString("brand");
+//                            shopDatas = data.getJsonMap("brand");
+//                            boolean isFocus = data.getBoolean("collectionFlag");
+//                            changeAttendStatue(isFocus);
+//                            List<JsonMap<String, Object>> productList = data.getList_JsonMap("productList");
+//                            refreshShopDetail(productList);
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                            toast.showToast(R.string.server_error);
+//                        }
+                    } else if (entity.what == GetDataConfing.WHAT_GET_FOCUS_ON) { // 关注平拍
+                        try {
+                            JsonMap<String, Object> data = JsonParseHelper.getJsonMap_JsonMap(entity.getInfo(), JsonKeys.Key_Info);
+                            changeAttendStatue(data.getBoolean("isCollected"));
+                            sendBroadcast(new Intent(Constant.ACT_BRAND_COLLECTION_CHANGE));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            } else {
+                ShowGetDataError.showNetError(mContext);
+            }
+            loadingToast.dismiss();
+        }
+
+    };
+
+    /**
+     * 设置商品信息 并请求相关商品的信息
+     *
+     * @param productList
+     */
+    private void refreshShopDetail(List<JsonMap<String, Object>> productList) {
+//        initHead();
+        if (productList.size() > 0) {
+            setData(productList);
+        }
+        validateData(productList);
+    }
+
+    /**
+     * 更改关注状态
+     *
+     * @param isFocus
+     */
+    private void changeAttendStatue(boolean isFocus) {/*
+        attention_tag_iv.setSelected(isFocus);
+        if (isFocus) {
+            attention_tag_iv.setText(R.string.attentioned);
+        } else {
+            attention_tag_iv.setText(R.string.noattention);
+        }
+    */}
+
+    private void setData(List<JsonMap<String, Object>> data_server) {
+        if (data_server.size() != 0) {
+            dataList.addAll(data_server);
+
+            relationProductAdapter.setDatas(dataList);
+            //xgv.setAdapter(relationProductAdapter);
+            relationProductAdapter.notifyDataSetChanged();
+            //ptr_scrollview.notifyAll();
+            nPage++;
+        } else {
+            ptr_scrollview.setMode(PullToRefreshBase.Mode.DISABLED);
+        }
+    }
+
+
+    /**
+     * 校验数据 显示无数据等
+     *
+     * @param data_server
+     */
+    private void validateData(List<JsonMap<String, Object>> data_server) {
+        if (data_server.size() < 10) {
+            ptr_scrollview.setMode(PullToRefreshBase.Mode.DISABLED);
+        } else {
+            ptr_scrollview.setMode(PullToRefreshBase.Mode.PULL_FROM_END);
+        }
+        //setListViewHeightBasedOnChildren(xgv);
+    }
+
+    private void share() {
+        String shareLogo = shopDatas.getStringNoNull("logoPath");
+        String shareTitle = shopDatas.getStringNoNull("recommendTitle");
+        String shareContent = shopDatas.getStringNoNull("recommendIntroduction");
+        String shareUrl = "pages/mobile_page/theme_details.html?recommendId=" + recommendId;
+        ShareSocialUtils.showShareCompont(mContext, shareLogo, shareUrl, shareTitle, shareContent);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        /** 使用SSO授权必须添加如下代码 */
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+    }
+
+}

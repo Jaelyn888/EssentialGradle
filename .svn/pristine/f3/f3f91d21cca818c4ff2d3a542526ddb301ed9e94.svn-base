@@ -1,0 +1,157 @@
+package com.yishanxiu.yishang.adapter;
+
+import java.util.List;
+import java.util.Map;
+
+import com.yishanxiu.yishang.R;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+import com.yishanxiu.yishang.utils.Constant;
+import com.yishanxiu.yishang.utils.StringUtils;
+import com.yishanxiu.yishang.view.CircleImageView;
+
+import android.content.Context;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import net.tsz.afinal.json.JsonMap;
+
+/**
+ * Created by Jaelyn on 16/3/3. 商品晒单评论列表
+ */
+public class ProductCommentsAdapter extends MyBaseAdapter {
+
+	private int flag;
+
+	public int getFlag() {
+		return flag;
+	}
+
+	public void setFlag(int flag) {
+		this.flag = flag;
+	}
+
+	/**
+	 * 按钮和推荐的列表的点击事件
+	 */
+	private ItemClickListener itemClickListener;
+
+	public void setItemClickListener(ItemClickListener itemClickListener) {
+		this.itemClickListener = itemClickListener;
+	}
+
+	public ProductCommentsAdapter(Context context) {
+		super(context);
+	}
+
+	public ProductCommentsAdapter(Context context, List<? extends Map<String, ?>> datas) {
+		super(context, datas);
+	}
+
+	@Override
+	public View getView(int i, View view, ViewGroup viewGroup) {
+		GoodsCommentsAdapterViewHolder commentsAdapterViewHolder;
+		if (view == null) {
+			commentsAdapterViewHolder = new GoodsCommentsAdapterViewHolder();
+			view = layoutInflater.inflate(R.layout.goods_comments_item, viewGroup, false);
+			ViewUtils.inject(commentsAdapterViewHolder, view);
+			view.setTag(commentsAdapterViewHolder);
+		} else {
+			commentsAdapterViewHolder = (GoodsCommentsAdapterViewHolder) view.getTag();
+		}
+		setTag(i, commentsAdapterViewHolder);
+		bindData(i, commentsAdapterViewHolder);
+		return view;
+	}
+
+	private void setTag(int i, GoodsCommentsAdapterViewHolder commentsAdapterViewHolder) {
+		//commentsAdapterViewHolder.attach_pic_hv.setTag(i);
+	}
+
+	private void bindData(int i, GoodsCommentsAdapterViewHolder goodsCommentsAdapterViewHolder) {
+//		if (i == 0 && flag == 1) {
+//			goodsCommentsAdapterViewHolder.userName_tv.getPaint().setAntiAlias(true);
+//			goodsCommentsAdapterViewHolder.userName_tv.getPaint().setFakeBoldText(true);
+//			goodsCommentsAdapterViewHolder.create_time_tv.getPaint().setAntiAlias(true);
+//			goodsCommentsAdapterViewHolder.create_time_tv.getPaint().setFakeBoldText(true);
+//			goodsCommentsAdapterViewHolder.userComments_tv.getPaint().setAntiAlias(true);
+//			goodsCommentsAdapterViewHolder.userComments_tv.getPaint().setFakeBoldText(true);
+//			goodsCommentsAdapterViewHolder.userComments_tv
+//					.setTextColor(context.getResources().getColor(R.color.darkGray1));
+//		} else {
+//			goodsCommentsAdapterViewHolder.userName_tv.getPaint().setFakeBoldText(false);
+//			goodsCommentsAdapterViewHolder.userComments_tv.getPaint().setFakeBoldText(false);
+//			goodsCommentsAdapterViewHolder.create_time_tv.getPaint().setFakeBoldText(false);
+//			goodsCommentsAdapterViewHolder.userComments_tv
+//					.setTextColor(context.getResources().getColor(R.color.darkGray));
+//		}
+
+		JsonMap<String, Object> map = (JsonMap<String, Object>) datas.get(i);
+		goodsCommentsAdapterViewHolder.userName_tv.setText(map.getStringNoNull("userNickname"));
+
+		goodsCommentsAdapterViewHolder.create_time_tv
+				.setText(StringUtils.getTimeFormatFull(map.getStringNoNull("createTime")));
+
+		String speStr = map.getStringNoNull("productSpecification");
+		if (TextUtils.isEmpty(speStr)) {
+			goodsCommentsAdapterViewHolder.goods_color_size_tv.setVisibility(View.GONE);
+		} else {
+			goodsCommentsAdapterViewHolder.goods_color_size_tv.setVisibility(View.VISIBLE);
+			goodsCommentsAdapterViewHolder.goods_color_size_tv.setText(speStr);
+		}
+
+		BitmapHelper.loadImage(context, map.getStringNoNull("userIcon"), goodsCommentsAdapterViewHolder.user_photo_iv);
+		goodsCommentsAdapterViewHolder.userComments_tv.setText(map.getStringNoNull("commentContent"));
+		// String commentsContent = map.getStringNoNull("commentContent");
+
+		// String returnName = map.getStringNoNull("replayName");
+		// if (!TextUtils.isEmpty(returnName)) {
+		// String str_fomart = "<b>回复@%s：</b>%s";
+		// String msg = String.format(str_fomart, returnName, commentsContent);
+		// goodsCommentsAdapterViewHolder.userComments_tv.setText(Html.fromHtml(msg));
+		// } else {
+		// goodsCommentsAdapterViewHolder.userComments_tv.setText(commentsContent);
+		// }
+
+	}
+
+	public class GoodsCommentsAdapterViewHolder {
+		@ViewInject(R.id.user_photo_iv)
+		public CircleImageView user_photo_iv;
+		@ViewInject(R.id.userName_tv)
+		public TextView userName_tv;
+		@ViewInject(R.id.create_time_tv)
+		public TextView create_time_tv;
+		@ViewInject(R.id.goods_color_size_tv)
+		public TextView goods_color_size_tv;
+		//@ViewInject(R.id.attach_pic_hv)
+		//public HorizontalListView attach_pic_hv;
+		@ViewInject(R.id.userComments_tv)
+		public TextView userComments_tv;
+
+//		@OnItemClick(R.id.attach_pic_hv)
+//		public void attach_pic_hv_ItemClick(AdapterView<?> parent, View view, int position, long id) {
+//			if (itemClickListener != null) {
+//				// 正式调接口的时候需要更具需要进行修改参数data
+//				itemClickListener.onItemClickListener(Constant.FindItemCompontType.RECOMMANDOODS,
+//						(Integer) attach_pic_hv.getTag(), position);
+//			}
+//		}
+	}
+
+	public interface ItemClickListener {
+		/**
+		 * 返回item的空间的点击事件
+		 *
+		 * @param itemCompontType
+		 *            点击事件的类型 RECOMMAND_ITEM_CLICK：推荐列表的点击事件 MORE_CLICK：更多点击
+		 * @param position
+		 *            点击的item的位置
+		 * @param childPosition
+		 *            当点击的是推荐列表的item 返回数据的子list的位置 否则返回-1
+		 */
+		void onItemClickListener(Constant.FindItemCompontType itemCompontType, int position, int childPosition);
+	}
+}

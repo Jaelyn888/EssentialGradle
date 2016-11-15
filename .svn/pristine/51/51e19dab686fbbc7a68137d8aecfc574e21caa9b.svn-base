@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llt_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_bg"
+    android:orientation="vertical"
+    android:tag="content">
+
+    <!-- 社区 -->
+
+    <LinearLayout
+        android:id="@+id/llt_center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/common_margin_other"
+        android:paddingTop="@dimen/common_margin_other"
+        android:visibility="gone" >
+
+        <LinearLayout
+            android:id="@+id/blog_layout"
+            style="@style/navi_style" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/blog" />
+
+            <TextView
+                android:id="@+id/blog_num_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <View style="@style/vertical_line_style" />
+
+        <LinearLayout
+            android:id="@+id/focus_layout"
+            style="@style/navi_style" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/focus" />
+
+            <TextView
+                android:id="@+id/focus_num_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <View style="@style/vertical_line_style" />
+
+        <LinearLayout
+            android:id="@+id/fans_layout"
+            style="@style/navi_style" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fans" />
+
+            <TextView
+                android:id="@+id/fans_num_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView style="@style/hor_line_style" />
+
+    <TextView
+        android:id="@+id/myInfo_layout"
+        style="@style/userCenterItemLableStyle"
+        android:drawableLeft="@drawable/personal_info"
+        android:drawableRight="@drawable/right_bt"
+        android:text="@string/my_info" />
+
+    <ImageView style="@style/hor_line_style" />
+
+    <LinearLayout
+        android:id="@+id/modify_pwd_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/modify_pwd"
+            style="@style/userCenterItemLableStyle"
+            android:drawableLeft="@drawable/modify_pwd"
+            android:drawableRight="@drawable/right_bt"
+            android:text="@string/modify_pwd" />
+
+        <ImageView style="@style/hor_line_style" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/modify_addr"
+        style="@style/userCenterItemLableStyle"
+        android:drawableLeft="@drawable/modify_addr"
+        android:drawableRight="@drawable/right_bt"
+        android:text="@string/modify_addr" />
+
+    <ImageView style="@style/hor_line_style" />
+
+    <TextView
+        android:id="@+id/myAccountLayout"
+        style="@style/userCenterItemLableStyle"
+        android:drawableLeft="@drawable/my_account"
+        android:drawableRight="@drawable/right_bt"
+        android:text="@string/myAccount"
+        android:visibility="gone" />
+
+
+
+    <LinearLayout
+        android:id="@+id/myOrdersLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_margin">
+
+        <TextView
+            style="@style/userCenterItemLableStyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/my_order"
+            android:drawableRight="@drawable/right_bt"
+            android:text="@string/my_all_orders" />
+
+        <TextView
+            android:id="@+id/myOrdersNum_tv"
+            style="@style/num_msg_style" />
+    </LinearLayout>
+
+    <ImageView style="@style/hor_line_style" />
+
+    <TextView
+        android:id="@+id/myCollectionLayout"
+        style="@style/userCenterItemLableStyle"
+        android:drawableLeft="@drawable/my_collection"
+        android:drawableRight="@drawable/right_bt"
+        android:text="@string/myCollection" />
+
+    <ImageView style="@style/hor_line_style" />
+
+    <LinearLayout
+        android:id="@+id/myAppointmentLayout"
+        style="@style/userCenterItemStyle"
+        android:paddingLeft="@dimen/common_margin"
+        android:paddingRight="@dimen/common_margin"
+        android:visibility="gone" >
+
+        <TextView
+            style="@style/userCenterItemLableStyle"
+            android:drawableLeft="@drawable/my_collection"
+            android:text="@string/myAppointment" />
+
+        <TextView
+            android:id="@+id/myAppointmentNum_tv"
+            style="@style/num_msg_style" />
+
+        <ImageView
+            style="@style/rightBtStyle"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/att_llt"
+        style="@style/userCenterItemLableStyle"
+        android:drawableLeft="@drawable/attention_brand"
+        android:drawableRight="@drawable/right_bt"
+        android:text="@string/attention_brand" />
+
+    <ImageView style="@style/hor_line_style" />
+
+
+    <TextView
+        android:layout_marginTop="@dimen/common_margin"
+        android:id="@+id/settingLayout"
+        style="@style/userCenterItemLableStyle"
+        android:drawableLeft="@drawable/set_sys"
+        android:drawableRight="@drawable/right_bt"
+        android:text="@string/systemSet" />
+
+    <ImageView style="@style/hor_line_style" />
+
+</LinearLayout>

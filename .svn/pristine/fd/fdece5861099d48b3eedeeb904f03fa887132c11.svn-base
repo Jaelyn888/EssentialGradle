@@ -1,0 +1,305 @@
+package com.yishanxiu.yishang.activity;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.yishanxiu.yishang.R;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.yishanxiu.yishang.activity.base.BaseUIActivity;
+import com.yishanxiu.yishang.adapter.ArticleCommentsAdapter;
+import com.yishanxiu.yishang.adapter.ProductCommentsAdapter;
+import com.yishanxiu.yishang.getdata.GetDataConfing;
+import com.yishanxiu.yishang.getdata.GetDataQueue;
+import com.yishanxiu.yishang.getdata.IGetServicesDataCallBack;
+import com.yishanxiu.yishang.getdata.JsonKeys;
+import com.yishanxiu.yishang.getdata.ShowGetDataError;
+import com.yishanxiu.yishang.utils.Constant;
+import com.yishanxiu.yishang.utils.ExtraKeys;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import net.tsz.afinal.annotation.view.ViewInject;
+import net.tsz.afinal.json.JsonMap;
+import net.tsz.afinal.json.JsonParseHelper;
+
+/**
+ * Created by Jaelyn on 2015/10/6 0006. 文章评论
+ * <p/>
+ * update @author FangDongzhang 2016/7/30
+ */
+public class ArticalCommentsActivity extends BaseUIActivity {
+	//
+	@ViewInject(id = R.id.ptr_list)
+	private PullToRefreshListView ptr_list;
+	@ViewInject(id = R.id.nodata_layout) // 无数据
+	private LinearLayout nodataLayout;
+	@ViewInject(id = R.id.empty)
+	private TextView emptyTv;
+	private ArticleCommentsAdapter commentsAdapter;
+
+	@ViewInject(id = R.id.comment_submit, click = "commit_comment_click")
+	private TextView comment_submit;
+	@ViewInject(id = R.id.layout_comment)
+	private RelativeLayout layout_comment_submit;
+	/**
+	 * 评论后标识
+	 */
+	private int iscomment = 0;
+	/**
+	 * 回复某人的信息
+	 */
+	private String reId;
+	/**
+	 * 平论
+	 */
+	private List<JsonMap<String, Object>> dataList = new ArrayList<JsonMap<String, Object>>();
+
+	private String articalId;// 发现id
+	private String commentId;
+	private int flag = 0;// 0:发现详情进入
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.artical_comments_layout);
+		setCenter_title(R.string.comment);
+		setBtn_menu(R.drawable.publish_commtent_white, clickListener);
+		emptyTv.setText(R.string.no_comments);
+		initData(getIntent());
+		getServerData(0);
+	}
+
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		getServerData(1);
+	}
+
+	/**
+	 * 跳转到发表评论
+	 *
+	 * @param intent
+	 */
+	private OnClickListener clickListener = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			Intent intent = new Intent(mContext, ArticalPubCommentActivity.class);
+			intent.putExtra("articalId", articalId);
+			startActivityForResult(intent, 0);
+
+		}
+	};
+
+	private void initData(Intent intent) {
+		commentsAdapter = new ArticleCommentsAdapter(this);
+		articalId = intent.getStringExtra(ExtraKeys.Key_Msg1);
+		// setCenter_title(intent.getStringExtra(ExtraKeys.Key_Msg2));
+		commentId = intent.getStringExtra(ExtraKeys.Key_Msg4);
+		try {
+			flag = intent.getIntExtra(ExtraKeys.Key_Msg3, 0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (flag == 0) {
+		} else {
+			setBtn_menuText(R.string.scan_article, onClickListener);
+		}
+		commentsAdapter.setFlag(flag);
+		// getCommentsById(true); //test
+		reId = "0";
+		ptr_list.setMode(PullToRefreshBase.Mode.BOTH);
+		ptr_list.setAdapter(commentsAdapter);
+		ptr_list.setOnRefreshListener(loadMoreListener);
+		// ptr_list.setOnItemClickListener(onItemClickListener);
+	}
+
+	// AdapterView.OnItemClickListener onItemClickListener = new
+	// AdapterView.OnItemClickListener() {
+	// @Override
+	// public void onItemClick(AdapterView<?> adapterView, View view, int
+	// position, long l) {
+	// if (position < 1) {
+	// return;
+	// }
+	// String userInfoId = dataList.get(position -
+	// 1).getStringNoNull("UserInfoId");
+	//
+	// if (userInfoId.equalsIgnoreCase(Utils.getUserId(mContext))) {
+	// toast.showToast(R.string.index_nocomment);
+	// pro_et_comment.setText("");
+	// pro_et_comment.setHint(R.string.comment_submit_hint);
+	// reId = "0";
+	// } else {
+	// String Rename = dataList.get(position - 1).getStringNoNull("Name");
+	// pro_et_comment.setHint("回复：" + Rename);
+	// reId = dataList.get(position - 1).getStringNoNull("Id");
+	// pro_et_comment.requestFocus();
+	//
+	// InputMethodManager imm = (InputMethodManager)
+	// getSystemService(Context.INPUT_METHOD_SERVICE);
+	// // 隐藏软键盘
+	// // imm.hideSoftInputFromWindow(editView.getWindowToken(), 0);
+	// // 显示软键盘
+	// imm.showSoftInput(pro_et_comment, InputMethodManager.SHOW_FORCED);
+	// // 切换软键盘的显示与隐藏
+	// // imm.toggleSoftInputFromWindow(pro_et_comment.getWindowToken(),
+	// // 0, InputMethodManager.HIDE_NOT_ALWAYS);
+	// // }
+	//
+	// // }
+	// }
+	// }
+	// };
+
+	/**
+	 * 查看原文
+	 */
+	View.OnClickListener onClickListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			if (!TextUtils.isEmpty(articalId)) {
+				Intent intent = new Intent(mContext, ArticalDetailActivity.class);
+				intent.putExtra(Constant.ID, articalId);
+				jumpTo(intent, false);
+			}
+		}
+	};
+
+	/**
+	 * 刷新数据
+	 */
+	private PullToRefreshBase.OnRefreshListener2<ListView> loadMoreListener = new PullToRefreshBase.OnRefreshListener2<ListView>() {
+		@Override
+		public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+			getServerData(1);
+		}
+
+		@Override
+		public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+			getServerData(2);
+		}
+	};
+
+	/**
+	 * 获取服务器端数据 { "categoryId":0,"time": "","requestType":0}
+	 *
+	 * @param requestType 请求类型 0:第一次请求,1刷新,2:加载下一页
+	 */
+	public void getServerData(int requestType) {
+		if (dataList.size() == 0) {
+			requestType = 0;
+		}
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("articleId", articalId);
+		params.put("requestType", String.valueOf(requestType));
+		if (requestType == 0) {
+			params.put("createTime", "");
+		} else if (requestType == 1) {
+			params.put("createTime", dataList.get(0).getStringNoNull("createTime"));
+		} else {
+			params.put("createTime", dataList.get(dataList.size() - 1).getStringNoNull("createTime"));
+		}
+
+		GetDataQueue queue = new GetDataQueue();
+		queue.setTag(requestType);
+
+		if (flag == 0) {
+			queue.setActionName(GetDataConfing.Action_GetArticalCommentsList);
+			queue.setWhat(GetDataConfing.What_GetArticalCommentsList);
+		} else {
+			params.put("commentId", commentId);
+			queue.setActionName(GetDataConfing.Action_GetArticalCommentsListAt);
+			queue.setWhat(GetDataConfing.What_GetArticalCommentsListAt);
+		}
+		queue.setParamsNoJson(params);
+		queue.setCallBack(callBack);
+		getDataUtil.getData(queue);
+	}
+
+	private void validateData() {
+		if (dataList.size() < 0) {
+			ptr_list.setVisibility(View.GONE);
+			nodataLayout.setVisibility(View.VISIBLE);
+			return;
+		} else {
+			ptr_list.setVisibility(View.VISIBLE);
+			nodataLayout.setVisibility(View.GONE);
+		}
+	}
+
+	private IGetServicesDataCallBack callBack = new IGetServicesDataCallBack() {
+
+		@Override
+		public void onLoaded(GetDataQueue entity) {
+			if (entity.isOk()) {
+				if (ShowGetDataError.isCodeSuccess(mContext,
+						entity.getInfo())) {
+					if (entity.what == GetDataConfing.What_GetArticalCommentsList
+							|| entity.what == GetDataConfing.What_GetArticalCommentsListAt) {
+						ArrayList<JsonMap<String, Object>> temp_data = (ArrayList<JsonMap<String, Object>>) JsonParseHelper
+								.getJsonMap_List_JsonMap(entity.getInfo(), JsonKeys.Key_Info);
+						if (temp_data.size() > 0) {
+							setAdapterData(temp_data, (Integer) entity.getTag());
+						} else {
+							validateData();
+						}
+					}
+				}
+			} else {
+				ShowGetDataError.showNetError(mContext);
+			}
+
+		loadingToast.dismiss();
+		ptr_list.onRefreshComplete();
+	}
+
+};
+
+private void setAdapterData(ArrayList<JsonMap<String, Object>>temp_data,int requestType){
+		if(requestType==0){
+		if(temp_data.size()==0){
+		ptr_list.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+		}else{
+		ptr_list.setMode(PullToRefreshBase.Mode.BOTH);
+		dataList.addAll(0,temp_data);
+		commentsAdapter.setDatas(dataList);
+		commentsAdapter.notifyDataSetChanged();
+		}
+
+		}else if(requestType==1){
+		if(!temp_data.isEmpty()){
+		if(temp_data.size()>=10){
+		temp_data.clear();
+		}
+		dataList.addAll(0,temp_data);
+		commentsAdapter.setDatas(dataList);
+		commentsAdapter.notifyDataSetChanged();
+		}
+		}else{
+		if(temp_data.size()==0){
+		ptr_list.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+		}else{
+		ptr_list.setMode(PullToRefreshBase.Mode.BOTH);
+		}
+
+		if(!temp_data.isEmpty()){
+		dataList.addAll(temp_data);
+		commentsAdapter.setDatas(dataList);
+		commentsAdapter.notifyDataSetChanged();
+		}
+		}
+
+		}
+
+		}

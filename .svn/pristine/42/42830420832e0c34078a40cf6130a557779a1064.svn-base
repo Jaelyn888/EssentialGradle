@@ -1,0 +1,88 @@
+package com.yishanxiu.yishang.adapter;
+
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import net.tsz.afinal.json.JsonMap;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+import com.yishanxiu.yishang.utils.StringUtils;
+import com.yishanxiu.yishang.R;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Jaelyn on 16/2/29.
+ */
+public class LinkProductAdapter extends MyBaseAdapter {
+    public LinkProductAdapter(Context context) {
+        super(context);
+    }
+
+    public LinkProductAdapter(Context context, List<? extends Map<String, ?>> datas) {
+        super(context, datas);
+    }
+
+
+    @Override
+    public View getView(int i, View view, ViewGroup viewGroup) {
+        LinkProductAdapterViewHolder linkProductAdapterViewHolder;
+        if (view == null) {
+            view = layoutInflater.inflate(R.layout.link_relation_goods_item, null);
+            linkProductAdapterViewHolder = new LinkProductAdapterViewHolder();
+            ViewUtils.inject(linkProductAdapterViewHolder, view);
+            view.setTag(linkProductAdapterViewHolder);
+        } else {
+            linkProductAdapterViewHolder = (LinkProductAdapterViewHolder) view.getTag();
+        }
+        bindData(i, linkProductAdapterViewHolder);
+        return view;
+    }
+
+
+    private void bindData(final int i, LinkProductAdapterViewHolder viewHolder) {
+        JsonMap jsonMap= (JsonMap) datas.get(i);
+
+        String picPath=jsonMap.getStringNoNull("path");
+        String scalePic= StringUtils.get_MImage(picPath);
+        BitmapHelper.loadImage(context,scalePic,viewHolder.goods_logo, BitmapHelper.LoadImgOption.Square);
+
+        viewHolder.productBrand_tv.setText(jsonMap.getStringNoNull("brandName"));
+        viewHolder.product_name_tv.setText(jsonMap.getStringNoNull("productName"));
+        viewHolder.product_price_tv.setText(StringUtils.getFormatMoneyWithSign(jsonMap.getStringNoNull("marketPrice")));
+        viewHolder.goods_source_tv.setText(jsonMap.getStringNoNull("linkFrom"));
+    }
+
+
+    public class LinkProductAdapterViewHolder {
+        @ViewInject(R.id.goods_logo)
+        public ImageView goods_logo;
+
+        /**
+         * 品牌
+         */
+        @ViewInject(R.id.productBrand_tv)
+        public TextView productBrand_tv;
+
+        /**
+         * 商品名字
+         */
+        @ViewInject(R.id.product_name_tv)
+        public TextView product_name_tv;
+        /**
+         * 来源
+         */
+        @ViewInject(R.id.goods_source_tv)
+        public TextView goods_source_tv;
+
+        @ViewInject(R.id.product_price_tv)
+        public TextView product_price_tv;
+
+
+    }
+
+}

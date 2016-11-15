@@ -1,0 +1,133 @@
+package com.yishanxiu.yishang.adapter;
+
+import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
+import cn.bingoogolapple.androidcommon.adapter.BGAOnRVItemClickListener;
+import cn.bingoogolapple.androidcommon.adapter.BGAViewHolderHelper;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.model.recommend.RecommendModel;
+import com.yishanxiu.yishang.model.shopmall.ProductInfoModel;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+import com.yishanxiu.yishang.utils.Constant;
+import com.yishanxiu.yishang.utils.LogUtil;
+import com.yishanxiu.yishang.view.CustomImageView;
+
+import net.tsz.afinal.json.JsonMap;
+
+import java.util.List;
+
+/**
+ * Created by FangDongzhang on 2016/9/6.
+ */
+public class RecommendAdapter extends CommonBaseAdapter<RecommendModel>{
+
+
+    public RecommendAdapter(Context context) {
+        super(context,R.layout.recommend_item);
+    }
+
+
+    @Override
+    protected void setItemChildListener(final BGAViewHolderHelper viewHolderHelper) {
+        super.setItemChildListener(viewHolderHelper);
+       viewHolderHelper.getConvertView().setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               itemClickListener.onItemClickListener(viewHolderHelper.getPosition(), Constant.RecommendItem.MAIN_IMAG,-1);
+           }
+       });
+    }
+    @Override
+    protected void fillData(BGAViewHolderHelper viewHolderHelper, final int position, RecommendModel model) {
+
+        CustomImageView main_img_recommend= (CustomImageView) viewHolderHelper.getImageView(R.id.main_img_recommend);
+
+        ImageView triangle= viewHolderHelper.getImageView(R.id.triangle);
+        RecyclerView my_recycler_view=viewHolderHelper.getView(R.id.my_recycler_view);
+        TextView recommend_description=viewHolderHelper.getTextView(R.id.recommend_description);
+
+
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
+        my_recycler_view.setLayoutManager(mLayoutManager);
+        //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
+        my_recycler_view.setHasFixedSize(true);
+        //创建并设置Adapter
+        String iconStr = model.getCoverPic();
+        BitmapHelper.loadImage(mContext, iconStr, main_img_recommend, BitmapHelper.LoadImgOption.Rectangle);
+
+
+        int recommendType = model.getRecommendType();
+        if (recommendType == 3) {
+            List<ProductInfoModel> jsonMap2 = model.getRelatedProductList();
+            if(jsonMap2==null||jsonMap2.size()==0){
+                recommend_description.setVisibility(View.GONE);
+                triangle.setVisibility(View.GONE);
+                my_recycler_view.setVisibility(View.GONE);
+            } else {
+                recommend_description.setVisibility(View.GONE);
+                triangle.setVisibility(View.VISIBLE);
+                my_recycler_view.setVisibility(View.VISIBLE);
+                MyRecyclerViewAdapter myRecyclerViewAdapter = new MyRecyclerViewAdapter(my_recycler_view);
+                myRecyclerViewAdapter.setOnRVItemClickListener(new BGAOnRVItemClickListener() {
+                    @Override
+                    public void onRVItemClick(ViewGroup parent, View itemView, int childPosition) {
+                        itemClickListener.onItemClickListener(position, Constant.RecommendItem.RELATION_PRODUCT,childPosition);
+                    }
+                });
+
+                mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+                my_recycler_view.setAdapter(myRecyclerViewAdapter);
+                myRecyclerViewAdapter.setData(jsonMap2);
+            }
+
+        } else if (recommendType == 2) {
+            String recommendIntroduction = model.getRecommendIntroduction();
+            if (!TextUtils.isEmpty(recommendIntroduction)) {
+                recommend_description.setVisibility(View.VISIBLE);
+                recommend_description.setText(recommendIntroduction);
+                triangle.setVisibility(View.VISIBLE);
+                my_recycler_view.setVisibility(View.GONE);
+            } else {
+                recommend_description.setVisibility(View.GONE);
+                triangle.setVisibility(View.GONE);
+                my_recycler_view.setVisibility(View.GONE);
+            }
+
+        } else if (recommendType == 1) {
+            recommend_description.setVisibility(View.GONE);
+            triangle.setVisibility(View.GONE);
+            my_recycler_view.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 按钮和推荐的列表的点击事件
+     */
+    private ItemChildClickListener itemClickListener;
+
+    public void setItemChildClickListener(ItemChildClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
+    public interface ItemChildClickListener {
+        /**
+         * 返回item的空间的点击事件
+         *
+         * @param type         点击事件的类型 RECOMMAND_ITEM_CLICK：推荐列表的点击事件 MORE_CLICK：更多点击
+         * @param itemPosition 点击的item的位置
+         * @param childIndex   当点击的是推荐列表的item 返回数据的子list的位置 否则返回-1
+         */
+        void onItemClickListener(int itemPosition, Constant.RecommendItem type, int childIndex);
+    }
+}

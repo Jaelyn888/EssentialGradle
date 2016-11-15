@@ -1,0 +1,19 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/gray_bg">
+
+	<com.ecloud.pulltozoomview.PullToZoomScrollViewEx
+		android:id="@+id/zoom_scroll_view"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:overScrollMode="never"
+		android:descendantFocusability="blocksDescendants"
+		android:scrollbars="none"
+		android:fadingEdge="none"
+		app:headerView="@layout/user_center_head_layout"
+		app:zoomView="@layout/user_center_zoom_view"
+		app:contentView="@layout/user_center_content_layout"/>
+
+</RelativeLayout>

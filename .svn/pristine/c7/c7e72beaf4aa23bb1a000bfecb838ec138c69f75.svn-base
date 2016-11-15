@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlt_pop"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_transparent" >
+
+    <LinearLayout
+        android:id="@+id/ll_popup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#ffffff"
+        android:orientation="vertical" >
+
+        <ImageView style="@style/hor_line_style" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_h"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/item_popupwindows_camera"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_h"
+                android:background="@drawable/bt_nobgd"
+                android:text="@string/take_photograph"
+                android:textColor="@color/TextColorGray"
+                android:textSize="@dimen/title_center_size" />
+        </LinearLayout>
+
+        <ImageView style="@style/hor_line_style" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_h"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/item_popupwindows_Photo"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_h"
+                android:background="@drawable/bt_nobgd"
+                android:text="@string/select_local"
+                android:textColor="@color/TextColorGray"
+                android:textSize="@dimen/title_center_size" />
+        </LinearLayout>
+
+        <ImageView style="@style/hor_line_style" />
+
+        <Button
+            android:id="@+id/item_popupwindows_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_h"
+            android:background="@drawable/bt_nobgd"
+            android:text="@string/cancel"
+            android:textColor="@color/TextColorRed"
+            android:textSize="@dimen/title_center_size"
+             />
+    </LinearLayout>
+
+</RelativeLayout>

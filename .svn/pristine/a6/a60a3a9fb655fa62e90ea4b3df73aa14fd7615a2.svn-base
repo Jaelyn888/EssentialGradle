@@ -1,0 +1,59 @@
+package com.yishanxiu.yishang.adapter;
+
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import net.tsz.afinal.json.JsonMap;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+import com.yishanxiu.yishang.view.CustomImageView;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 热门品牌
+ */
+public class HotBrandGridAdater extends MyBaseAdapter {
+
+	public HotBrandGridAdater(Context context, List<? extends Map<String, ?>> datas) {
+		super(context, datas);
+	}
+
+	@Override
+	public int getCount() {
+		int count=datas.size();
+		if(count>8){
+			return 8;
+		} else {
+			return count;
+		}
+	}
+
+	@Override
+	public View getView(int i, View view, ViewGroup viewGroup) {
+
+		ShoppingMallSelectHolder shoppingMallSelectHolder;
+		if (view == null) {
+			view = layoutInflater.inflate(R.layout.hot_brand_item, viewGroup, false);
+			shoppingMallSelectHolder = new ShoppingMallSelectHolder(view);
+			view.setTag(shoppingMallSelectHolder);
+		} else {
+			shoppingMallSelectHolder = (ShoppingMallSelectHolder) view.getTag();
+		}
+		JsonMap data = (JsonMap) datas.get(i);
+		String logoPath=data.getStringNoNull("logoPath");
+		BitmapHelper.loadImage(context,logoPath,shoppingMallSelectHolder.brandLogoIv, BitmapHelper.LoadImgOption.BrandLogo);
+		return view;
+	}
+
+	public class ShoppingMallSelectHolder {
+		//@ViewInject(R.id.tv_shopmall_right)
+		//public TextView tv_shopmall_right;
+		public CustomImageView brandLogoIv;
+
+		public ShoppingMallSelectHolder(View view) {
+			brandLogoIv= (CustomImageView) view.findViewById(R.id.brand_logo_iv);
+		}
+	}
+}

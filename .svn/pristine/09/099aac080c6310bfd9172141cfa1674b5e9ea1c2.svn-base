@@ -1,0 +1,62 @@
+package com.yishanxiu.yishang.adapter;
+
+
+import cn.bingoogolapple.androidcommon.adapter.BGAViewHolderHelper;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.model.shopmall.ProductCommentModel;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+import com.yishanxiu.yishang.utils.StringUtils;
+import com.yishanxiu.yishang.view.CircleImageView;
+
+import android.content.Context;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.TextView;
+
+/**
+ * Created by Jaelyn on 16/3/3. 商品晒单评论列表
+ */
+public class ProductCommentsAdapter extends CommonBaseAdapter<ProductCommentModel> {
+
+	public ProductCommentsAdapter(Context context) {
+		super(context,R.layout.product_comments_item);
+	}
+
+	@Override
+	protected void fillData(BGAViewHolderHelper viewHolderHelper, int position, Object model) {
+
+		CircleImageView user_photo_iv= (CircleImageView) viewHolderHelper.getImageView(R.id.user_photo_iv);
+		TextView userName_tv=viewHolderHelper.getTextView(R.id.userName_tv);
+		TextView create_time_tv=viewHolderHelper.getTextView(R.id.create_time_tv);
+		 TextView goods_color_size_tv=viewHolderHelper.getTextView(R.id.goods_color_size_tv);
+		//HorizontalListView attach_pic_hv=viewHolderHelper.getTextView(R.id.userName_tv);
+		 TextView userComments_tv=viewHolderHelper.getTextView(R.id.userComments_tv);
+
+		ProductCommentModel productCommentModel = (ProductCommentModel) model;
+		userName_tv.setText(productCommentModel.getUserNickname());
+		create_time_tv.setText(StringUtils.getTimeFormatFull(productCommentModel.getCreateTime()));
+
+		String speStr = productCommentModel.getProductSpecification();
+		if (TextUtils.isEmpty(speStr)) {
+			goods_color_size_tv.setVisibility(View.GONE);
+		} else {
+			goods_color_size_tv.setVisibility(View.VISIBLE);
+			goods_color_size_tv.setText(speStr);
+		}
+
+		BitmapHelper.setUserIcon(mContext,productCommentModel, user_photo_iv);
+		userComments_tv.setText(productCommentModel.getCommentContent());
+		// String commentsContent = map.getStringNoNull("commentContent");
+
+		// String returnName = map.getStringNoNull("replayName");
+		// if (!TextUtils.isEmpty(returnName)) {
+		// String str_fomart = "<b>回复@%s：</b>%s";
+		// String msg = String.format(str_fomart, returnName, commentsContent);
+		// goodsCommentsAdapterViewHolder.userComments_tv.setText(Html.fromHtml(msg));
+		// } else {
+		// goodsCommentsAdapterViewHolder.userComments_tv.setText(commentsContent);
+		// }
+
+	}
+
+}

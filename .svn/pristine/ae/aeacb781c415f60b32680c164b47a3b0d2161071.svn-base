@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:id="@+id/select_photo"
+              android:background="@drawable/trans_gray"
+              android:orientation="vertical">
+
+    <View
+            android:id="@+id/select_v"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/white"
+            >
+
+        <TextView
+                android:id="@+id/collect_tv"
+                style="@style/mydata_select_photo"
+                android:text="@string/collection"
+                />
+
+        <ImageView style="@style/hor_line_style"/>
+
+        <!--不是推荐的日志-->
+        <LinearLayout
+                android:id="@+id/attention_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+            <TextView
+                    android:id="@+id/adjust_group_tv"
+                    style="@style/mydata_select_photo"
+                    android:text="@string/adjust_group"
+                    />
+            <ImageView style="@style/hor_line_style"/>
+
+            <TextView
+                    android:id="@+id/focus_tv"
+                    style="@style/mydata_select_photo"
+                    android:text="@string/focus"
+                    />
+            <ImageView style="@style/hor_line_style"/>
+        </LinearLayout>
+
+        <TextView
+                android:id="@+id/report_tv"
+                style="@style/mydata_select_photo"
+                android:text="@string/report"
+                />
+        <ImageView style="@style/hor_line_style"/>
+
+        <TextView
+                android:id="@+id/cancel_tv"
+                style="@style/mydata_select_photo"
+                android:text="@string/cancel"
+                android:textColor="@color/discount_red"/>
+
+    </LinearLayout>
+
+</LinearLayout>

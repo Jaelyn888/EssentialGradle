@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 默认字体 -->
+    <dimen name="bt_radius">3dp</dimen>
+    <dimen name="common_textsize">14sp</dimen>
+    <dimen name="font_size12">12sp</dimen>
+    <dimen name="font_size16">16sp</dimen>
+    <dimen name="default_drawpadding">3dp</dimen>
+   <!-- titlebar的高度 -->
+    <dimen name="titlebar_height">46dp</dimen>
+    <dimen name="titlebar_height_sub">40dp</dimen>
+    <dimen name="common_height">40dp</dimen>
+    <dimen name="common_margin_three">30dp</dimen>
+    <dimen name="common_margin">10dp</dimen>
+    <dimen name="common_margin_other">8dp</dimen>
+    <dimen name="common_margin_more">15dp</dimen>
+    <dimen name="common_double_margin">20dp</dimen>
+    <dimen name="comon_half_margin">6dp</dimen>
+
+</resources>

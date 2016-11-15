@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/margin_8dp"
+    android:paddingTop="@dimen/margin_8dp" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/common_margin"
+        android:paddingRight="@dimen/common_margin" >
+
+        <ImageView
+            android:id="@+id/i_s_pl_aiv_pic1"
+            android:layout_width="@dimen/brand_logo_height"
+            android:layout_height="@dimen/brand_logo_height"
+            android:src="@drawable/pic_load_error" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/margin_27dp"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/i_s_a_o_tv_productname"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_5dp"
+                    android:layout_weight="1.71"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="@string/shopping_tv_text_productname"
+                    android:textColor="@color/TextColorBlack" />
+
+                <TextView
+                    android:id="@+id/i_s_a_o_tv_productnum"
+                    style="@style/fourthAppTextStyleblack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="right"
+                    android:text="@string/shopping_tv_text_productnum" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_5dp"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/productSpecification"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/shopping_tv_text_productname"
+                    android:textColor="@color/TextColorGray"
+                    android:textSize="@dimen/textsize_tw" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom" >
+
+                <TextView
+                    android:id="@+id/goods_price_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentStart="true"
+                    android:textColor="@color/TextColorBlack" />
+
+                <TextView
+                    android:id="@+id/productBrand_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="start"
+                    android:textColor="@color/TextColorBlack" />
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_height"
+        android:layout_marginTop="@dimen/margin_7dp"
+        android:background="@color/gray_bg" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_100"
+        android:layout_marginLeft="@dimen/common_margin"
+        android:layout_marginRight="@dimen/common_margin"
+        android:layout_marginTop="@dimen/margin_7dp"
+        android:background="@drawable/cus_black_white_bt"
+        android:gravity="top"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/editText_comments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_8dp"
+            android:layout_marginLeft="@dimen/common_margin"
+            android:layout_marginRight="@dimen/common_margin"
+            android:layout_marginTop="@dimen/margin_8dp"
+            android:background="@null"
+            android:ems="10"
+            android:hint="请写评论，不要超过200字"
+            android:inputType="textMultiLine" >
+        </EditText>
+    </LinearLayout>
+
+</LinearLayout>

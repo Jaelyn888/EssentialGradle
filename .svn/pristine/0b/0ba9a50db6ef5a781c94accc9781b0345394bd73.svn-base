@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.yishanxiu.yishang"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <com.yishanxiu.yishang.view.CustomImageView
+        android:id="@+id/classfy_logo_iv"
+        style="@style/common_image_fill_width_style"
+        android:paddingBottom="@dimen/comon_half_margin"
+        app:scaleRate="3.5" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true" >
+
+        <TextView
+            android:id="@+id/classfy_name_tv"
+            style="@style/common_textview_style"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/name_test"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <TextView
+            style="@style/common_textview_style"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/gray_bg">
+
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/common_margin"
+		android:background="@color/white">
+
+		<LinearLayout
+			android:id="@+id/old_password_layout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
+
+			<ImageView style="@style/hor_line_style" />
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal">
+				<TextView
+					style="@style/ed_lable_style"
+					android:text="@string/old_pwd"/>
+			<EditText
+				style="@style/edit_login_reg_style"
+				android:id="@+id/et_old_password"
+				android:inputType="textPassword"
+				android:hint="@string/pls_input_old_pwd" />
+				</LinearLayout>
+		</LinearLayout>
+
+		<ImageView style="@style/hor_line_style" />
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+			<TextView
+				style="@style/ed_lable_style"
+				android:text="@string/new_password"/>
+		<EditText
+			style="@style/edit_login_reg_style"
+			android:id="@+id/et_input_password"
+			android:inputType="textPassword"
+			android:hint="@string/new_password_t" />
+
+			</LinearLayout>
+		<ImageView style="@style/hor_line_style" />
+
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+			<TextView
+				style="@style/ed_lable_style"
+				android:text="@string/confirm_password_et"/>
+			<EditText
+			style="@style/edit_login_reg_style"
+			android:id="@+id/et_confirm_password"
+			android:hint="@string/confirm_password_et_t"
+			android:inputType="textPassword" />
+
+			</LinearLayout>
+		<ImageView style="@style/hor_line_style" />
+		</LinearLayout>
+	<TextView
+		style="@style/blackBtStyle"
+		android:layout_marginTop="@dimen/margin_40dp"
+		android:id="@+id/et_confirm"
+		android:text="@string/ensureWithSpace" />
+	</LinearLayout>

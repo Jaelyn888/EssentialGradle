@@ -1,0 +1,28 @@
+package com.yishanxiu.yishang.model;
+
+import java.util.List;
+
+/**
+ * Created by Jaelyn on 2016/9/18.
+ * 品牌列表页 返回数据model
+ */
+public class AllBrandListResponse {
+	List<BrandInfo> totalBrandList;
+	List<BaseBrandInfo> hotBrandList;
+
+	public List<BrandInfo> getTotalBrandList() {
+		return totalBrandList;
+	}
+
+	public void setTotalBrandList(List<BrandInfo> totalBrandList) {
+		this.totalBrandList = totalBrandList;
+	}
+
+	public List<BaseBrandInfo> getHotBrandList() {
+		return hotBrandList;
+	}
+
+	public void setHotBrandList(List<BaseBrandInfo> hotBrandList) {
+		this.hotBrandList = hotBrandList;
+	}
+}

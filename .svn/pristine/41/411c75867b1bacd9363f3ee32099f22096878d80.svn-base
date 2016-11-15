@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_bg"
+    android:orientation="vertical"
+     >
+    <com.lzy.widget.OverScrollDecor
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/common_margin">
+
+                <ImageView
+                    style="@style/hor_line_style"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/accountManagerLayout"
+                    style="@style/userCenterItemLableStyle"
+                    android:drawableLeft="@drawable/about_us"
+                    android:text="@string/account_manager"
+                    android:visibility="gone" />
+
+                <ImageView
+                    style="@style/hor_line_style"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/securityLayout"
+                    style="@style/userCenterItemLableStyle"
+                    android:drawableLeft="@drawable/about_us"
+                    android:text="@string/security_manager"
+                    android:visibility="gone" />
+
+                <ImageView style="@style/hor_line_style" />
+
+                <TextView
+                    android:id="@+id/tr_my_help_center"
+                    style="@style/userCenterItemLableStyle"
+                    android:drawableRight="@drawable/right_bt"
+                    android:text="@string/my_help_center" />
+
+                <ImageView style="@style/hor_line_style" />
+
+                <LinearLayout
+                    android:id="@+id/tr_my_version_checking"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/userCenterItemLableStyle"
+                        android:layout_width="wrap_content"
+                        android:text="@string/my_version_checking" />
+                    <TextView
+                        android:id="@+id/my_the_current_version"
+                        style="@style/userCenterItemMsgStyle"/>
+                </LinearLayout>
+
+                <ImageView style="@style/hor_line_style" />
+
+                <TextView
+                    android:id="@+id/tr_my_about_us"
+                    style="@style/userCenterItemLableStyle"
+                    android:drawableRight="@drawable/right_bt"
+                    android:text="@string/my_about_us" />
+
+                <ImageView style="@style/hor_line_style" />
+
+                <TextView
+                    android:id="@+id/tr_my_feedback"
+                    style="@style/userCenterItemLableStyle"
+                    android:drawableRight="@drawable/right_bt"
+                    android:text="@string/my_feedback" />
+
+                <ImageView style="@style/hor_line_style" />
+
+                <TextView
+                    android:id="@+id/tr_my_contact_us"
+                    style="@style/userCenterItemLableStyle"
+                    android:drawableLeft="@drawable/contact_us"
+                    android:drawableRight="@drawable/right_bt"
+                    android:text="@string/my_contact_us"
+                    android:visibility="gone" />
+
+                <ImageView style="@style/hor_line_style" />
+
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/bt_my_log_out"
+                style="@style/blackBtStyle"
+                android:layout_marginTop="@dimen/margin_40dp"
+                android:text="@string/my_log_out" />
+        </LinearLayout>
+
+
+    </com.lzy.widget.OverScrollDecor>
+
+
+</LinearLayout>

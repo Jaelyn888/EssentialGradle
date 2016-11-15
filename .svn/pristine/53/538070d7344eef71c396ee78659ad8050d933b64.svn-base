@@ -1,0 +1,337 @@
+package com.yishanxiu.yishang.model;
+
+/**
+ * Created by FangDongzhang on 2016/9/7.
+ */
+public class RecommendCarouselPic {
+
+    private String recommendId;
+    private String recommendName;
+    private int recommendType;
+    private String recommendIntroduction;
+    private String recommendDescription;
+    private String recommendTitle;
+    private String recommendNumber;
+    private String recommendSort;
+    private int status;
+    private String statusTime;
+    private int isDelete;
+    private String createTime;
+    private String modifyTime;
+    private String createUserName;
+    private String createUser;
+    private String modifyUserName;
+    private String modifyUser;
+    private String mainPicPath;
+    private String coverPic;
+    private String advertisingPositionFlag;
+    private String advertisingPositionSort;
+    private String attr1;
+    private String attr2;
+    private String attr3;
+    private String attr4;
+    private String attr5;
+    private String attr6;
+
+    public RecommendCarouselPic(String recommendId, String recommendName, int recommendType, String recommendIntroduction, String recommendDescription, String recommendTitle, String recommendNumber, String recommendSort, int status, String statusTime, int isDelete, String createTime, String modifyTime, String createUserName, String createUser, String modifyUserName, String modifyUser, String mainPicPath, String coverPic, String advertisingPositionFlag, String advertisingPositionSort, String attr1, String attr2, String attr3, String attr4, String attr5, String attr6, String picPath, String picSort) {
+        this.recommendId = recommendId;
+        this.recommendName = recommendName;
+        this.recommendType = recommendType;
+        this.recommendIntroduction = recommendIntroduction;
+        this.recommendDescription = recommendDescription;
+        this.recommendTitle = recommendTitle;
+        this.recommendNumber = recommendNumber;
+        this.recommendSort = recommendSort;
+        this.status = status;
+        this.statusTime = statusTime;
+        this.isDelete = isDelete;
+        this.createTime = createTime;
+        this.modifyTime = modifyTime;
+        this.createUserName = createUserName;
+        this.createUser = createUser;
+        this.modifyUserName = modifyUserName;
+        this.modifyUser = modifyUser;
+        this.mainPicPath = mainPicPath;
+        this.coverPic = coverPic;
+        this.advertisingPositionFlag = advertisingPositionFlag;
+        this.advertisingPositionSort = advertisingPositionSort;
+        this.attr1 = attr1;
+        this.attr2 = attr2;
+        this.attr3 = attr3;
+        this.attr4 = attr4;
+        this.attr5 = attr5;
+        this.attr6 = attr6;
+        this.picPath = picPath;
+        this.picSort = picSort;
+    }
+
+    private String picPath;
+    private String picSort;
+
+    public String getRecommendId() {
+        return recommendId;
+    }
+
+    public void setRecommendId(String recommendId) {
+        this.recommendId = recommendId;
+    }
+
+    public String getRecommendName() {
+        return recommendName;
+    }
+
+    public void setRecommendName(String recommendName) {
+        this.recommendName = recommendName;
+    }
+
+    public int getRecommendType() {
+        return recommendType;
+    }
+
+    public void setRecommendType(int recommendType) {
+        this.recommendType = recommendType;
+    }
+
+    public String getRecommendIntroduction() {
+        return recommendIntroduction;
+    }
+
+    public void setRecommendIntroduction(String recommendIntroduction) {
+        this.recommendIntroduction = recommendIntroduction;
+    }
+
+    public String getRecommendDescription() {
+        return recommendDescription;
+    }
+
+    public void setRecommendDescription(String recommendDescription) {
+        this.recommendDescription = recommendDescription;
+    }
+
+    public String getRecommendTitle() {
+        return recommendTitle;
+    }
+
+    public void setRecommendTitle(String recommendTitle) {
+        this.recommendTitle = recommendTitle;
+    }
+
+    public String getRecommendNumber() {
+        return recommendNumber;
+    }
+
+    public void setRecommendNumber(String recommendNumber) {
+        this.recommendNumber = recommendNumber;
+    }
+
+    public String getRecommendSort() {
+        return recommendSort;
+    }
+
+    public void setRecommendSort(String recommendSort) {
+        this.recommendSort = recommendSort;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getStatusTime() {
+        return statusTime;
+    }
+
+    public void setStatusTime(String statusTime) {
+        this.statusTime = statusTime;
+    }
+
+    public int getIsDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(int isDelete) {
+        this.isDelete = isDelete;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getModifyTime() {
+        return modifyTime;
+    }
+
+    public void setModifyTime(String modifyTime) {
+        this.modifyTime = modifyTime;
+    }
+
+    public String getCreateUserName() {
+        return createUserName;
+    }
+
+    public void setCreateUserName(String createUserName) {
+        this.createUserName = createUserName;
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
+    }
+
+    public String getModifyUserName() {
+        return modifyUserName;
+    }
+
+    public void setModifyUserName(String modifyUserName) {
+        this.modifyUserName = modifyUserName;
+    }
+
+    public String getModifyUser() {
+        return modifyUser;
+    }
+
+    public void setModifyUser(String modifyUser) {
+        this.modifyUser = modifyUser;
+    }
+
+    public String getMainPicPath() {
+        return mainPicPath;
+    }
+
+    public void setMainPicPath(String mainPicPath) {
+        this.mainPicPath = mainPicPath;
+    }
+
+    public String getCoverPic() {
+        return coverPic;
+    }
+
+    public void setCoverPic(String coverPic) {
+        this.coverPic = coverPic;
+    }
+
+    public String getAdvertisingPositionFlag() {
+        return advertisingPositionFlag;
+    }
+
+    public void setAdvertisingPositionFlag(String advertisingPositionFlag) {
+        this.advertisingPositionFlag = advertisingPositionFlag;
+    }
+
+    public String getAdvertisingPositionSort() {
+        return advertisingPositionSort;
+    }
+
+    public void setAdvertisingPositionSort(String advertisingPositionSort) {
+        this.advertisingPositionSort = advertisingPositionSort;
+    }
+
+    public String getAttr1() {
+        return attr1;
+    }
+
+    public void setAttr1(String attr1) {
+        this.attr1 = attr1;
+    }
+
+    public String getAttr2() {
+        return attr2;
+    }
+
+    @Override
+    public String toString() {
+        return "RecommendCarouselPic{" +
+                "recommendId='" + recommendId + '\'' +
+                ", recommendName='" + recommendName + '\'' +
+                ", recommendType=" + recommendType +
+                ", recommendIntroduction='" + recommendIntroduction + '\'' +
+                ", recommendDescription='" + recommendDescription + '\'' +
+                ", recommendTitle='" + recommendTitle + '\'' +
+                ", recommendNumber='" + recommendNumber + '\'' +
+                ", recommendSort='" + recommendSort + '\'' +
+                ", status=" + status +
+                ", statusTime='" + statusTime + '\'' +
+                ", isDelete=" + isDelete +
+                ", createTime='" + createTime + '\'' +
+                ", modifyTime='" + modifyTime + '\'' +
+                ", createUserName='" + createUserName + '\'' +
+                ", createUser='" + createUser + '\'' +
+                ", modifyUserName='" + modifyUserName + '\'' +
+                ", modifyUser='" + modifyUser + '\'' +
+                ", mainPicPath='" + mainPicPath + '\'' +
+                ", coverPic='" + coverPic + '\'' +
+                ", advertisingPositionFlag='" + advertisingPositionFlag + '\'' +
+                ", advertisingPositionSort='" + advertisingPositionSort + '\'' +
+                ", attr1='" + attr1 + '\'' +
+                ", attr2='" + attr2 + '\'' +
+                ", attr3='" + attr3 + '\'' +
+                ", attr4='" + attr4 + '\'' +
+                ", attr5='" + attr5 + '\'' +
+                ", attr6='" + attr6 + '\'' +
+                ", picPath='" + picPath + '\'' +
+                ", picSort='" + picSort + '\'' +
+                '}';
+    }
+
+    public void setAttr2(String attr2) {
+        this.attr2 = attr2;
+    }
+
+    public String getAttr3() {
+        return attr3;
+    }
+
+    public void setAttr3(String attr3) {
+        this.attr3 = attr3;
+    }
+
+    public String getAttr4() {
+        return attr4;
+    }
+
+    public void setAttr4(String attr4) {
+        this.attr4 = attr4;
+    }
+
+    public String getAttr5() {
+        return attr5;
+    }
+
+    public void setAttr5(String attr5) {
+        this.attr5 = attr5;
+    }
+
+    public String getAttr6() {
+        return attr6;
+    }
+
+    public void setAttr6(String attr6) {
+        this.attr6 = attr6;
+    }
+
+    public String getPicPath() {
+        return picPath;
+    }
+
+    public void setPicPath(String picPath) {
+        this.picPath = picPath;
+    }
+
+    public String getPicSort() {
+        return picSort;
+    }
+
+    public void setPicSort(String picSort) {
+        this.picSort = picSort;
+    }
+}

@@ -1,0 +1,116 @@
+package com.yishanxiu.yishang.utils;
+
+import android.graphics.BitmapFactory;
+import com.umeng.socialize.Config;
+import com.umeng.socialize.PlatformConfig;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.ShareContent;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.utils.Log;
+import com.yishanxiu.yishang.getdata.GetDataConfing;
+
+import android.app.Activity;
+import android.text.TextUtils;
+import net.tsz.afinal.toast.Toast;
+import com.yishanxiu.yishang.R;
+
+/**
+ * Created by Jaelyn on 2016/7/7.
+ * 登录
+ */
+public class ShareSocialUtils {
+
+
+	// 添加微信、微信朋友圈平台
+	// 注意：在微信授权的时候，必须传递appSecret
+	// wx967daebe835fbeac是你在微信开发平台注册应用的AppID, 这里需要替换成你注册的AppID
+	public static final String WEIXIN_APP_ID = "wx106efe31792496c6";
+	public static final String WEIXIN_APP_SECRET = "87685f2ca9d54b2dceab8aad3450e989";
+	// 公共 qq的id和key
+	//public static final String QQ_APP_ID = "100424468";
+	//public static final String QQ_APP_Secret = "c7394704798a158208a74ab60104f0ba";
+	public static final String QQ_APP_ID = "1105512065";
+	public static final String QQ_APP_Secret = "rvMMz8o1dgDLsHzH";
+
+	//新浪微博
+	public static final String SINA_APP_ID = "104974306";
+	public static final String SINA_APP_Secret = "45d62bd12538cc30a6a990417b0758d0";
+
+	public static void init() {
+		PlatformConfig.setWeixin(WEIXIN_APP_ID, WEIXIN_APP_SECRET);
+		PlatformConfig.setSinaWeibo(SINA_APP_ID, SINA_APP_Secret);
+		PlatformConfig.setQQZone(QQ_APP_ID, QQ_APP_Secret);
+		Config.IsToastTip=false;
+		Config.REDIRECT_URL="http://sns.whalecloud.com/sina2/callback";
+	}
+
+	public static void showShareCompont(final Activity activity, String imgUrl, String targetUrl, String shareTitle,
+	                                    String content) {
+		//可以将一下代码加到你的MainActivity中，或者在任意一个需要调用分享功能的activity当中
+		//String[] mPermissionList = new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.CALL_PHONE,Manifest.permission.READ_LOGS,Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.SET_DEBUG_APP,Manifest.permission.SYSTEM_ALERT_WINDOW,Manifest.permission.GET_ACCOUNTS};
+		//ActivityCompat.requestPermissions(activity,mPermissionList, 100);
+
+		targetUrl = GetDataConfing.Url_Base + targetUrl;
+		//imgUrl="http://c.hiphotos.baidu.com/album/w%3D236%3Bcrop%3D0%2C42%2C236%2C236%3Bq%3D90/sign=8e8c0e3294eef01f4d141fc6d6c5fa57/d0c8a786c9177f3e5d0a4b5b70cf3bc79f3d56ad.jpg";
+		if (TextUtils.isEmpty(shareTitle)) {
+			shareTitle = activity.getString(R.string.app_name);
+		}
+		if (TextUtils.isEmpty(content)) {
+			content = shareTitle;// getString(R.string.share_default_content);
+		}
+		 //imgUrl="http://www.umeng.com/images/pic/social/integrated_3.png";
+		UMImage localImage;
+		if (TextUtils.isEmpty(imgUrl)) {
+			localImage = new UMImage(activity,BitmapFactory.decodeResource(activity.getResources(), R.drawable.app_icon));
+		} else {
+			imgUrl = StringUtils.getSSImage(imgUrl);
+			localImage = new UMImage(activity, imgUrl);
+		}
+		//localImage.setTargetUrl(targetUrl);
+
+		// 添加新浪SSO
+//		ShareContent sinaContent = new ShareContent();
+//		sinaContent.mText = shareTitle +"|" + content + targetUrl;
+//
+//		// 设置朋友圈分享的内容 只支持title
+//		ShareContent circleContent = new ShareContent();
+//		circleContent.mText = shareTitle + "|" + content;
+
+		// 设置其他默认分享内容
+		// 微信分享必须设置targetURL，需要为http链接格式
+//		ShareContent defaultContent = new ShareContent();
+//		defaultContent.mText = content;
+//		defaultContent.mTitle = shareTitle;
+//		defaultContent.mMedia=localImage;
+//		defaultContent.mTargetUrl=targetUrl;
+		new ShareAction(activity).setDisplayList(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,SHARE_MEDIA.SINA,  SHARE_MEDIA.QQ)
+				.withTargetUrl(targetUrl).withMedia(localImage).withTitle(shareTitle).withText(content)
+				.setListenerList(new UMShareListener() {
+					@Override
+					public void onResult(SHARE_MEDIA platform) {
+						if (platform.name().equals("WEIXIN_FAVORITE")) {
+							Toast.makeText(activity,  "收藏成功", android.widget.Toast.LENGTH_SHORT).show();
+						} else {
+							Toast.makeText(activity, "分享成功", android.widget.Toast.LENGTH_SHORT).show();
+						}
+					}
+
+					@Override
+					public void onError(SHARE_MEDIA platform, Throwable t) {
+						Toast.makeText(activity,  "分享失败", android.widget.Toast.LENGTH_SHORT).show();
+						if (t != null) {
+							LogUtil.d("throw", "throw:" + t.getMessage());
+						}
+					}
+
+					@Override
+					public void onCancel(SHARE_MEDIA platform) {
+						Toast.makeText(activity, "取消分享", android.widget.Toast.LENGTH_SHORT).show();
+					}
+				})
+				.open();
+	}
+
+}

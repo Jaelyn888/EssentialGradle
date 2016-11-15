@@ -1,0 +1,72 @@
+package net.tsz.afinal.loading;
+
+/**
+ * Created by Jaelyn on 16/3/4.
+ */
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface.OnCancelListener;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.util.AttributeSet;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import com.example.aymutilused2.R;
+
+public class LoadingDataDialog extends Dialog {
+    private Context context;
+    private TextView tv_msg;
+
+    public LoadingDataDialog(Context context) {
+        super(context);
+        this.context = context;
+        this.init();
+    }
+
+    public LoadingDataDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
+        super(context, cancelable, cancelListener);
+        this.context = context;
+        this.init();
+    }
+
+    public LoadingDataDialog(Context context, int theme) {
+        super(context, theme);
+        this.context = context;
+        this.init();
+    }
+
+    private void init() {
+    }
+
+    protected void onCreate(Bundle savedInstanceState) {
+        this.requestWindowFeature(1);
+        this.getWindow().setBackgroundDrawableResource(R.drawable.adddata_toast_bg);
+        super.onCreate(savedInstanceState);
+        this.setContentView(this.creatLayout());
+    }
+
+    private LinearLayout creatLayout() {
+        LinearLayout layout = new LinearLayout(this.context);
+        layout.setPadding(10, 10, 10, 10);
+        layout.setGravity(16);
+        ProgressBar progressBar = new ProgressBar(this.context, null, 16842873);
+        layout.addView(progressBar);
+        this.tv_msg = new TextView(this.context);
+        this.tv_msg.setText(R.string.text_loadingdata);
+        this.tv_msg.setTextColor(Color.parseColor("#cccccc"));
+        layout.addView(this.tv_msg);
+        return layout;
+    }
+
+    public void setMessage(String msg) {
+        if(this.tv_msg != null) {
+            this.tv_msg.setText(msg);
+        }
+
+    }
+
+    public void setMessage(int resId) {
+        this.setMessage(this.context.getString(resId));
+    }
+}

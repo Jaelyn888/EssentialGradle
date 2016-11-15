@@ -1,0 +1,60 @@
+package com.yishanxiu.yishang.bean;
+
+import java.io.Serializable;
+
+public class ApkInfo implements Serializable {
+	private String name;
+	private String url;
+	private String iconUrl;
+	boolean autoInstall=false;
+	boolean isShowNotification=true;
+
+	public ApkInfo() {
+	}
+
+	public ApkInfo(String name, String url, String iconUrl) {
+		this.name = name;
+		this.url = url;
+		this.iconUrl = iconUrl;
+	}
+
+	public boolean isAutoInstall() {
+		return autoInstall;
+	}
+
+	public void setAutoInstall(boolean autoInstall) {
+		this.autoInstall = autoInstall;
+	}
+
+	public boolean isShowNotification() {
+		return isShowNotification;
+	}
+
+	public void setShowNotification(boolean showNotification) {
+		isShowNotification = showNotification;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getIconUrl() {
+		return iconUrl;
+	}
+
+	public void setIconUrl(String iconUrl) {
+		this.iconUrl = iconUrl;
+	}
+}

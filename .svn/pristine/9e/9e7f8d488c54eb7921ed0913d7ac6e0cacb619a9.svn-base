@@ -1,0 +1,80 @@
+package com.yishanxiu.yishang.adapter;
+
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import cn.bingoogolapple.androidcommon.adapter.BGAViewHolderHelper;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.model.article.ArticleCommentModel;
+import com.yishanxiu.yishang.model.article.ArticleModel;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+import com.yishanxiu.yishang.utils.Constant;
+import com.yishanxiu.yishang.utils.StringUtils;
+import com.yishanxiu.yishang.view.CircleImageView;
+import net.tsz.afinal.json.JsonMap;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Jaelyn on 16/3/3. 文章评论
+ */
+public class ArticleCommentsAdapter extends CommonBaseAdapter<ArticleCommentModel> {
+
+	private int flag;
+
+	public int getFlag() {
+		return flag;
+	}
+
+	public void setFlag(int flag) {
+		this.flag = flag;
+	}
+
+
+	public ArticleCommentsAdapter(Context context) {
+		super(context,R.layout.artical_comments_item);
+	}
+
+
+
+	@Override
+	protected void fillData(BGAViewHolderHelper viewHolderHelper, int position, Object model) {
+
+		 CircleImageView user_photo_iv= (CircleImageView) viewHolderHelper.getImageView(R.id.user_photo_iv);
+		 TextView userName_tv=viewHolderHelper.getTextView(R.id.userName_tv);
+		 TextView create_time_tv=viewHolderHelper.getTextView(R.id.create_time_tv);
+		 TextView userComments_tv=viewHolderHelper.getTextView(R.id.userComments_tv);
+		ArticleCommentModel articleCommentModel= (ArticleCommentModel) model;
+		userName_tv.setText(articleCommentModel.getUserNickname());
+
+		create_time_tv.setText(StringUtils.getTimeFormatFull(articleCommentModel.getCreateTime()));
+
+		BitmapHelper.setUserIcon(mContext,articleCommentModel, user_photo_iv);
+		userComments_tv.setText(articleCommentModel.getCommentContent());
+	}
+
+
+	public class ArticleCommentsAdapterViewHolder {
+
+
+	}
+
+	public interface ItemClickListener {
+		/**
+		 * 返回item的空间的点击事件
+		 *
+		 * @param itemCompontType
+		 *            点击事件的类型 RECOMMAND_ITEM_CLICK：推荐列表的点击事件 MORE_CLICK：更多点击
+		 * @param position
+		 *            点击的item的位置
+		 * @param childPosition
+		 *            当点击的是推荐列表的item 返回数据的子list的位置 否则返回-1
+		 */
+		void onItemClickListener(Constant.FindItemCompontType itemCompontType, int position, int childPosition);
+	}
+}

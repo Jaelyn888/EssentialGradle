@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_bg">
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/common_margin"
+        android:paddingLeft="@dimen/common_margin"
+        android:paddingRight="@dimen/common_margin"
+        android:paddingTop="@dimen/common_margin"
+        android:text="@string/title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/view01"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/common_margin"
+        android:paddingRight="@dimen/common_margin"
+        android:paddingTop="@dimen/margin_8dp">
+
+        <TextView
+            android:id="@+id/addressee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left|center" />
+
+        <TextView
+            android:id="@+id/phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin"
+            android:gravity="left|center" />
+
+        <TextView
+            android:id="@+id/zip_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin"
+            android:gravity="left|center"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/addr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin"
+            android:gravity="left|center" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/margin_40dp"
+            android:gravity="left|center"
+            android:text="@string/return_logistics" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_50"
+            android:background="@color/white"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/logistic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/common_margin"
+                android:background="@null"
+                android:drawableRight="@drawable/pop_down"
+                android:ems="10"
+                android:hint=""
+                android:paddingLeft="@dimen/common_margin">
+
+                <requestFocus />
+            </EditText>
+        </LinearLayout>
+        <com.jaredrummler.materialspinner.MaterialSpinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_50"
+            android:paddingStart="@dimen/common_margin"
+            app:ms_dropdown_height="wrap_content"
+            app:ms_dropdown_max_height="300dp"
+
+
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/margin_40dp"
+            android:gravity="left|center"
+            android:text="@string/shipment_number" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_50"
+            android:background="@color/white">
+
+            <EditText
+                android:id="@+id/logistic_number"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:ems="10"
+                android:hint=""
+                android:paddingLeft="@dimen/margin_28dp">
+
+                <requestFocus />
+            </EditText>
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/submit"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_45dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/TextColorBlack"
+        android:gravity="center"
+        android:text="@string/submit"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize_16" />
+
+    <View
+        android:id="@+id/view01"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/line_height"
+        android:layout_below="@+id/textView1"
+        android:background="@color/white" />
+
+</RelativeLayout>

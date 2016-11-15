@@ -1,0 +1,107 @@
+apply plugin: 'com.android.application'
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.2"
+
+//    aaptOptions {
+//        additionalParameters '-S',
+////                '/Users/yifan/dev/github/Testapp/app/src/main/res3',
+////                '-S',
+//                'src/main/res2',
+//                '--auto-add-overlay'
+//        noCompress 'foo', 'bar'
+//        ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:<dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~'
+//    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+            main.res.srcDirs = ['src/main/res', 'src/main/res2']
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.yishanxiu.yishang"
+        minSdkVersion 19
+        targetSdkVersion 24
+        multiDexEnabled true
+    }
+
+    signingConfigs {
+        release {
+            keyAlias 'essential'
+            keyPassword '123456'
+            storeFile file('E:/Android/Essential2.0_android/essential_sign.jks')
+            storePassword '123456'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
+        }
+    }
+
+}
+//task makeApk {
+//    doLast {
+//        def versionName = android.defaultConfig.versionName
+//        def appName = "essential_v${versionName}.apk"
+//        copy {
+//            from "./build/outputs/apk/app-debug.apk"
+//            into "../"
+//            rename {
+//                appName
+//            }
+//        }
+//    }
+//
+//
+//}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:recyclerview-v7:+'
+
+    compile 'com.android.support:design:24.2.0'
+
+    compile 'com.android.support:multidex:'
+    //兼容6.0  权限检查
+    compile 'pub.devrel:easypermissions:0.1.9'
+    //滑动固定头部
+    compile 'se.emilsjolander:stickylistheaders:2.7.0'
+    compile 'com.google.code.gson:gson:2.5'
+    //选择图片
+    compile 'cn.aigestudio.wheelpicker:WheelPicker:1.1.2'
+    compile 'com.lzy.widget:view-core:+'
+    //网络请求
+    compile 'com.lzy.net:okhttputils:+'
+    //版本号使用 + 可以自动引用最新版
+    compile 'com.lzy.net:okhttpserver:+'
+    //版本号使用 + 可以自动引用最新版
+    compile 'com.shizhefei:ViewPagerIndicator:1.1.2'
+
+
+    compile 'cn.bingoogolapple:bga-banner:2.0.9@aar'
+
+    compile 'cn.bingoogolapple:bga-adapter:+'
+
+    compile 'com.nineoldandroids:library:2.4.0'
+
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+    //放大图  不知哪里已经引入
+
+    //compile 'com.github.chrisbanes:PhotoView:1.3.0'
+    compile project(':aymUtilUsed2')
+    compile project(':cloudTagView')
+    compile project(':easeui')
+    compile project(':imagepicker')
+    compile project(':library')
+    compile project(':ptrLibs')
+    compile project(':social_sdk_library')
+}

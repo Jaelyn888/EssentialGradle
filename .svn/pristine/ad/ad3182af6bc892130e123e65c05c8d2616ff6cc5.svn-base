@@ -1,0 +1,10 @@
+package me.kaede.tagview;
+
+import android.view.View;
+
+/**
+ * listener for tag delete
+ */
+public interface OnTagClickListener {
+	void onTagClick(View view, Tag tag, int position);
+}

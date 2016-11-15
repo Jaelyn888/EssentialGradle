@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlt_pop"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_transparent" >
+
+    <LinearLayout
+        android:id="@+id/ll_popup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#ffffff"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/common_margin"
+                android:paddingRight="@dimen/common_margin"
+                android:paddingBottom="@dimen/margin_8dp"
+                android:paddingTop="@dimen/margin_8dp"
+                android:text="@string/cancel"
+                 />
+
+            <TextView
+                android:id="@+id/TextView01"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ensure"
+                android:layout_alignParentRight="true"
+                android:paddingRight="@dimen/common_margin"
+                android:paddingLeft="@dimen/common_margin"
+                android:paddingBottom="@dimen/margin_8dp"
+                android:paddingTop="@dimen/margin_8dp"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/select_photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/select_photo_camera_bt"
+                    style="@style/mydata_select_photo"
+                    android:text="@string/take_photograph" />
+
+                <ImageView style="@style/hor_line_style" />
+
+                <TextView
+                    android:id="@+id/select_photo_local_bt"
+                    style="@style/mydata_select_photo"
+                    android:text="@string/select_local" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

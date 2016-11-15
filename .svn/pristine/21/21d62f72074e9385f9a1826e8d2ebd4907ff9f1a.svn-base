@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/scroll_view_head"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_gravity="center"
+	android:background="@color/transparent">
+	 <include layout="@layout/shop_zoom_view"/>
+
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_centerInParent="true"
+		android:orientation="vertical"
+		android:paddingBottom="50dp">
+
+		<TextView
+			android:id="@+id/shop_name_tv"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:layout_marginLeft="@dimen/common_double_margin"
+			android:layout_marginRight="@dimen/common_double_margin"
+			android:ellipsize="end"
+			android:maxLines="2"
+			android:textColor="@color/white"
+			android:textSize="22sp"
+			android:textStyle="bold" />
+
+		<ImageView
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:layout_marginBottom="@dimen/comon_half_margin"
+			android:layout_marginTop="@dimen/comon_half_margin"
+			android:src="@color/white" />
+
+		<TextView
+			android:id="@+id/shop_discri_tv"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:layout_marginLeft="@dimen/common_double_margin"
+			android:layout_marginRight="@dimen/common_double_margin"
+			android:layout_marginTop="2dp"
+			android:textColor="@color/white"
+			android:textSize="18sp" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:orientation="horizontal"
+		android:layout_marginBottom="@dimen/comon_half_margin"
+		android:paddingLeft="@dimen/common_margin"
+		android:paddingRight="@dimen/common_margin" >
+
+		<LinearLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginRight="50dp"
+			android:layout_weight="1"
+			android:orientation="vertical" >
+
+			<TextView
+				android:id="@+id/shop_detail_discri_tv"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:ellipsize="end"
+				android:maxLines="2"
+				android:textColor="@color/white"
+				android:lineSpacingExtra="@dimen/margin_3dp"
+				android:textSize="@dimen/font_size13"
+				/>
+
+			<TextView
+				android:id="@+id/detail_more"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_2dp"
+				android:text="@string/more_detail"
+				android:textColor="@color/white"
+				android:textSize="@dimen/font_size13" />
+		</LinearLayout>
+
+		<TextView
+			android:id="@+id/attention_tag_iv"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@drawable/round_white"
+			android:gravity="center"
+			android:paddingBottom="@dimen/margin_5dp"
+			android:paddingLeft="@dimen/dp_13"
+			android:paddingRight="@dimen/dp_13"
+			android:paddingTop="@dimen/margin_5dp"
+			android:layout_marginTop="@dimen/margin_3dp"
+			android:text="@string/attentioned"
+			android:textColor="@color/white" />
+	</LinearLayout>
+</RelativeLayout>

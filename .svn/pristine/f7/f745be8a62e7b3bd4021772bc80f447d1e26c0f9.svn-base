@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:id="@+id/main_top_layout"
+              android:gravity="center_vertical">
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:id="@+id/title_layout"
+            android:background="@drawable/top_background"
+            android:gravity="center_vertical">
+        <TextView
+                android:id="@+id/head_title"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                style="@style/text_18_title"
+                android:drawableRight="@drawable/logo_white"/>
+
+        <ImageView
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:id="@+id/title_menu_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/shopcart_main_top"
+                android:paddingLeft="@dimen/comon_half_margin"
+                android:paddingRight="@dimen/common_margin"/>
+
+    </RelativeLayout>
+
+    <ImageView android:layout_width="match_parent"
+               android:layout_height="2px"
+               android:src="@android:color/black"/>
+    <!--二级导航-->
+    <LinearLayout
+            android:id="@+id/second_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/titlebar_height_sub">
+
+
+        <LinearLayout
+                android:id="@+id/item_left_layout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/nav_bar"
+                android:gravity="center">
+            <TextView
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:drawablePadding="@dimen/default_drawpadding"
+                    android:drawableRight="@drawable/pop_down_white"
+                    android:drawableBottom="@drawable/hor_line_white_2"
+                    android:id="@+id/item_left_tv"
+                    android:text="@string/source"/>
+        </LinearLayout>
+
+        <ImageView
+                android:layout_height="match_parent"
+                android:layout_width="1.5dp"
+                android:src="@android:color/black"/>
+
+        <RelativeLayout
+                android:id="@+id/item_right_layout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/nav_bar">
+            <TextView
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:drawablePadding="@dimen/default_drawpadding"
+                    android:drawableRight="@drawable/pop_gray"
+                    android:drawableBottom="@drawable/hor_line_trans_2"
+                    android:text="@string/special_subject"
+                    android:layout_centerInParent="true"
+                    android:id="@+id/item_right_tv"/>
+            <ImageView
+                    android:visibility="gone"
+                    android:id="@+id/iv_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/search"
+                    android:layout_alignParentRight="true"
+                    android:paddingLeft="@dimen/common_margin"
+                    android:paddingRight="@dimen/common_margin"
+                    android:layout_centerVertical="true"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

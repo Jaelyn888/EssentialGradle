@@ -1,0 +1,36 @@
+package com.yishanxiu.yishang.adapter;
+
+import java.util.ArrayList;
+
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+
+/**
+ * Viewpager 适配器
+ * 
+ * @author FangDongzhang 2016/7/5
+ *
+ */
+public class ViewPagerAdapter extends FragmentPagerAdapter {
+
+	ArrayList<Fragment> list;
+
+	public ViewPagerAdapter(FragmentManager fm, ArrayList<Fragment> fragments) {
+		super(fm);
+		this.list = fragments;
+	}
+
+	@Override
+	public Fragment getItem(int arg0) {
+		// TODO Auto-generated method stub
+		return list.get(arg0);
+	}
+
+	@Override
+	public int getCount() {
+		// TODO Auto-generated method stub
+		return list.size();
+	}
+
+}

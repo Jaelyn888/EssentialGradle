@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "/Users/admin/android/EssentialGradle/social_sdk_library/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4/umeng_socialize_light_bar_bg_pad.9.png",
+        "source": "/Users/admin/android/EssentialGradle/social_sdk_library/build/intermediates/bundles/debug/res/drawable-hdpi-v4/umeng_socialize_light_bar_bg_pad.9.png"
+    },
+    {
+        "merged": "/Users/admin/android/EssentialGradle/social_sdk_library/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4/umeng_socialize_oauth_check_on.png",
+        "source": "/Users/admin/android/EssentialGradle/social_sdk_library/build/intermediates/bundles/debug/res/drawable-hdpi-v4/umeng_socialize_oauth_check_on.png"
+    },
+    {
+        "merged": "/Users/admin/android/EssentialGradle/social_sdk_library/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4/umeng_socialize_nav_bar_bg_pad.9.png",
+        "source": "/Users/admin/android/EssentialGradle/social_sdk_library/build/intermediates/bundles/debug/res/drawable-hdpi-v4/umeng_socialize_nav_bar_bg_pad.9.png"
+    },
+    {
+        "merged": "/Users/admin/android/EssentialGradle/social_sdk_library/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4/ic_logo.png",
+        "source": "/Users/admin/android/EssentialGradle/social_sdk_library/build/intermediates/bundles/debug/res/drawable-hdpi-v4/ic_logo.png"
+    },
+    {
+        "merged": "/Users/admin/android/EssentialGradle/social_sdk_library/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4/umeng_socialize_oauth_check_off.png",
+        "source": "/Users/admin/android/EssentialGradle/social_sdk_library/build/intermediates/bundles/debug/res/drawable-hdpi-v4/umeng_socialize_oauth_check_off.png"
+    }
+]

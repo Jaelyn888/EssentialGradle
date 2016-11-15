@@ -1,0 +1,29 @@
+package com.yishanxiu.yishang.model.shopmall;
+
+import com.yishanxiu.yishang.model.user.UserBaseInfoModel;
+
+/**
+ * Created by Jaelyn on 2016/9/19.
+ */
+public class ProductCommentModel extends UserBaseInfoModel {
+
+	private String commentContent;
+	private String productSpecification;
+
+
+	public String getCommentContent() {
+		return commentContent;
+	}
+
+	public void setCommentContent(String commentContent) {
+		this.commentContent = commentContent;
+	}
+
+	public String getProductSpecification() {
+		return productSpecification;
+	}
+
+	public void setProductSpecification(String productSpecification) {
+		this.productSpecification = productSpecification;
+	}
+}

@@ -1,0 +1,69 @@
+/**
+ * Copyright (c) 2013 An Yaming,  All Rights Reserved
+ */
+package com.yishanxiu.yishang.getdata;
+
+import android.content.Context;
+import net.tsz.afinal.json.JsonMap;
+import net.tsz.afinal.json.JsonParseHelper;
+import net.tsz.afinal.toast.Toast;
+import com.yishanxiu.yishang.R;
+
+
+/**
+ * 展示无获取数据相关的错误信息的提示
+ * 
+ * @author 亚明
+ * 
+ */
+public class ShowGetDataError {
+	private final static String TAG = ShowGetDataError.class.getSimpleName();
+	
+	/**
+	 * 展示无网络访问提示信息
+	 */
+	public static void showNetError(Context c) {
+		Toast.makeText(c, c.getString(R.string.neterror), Toast.LENGTH_SHORT)
+				.show();
+	}
+
+
+	/**
+	 * 本次访问成功的返回的服务正确处理信息 并且返回的数据时可用的不为空<br />
+	 * 
+	 * @param context
+	 *            使用的上下文
+	 * @param jsonStr
+	 *            需要验证的json字符串
+	 * @return 验证结果
+	 */
+	@Deprecated
+	public static boolean isOkAndCodeIsNot1(Context context, String jsonStr) {
+		JsonMap<String, Object> data = JsonParseHelper.getJsonMap(jsonStr);
+		if (data.getInt(JsonKeys.Key_Code) == 1) {
+			return true;
+		} else {
+			Toast.makeText(context, data.getString(JsonKeys.Key_Msg),
+					Toast.LENGTH_SHORT).show();
+			return false;
+		}
+	}
+
+	/**
+	 * 判断code是否成功
+	 * @param context
+	 * @param jsonStr
+	 * @return
+	 */
+	public static boolean isCodeSuccess(Context context,String jsonStr){
+		JsonMap<String, Object> data = JsonParseHelper.getJsonMap(jsonStr);
+		if (data.getInt(JsonKeys.Key_Code) == 1) {
+			return true;
+		} else {
+			Toast.makeText(context, data.getString(JsonKeys.Key_Msg),
+					Toast.LENGTH_SHORT).show();
+			return false;
+		}
+	}
+
+}

@@ -1,0 +1,103 @@
+package net.tsz.afinal.loading;
+
+import android.content.Context;
+import com.example.aymutilused2.R;
+
+/**
+ * Created by admin on 15/6/26.
+ */
+public class MyLoadingDataDialogManager {
+	private final String TAG = MyLoadingDataDialogManager.class.getSimpleName();
+	private int index = 0;
+	private LoadingDataDialog progressDialog;
+	private boolean isCancelable = true;
+	private Context context;
+
+	private MyLoadingDataDialogManager(Context context, String loadingMsg) {
+		this.context = context;
+		this.progressDialog = new LoadingDataDialog(context);
+		if (loadingMsg == null) {
+			this.progressDialog.setMessage(R.string.text_loadingdata);
+		}
+		this.progressDialog.setCancelable(isCancelable);
+		this.progressDialog.setCanceledOnTouchOutside(false);
+	}
+
+
+	/**
+	 * 恢复默认提示
+	 *
+	 */
+	public void setDefaultMsg() {
+		this.progressDialog.setMessage(R.string.text_loadingdata);
+	}
+
+	public boolean isCancelable() {
+		return isCancelable;
+	}
+
+	public void setIsCancelable(boolean isCancelable) {
+		this.isCancelable = isCancelable;
+	}
+
+	public static MyLoadingDataDialogManager init(Context context) {
+		return new MyLoadingDataDialogManager(context, null);
+	}
+
+	public static MyLoadingDataDialogManager init(Context context, String loadingMsg) {
+		return new MyLoadingDataDialogManager(context, loadingMsg);
+	}
+
+	public static MyLoadingDataDialogManager init(Context context, int resIdLoadingMsg) {
+		return new MyLoadingDataDialogManager(context, context.getResources().getString(resIdLoadingMsg));
+	}
+
+	public void destroy() {
+		if (this.progressDialog != null) {
+			this.progressDialog.dismiss();
+			this.progressDialog = null;
+		}
+
+	}
+
+	public void show() {
+		if (this.index == 0) {
+			if (this.progressDialog != null) {
+				setDefaultMsg();
+				this.progressDialog.show();
+			} else {
+			}
+		}
+
+		++this.index;
+	}
+
+	public void update(String msg) {
+		if (this.progressDialog != null) {
+			this.progressDialog.setMessage(msg);
+		} else {
+		}
+	}
+
+	public void update(int resId) {
+		if (this.progressDialog != null) {
+			this.progressDialog.setMessage(resId);
+		} else {
+		}
+	}
+
+	public void dismiss() {
+		if (this.index <= 1) {
+			if (this.progressDialog != null) {
+				this.progressDialog.hide();
+			} else {
+			}
+
+			this.index = 0;
+		} else {
+			--this.index;
+		}
+
+	}
+}
+

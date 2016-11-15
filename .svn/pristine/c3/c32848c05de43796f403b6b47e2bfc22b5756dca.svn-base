@@ -1,0 +1,468 @@
+package com.yishanxiu.yishang.activity.base;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+
+import com.hyphenate.chatuidemo.DemoHelper;
+import com.hyphenate.chatuidemo.ui.ChatActivity;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.activity.*;
+import com.yishanxiu.yishang.getdata.GetDataConfing;
+import com.yishanxiu.yishang.getdata.GetDataQueue;
+import com.yishanxiu.yishang.getdata.GetServicesDataUtil;
+import com.yishanxiu.yishang.getdata.IGetServicesDataCallBack;
+import com.yishanxiu.yishang.model.shopmall.BrandModel;
+import com.yishanxiu.yishang.model.shopmall.ProductInfoModel;
+import com.yishanxiu.yishang.utils.Constant;
+import com.yishanxiu.yishang.utils.ExtraKeys;
+import com.yishanxiu.yishang.utils.Utils;
+import com.yishanxiu.yishang.view.WihteRoundCornersDialog;
+
+import net.tsz.afinal.loading.MyLoadingDataDialogManager;
+import net.tsz.afinal.toast.ToastUtil;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by Administrator on 2015/8/17 0017. 最基础的类 提供基本的公共方法
+ */
+public class BaseActivity extends AFinalActivity {
+
+	/**
+	 * 提示toast的展示对象 可直接调用期show方法展示文字
+	 */
+	public ToastUtil toast;
+	/**
+	 * 模拟toast展示加载数据的对话框，使界面更加友好
+	 */
+	public MyLoadingDataDialogManager loadingToast;
+
+	/**
+	 * 调用服务器接口获取服务器数据的工具
+	 */
+	public GetServicesDataUtil getDataUtil;
+	protected BaseActivity mContext;
+	protected InputMethodManager imm;
+
+	/**
+	 * 初始化了toast 同时也初始化加载数据对话框
+	 */
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+		//设置横屏模式
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+		toast = ToastUtil.initToast(this);
+		loadingToast = MyLoadingDataDialogManager.init(this);
+		getDataUtil = GetServicesDataUtil.init();
+		mContext = this;
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		DemoHelper.getInstance().pushActivity(this);
+		// register the event listener when enter the foreground
+
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		// remove activity from foreground activity list
+		DemoHelper.getInstance().popActivity(this);
+	}
+
+	/**
+	 * 将展示的加载数据的对话框释放掉
+	 */
+	@Override
+	protected void onDestroy() {
+		if (null != loadingToast) {
+			loadingToast.destroy();
+		}
+		super.onDestroy();
+	}
+
+	/**
+	 * 清空历史记录
+	 *
+	 * @param clzz
+	 */
+	public void jumpToAndClearAll(Class clzz) {
+		Intent intent = new Intent(this, clzz);
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+		jumpTo(intent, true);
+	}
+
+	public void jumpToAndClearAll(Intent intent) {
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+		jumpTo(intent, true);
+	}
+
+	public void jumpTo(Intent intent) {
+		jumpTo(intent, false);
+	}
+
+	public void jumpTo(Intent intent, boolean isFinish) {
+		startActivity(intent);
+		if (isFinish) {
+			this.finish();
+		}
+	}
+
+	/**
+	 * activity 跳转
+	 *
+	 * @param clzz 跳转到的activity
+	 */
+	public void jumpTo(Class clzz) {
+		jumpTo(clzz, false);
+	}
+
+	public void jumpTo(Class clzz, boolean isFinish) {
+		Intent intent = new Intent(mContext, clzz);
+		jumpTo(intent, isFinish);
+	}
+
+
+	/**
+	 * 添加关注  userId=1&contentId=1&collectionType=1
+	 */
+	public void getDate_GetFocusOn(IGetServicesDataCallBack callBack, String vendorId, Constant.CollectionType collectionType, Context context) {
+		if (Utils.isBrandFastClick()) {
+			return;
+		}
+		if (Utils.isHasLogin(context)) {
+
+
+			Map<String, Object> params = new HashMap<String, Object>();
+
+			params.put("contentId", vendorId);
+			params.put("userId", Utils.getUserId(context));
+			params.put("collectionType", collectionType.ordinal() + "");
+			GetDataQueue queue = new GetDataQueue();
+			queue.setActionName(GetDataConfing.GetAction_GetFocusOn);
+			queue.setCallBack(callBack);
+			queue.setWhat(GetDataConfing.WHAT_GET_FOCUS_ON);
+			queue.setParamsNoJson(params);
+			getDataUtil.getData(queue);
+		} else {
+			jumpTo(LoginActivity.class);
+		}
+	}
+
+
+	/**
+	 * 商品图片的点击 进入大图
+	 *
+	 * @param picPosition
+	 */
+	public void goodsImage_click(String pic_jsonStr, int picPosition) {
+		Intent intent = new Intent(mContext, ShowBigImageActivity.class);
+		intent.putExtra(Constant.IMAGE_JSON_STR, pic_jsonStr);
+		intent.putExtra(Constant.IMAGE_POSITION, picPosition);
+		jumpTo(intent, false);
+	}
+
+
+	/**
+	 * 进入购物车
+	 */
+	public void jumpToShopCart() {
+		if (Utils.isFastClick()) {
+			return;
+		}
+		if (Utils.isHasLogin(mContext)) {
+			jumpTo(ShoppingCartActivity.class);
+		} else {
+			gotoLogin();
+		}
+
+		// int shoppCartNum = myApplication.getShopcart_num();
+		// if (shoppCartNum == 0) {
+		// toast.showToast(R.string.shoppingCart_null);
+		// } else {
+		// jumpTo(ShopCartActivity.class);
+		// }
+	}
+
+	/**
+	 * 商品搜索也
+	 */
+	public void jumpToSearchProduct() {
+		jumpTo(ProductSearchActivity.class);
+	}
+
+
+	/**
+	 * 进入商品详情
+	 */
+	public void seeProductDetail(String productId, String brandName) {
+		ProductInfoModel productInfoModel=new ProductInfoModel();
+		productInfoModel.setProductId(productId);
+		productInfoModel.setBrandName(brandName);
+		seeProductDetail(productInfoModel);
+	}
+
+	public void seeProductDetail(ProductInfoModel productInfoModel) {
+		Intent intent = new Intent(this, ProductDetail2.class);
+		intent.putExtra(ExtraKeys.Key_Msg1, productInfoModel);
+		jumpTo(intent, false);
+	}
+
+
+
+	public void seeShopDetail(BrandModel data) {
+		Intent intent = new Intent(mContext, ShopActivity2.class);
+		intent.putExtra(ExtraKeys.Key_Msg1, data);
+		jumpTo(intent, false);
+	}
+
+
+	/**
+	 * 推荐详情
+	 *
+	 * @param id
+	 */
+	public void IntentRecommendDetail(String id, String recommendTitle) {
+		Intent intent = new Intent(mContext, RecommendDerailActivity.class);
+//		JsonMapOrListJsonMap2JsonUtil util = new JsonMapOrListJsonMap2JsonUtil();
+		intent.putExtra(Constant.ID, id);
+		intent.putExtra(Constant.VENDOR_NAME, recommendTitle);
+		jumpTo(intent, false);
+	}
+
+	/**
+	 * 拨打电话
+	 *
+	 * @param phone
+	 */
+	public void startTelPhone(String phone) {
+		Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		jumpTo(intent, false);
+	}
+
+
+	/**
+	 * 确认收货
+	 *
+	 * @param orderNum
+	 * @param callBack
+	 */
+	protected void goodsReceiveConfirm(String orderNum, IGetServicesDataCallBack callBack) {
+		showConfirmDialog(orderNum, callBack, GetDataConfing.What_ConfirmOrdersByOrderNum);
+	}
+
+	/**
+	 * 取消订单接口
+	 */
+	public void getData_Cancel_Order(String orderId, IGetServicesDataCallBack callBack) {
+		// loadingToast.show();
+		// Map<String, Object> params = new HashMap<String, Object>();
+		// params.put(GetDataQueue.Params_key, "OrderNum");
+		// params.put("orderNum", orderNum);
+		// GetDataQueue queue = new GetDataQueue();
+		// queue.setCallBack(callBack);
+		// queue.setActionName(GetDataConfing.GetAction_CancelOrderbyOrderNum);
+		// queue.setWhat(GetDataConfing.What_CancelOrderbyOrderNum);
+		// queue.setParamsNoJson(params);
+		// getDataUtil.getData(queue);
+		showConfirmDialog(orderId, callBack, GetDataConfing.What_CancelOrderbyOrderNum);
+	}
+
+	/**
+	 * 退货退款
+	 *
+	 * @param orderNum
+	 * @param callBack
+	 */
+	protected void applyFundReturn(String orderNum, IGetServicesDataCallBack callBack) {
+		showConfirmDialog(orderNum, callBack, GetDataConfing.What_ReturnFundByOrderNum);
+		// doGoodsReturn(orderNum,"183");
+	}
+
+
+	public void gotoLogin() {
+		Intent intent = new Intent(this, LoginActivity.class);
+		jumpTo(intent, false);
+	}
+
+	WihteRoundCornersDialog builder;
+
+	/**
+	 * 弹框确认
+	 *
+	 * @param orderNum 订单编号或者订单的key id
+	 * @param callBack
+	 * @param type
+	 */
+	private void showConfirmDialog(final String orderNum, final IGetServicesDataCallBack callBack, final int type) {
+
+		builder = new WihteRoundCornersDialog(this, R.style.ExitDialogStyle, 2,
+				new WihteRoundCornersDialog.DialogCallBack() {
+					@Override
+					public void bttonclick(int index) {
+						builder.dismiss();
+						switch (index) {
+							case 1:
+								break;
+							case 2:
+								loadingToast.show();
+								Map<String, Object> params = new HashMap<String, Object>();
+
+								GetDataQueue queue = new GetDataQueue();
+								queue.setCallBack(callBack);
+								queue.setWhat(type);
+
+								if (type == GetDataConfing.What_ConfirmOrdersByOrderNum) { // 确认收货
+									params.put("orderNum", orderNum);
+									queue.setActionName(GetDataConfing.Action_ConfirmOrdersByOrderNum);
+								} else if (type == GetDataConfing.What_CancelOrderbyOrderNum) { // 取消订单
+									params.put("orderNum", orderNum);
+									queue.setActionName(GetDataConfing.GetAction_CancelOrderbyOrderNum);
+								} else if (type == GetDataConfing.What_ReturnFundByOrderNum) {
+									params.put("orderNum", orderNum);
+									queue.setActionName(GetDataConfing.Action_ReturnFundByOrderNum);
+								}
+								queue.setParamsNoJson(params);
+								getDataUtil.getData(queue);
+								break;
+						}
+					}
+
+					@Override
+					public void bttonclick(int index, int what) {
+
+					}
+				});
+		builder.setTitletext(R.string.shopping_prompt);
+		if (type == GetDataConfing.What_ConfirmOrdersByOrderNum) {
+			builder.setMessagetext(R.string.goods_receiver_confirm_msg);
+
+		} else if (type == GetDataConfing.What_CancelOrderbyOrderNum) {
+			builder.setMessagetext(R.string.order_cancel_confirm_msg);
+		} else if (type == GetDataConfing.What_ReturnFundByOrderNum) {
+			builder.setMessagetext(R.string.apply_return_fund_confirm_msg);
+		}
+		builder.setButtonText(R.string.cancel, R.string.ensure);
+		builder.show();
+	}
+
+	/**
+	 * 社区评论
+	 *
+	 * @param userId
+	 */
+	public void comment(String userId) {
+		Intent intent = new Intent(mContext, CommunityCommentActivity.class);
+		intent.putExtra(ExtraKeys.Key_Msg1, userId);
+		jumpTo(intent);
+	}
+
+	/**
+	 * 转发
+	 *
+	 * @param userId
+	 */
+	public void transmit(String userId, boolean status) {
+		Intent intent = new Intent(mContext, PublishedActivity.class);
+		intent.putExtra(ExtraKeys.Key_Msg1, userId);
+		intent.putExtra(ExtraKeys.forward_Msg, status);
+		jumpTo(intent);
+	}
+
+	/**
+	 * 博客
+	 *
+	 * @param userId
+	 */
+	public void published(String userId, boolean status) {
+		Intent intent = new Intent(mContext, PublishedActivity.class);
+		intent.putExtra(ExtraKeys.Key_Msg1, userId);
+		intent.putExtra(ExtraKeys.forward_Msg, status);
+		jumpTo(intent);
+	}
+
+	/**
+	 * 查看个人博客
+	 *
+	 * @param userId
+	 */
+	public void scanUserBlog(String userId) {
+		Intent intent = new Intent(mContext, BlogDetailActivity.class);
+		intent.putExtra(ExtraKeys.Key_Msg1, userId);
+		jumpTo(intent);
+	}
+
+
+	/**
+	 * 此方法只是关闭软键盘
+	 */
+	public void hideSoftKeyboard() {
+
+		if (this.getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
+			if (this.getCurrentFocus() != null)
+				imm.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),
+						InputMethodManager.HIDE_NOT_ALWAYS);
+		}
+	}
+
+
+	/**
+	 * 联系客服
+	 *
+	 * @param serviceId
+	 */
+	public void contactCustomService(String serviceId, int chatType) {
+		contactCustomService(serviceId, chatType, true);
+	}
+
+	public void contactCustomService(String serviceId, int chatType, boolean sendUserInfo) {
+		if (Utils.isFastClick()) {
+			return;
+		}
+		if (Utils.isHasLogin(mContext)) {
+			// 进入聊天页面
+			Intent intent = new Intent(mContext, ChatActivity.class);
+			intent.putExtra(Constant.EXTRA_USER_ID, serviceId); // 后期更换为后台返回的IM服务号
+			intent.putExtra(Constant.EXTRA_CHAT_TYPE, chatType);
+			if (sendUserInfo) {
+				intent.putExtra(ExtraKeys.Key_Msg1, 0);
+			}
+
+			startActivity(intent);
+		} else {
+			gotoLogin();
+		}
+	}
+
+	public void contactCustomServiceAndSendInfo(String serviceId, int chatType, int infoType, Serializable object) {
+		if (Utils.isFastClick()) {
+			return;
+		}
+		if (Utils.isHasLogin(mContext)) {
+			// 进入聊天页面
+			Intent intent = new Intent(mContext, ChatActivity.class);
+			intent.putExtra(Constant.EXTRA_USER_ID, serviceId); // 后期更换为后台返回的IM服务号
+			intent.putExtra(Constant.EXTRA_CHAT_TYPE, chatType);
+			intent.putExtra(ExtraKeys.Key_Msg1, infoType);
+			intent.putExtra(ExtraKeys.Key_Msg2, object);
+			startActivity(intent);
+		} else {
+			gotoLogin();
+		}
+	}
+
+}

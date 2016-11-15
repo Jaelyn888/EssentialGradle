@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/common_margin"
+    android:paddingLeft="@dimen/common_margin_more"
+    android:paddingRight="@dimen/common_margin_more"
+    android:paddingTop="@dimen/common_margin" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <com.yishanxiu.yishang.view.CircleImageView
+            android:id="@+id/user_photo_iv"
+            android:layout_width="@dimen/user_photo_size"
+            android:layout_height="@dimen/user_photo_size"
+            android:src="@drawable/user_center"
+            app:border_width="1dp" />
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="vertical"
+           android:paddingLeft="@dimen/common_margin_other">
+           <TextView
+               android:id="@+id/userName_tv"
+               style="@style/home_dis_tv_style"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/name_test"
+               android:textStyle="bold" />
+           <TextView
+               android:id="@+id/create_time_tv"
+               android:layout_marginTop="@dimen/margin_2dp"
+               style="@style/common_textview_style"
+               android:text="@string/time_test" />
+       </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/userComments_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/comon_half_margin"
+        android:text="@string/goods_dis_test" />
+
+
+        <TextView
+            android:layout_marginTop="@dimen/comon_half_margin"
+            android:id="@+id/goods_color_size_tv"
+            style="@style/common_textview_style"
+            android:text="@string/test_msg" />
+
+
+</LinearLayout>

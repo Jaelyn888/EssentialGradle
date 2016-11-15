@@ -1,0 +1,92 @@
+package com.yishanxiu.yishang.adapter;
+
+import java.util.List;
+import java.util.Map;
+
+import com.yishanxiu.yishang.R;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.yishanxiu.yishang.utils.Constant;
+
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import net.tsz.afinal.json.JsonMap;
+
+/**
+ * 个人资料适配器
+ * 
+ * @author FangDongzhang
+ * 
+ */
+public class PersonalInfoAdapter extends MyBaseAdapter {
+	public PersonalInfoAdapter(Context context) {
+		super(context);
+	}
+
+	public PersonalInfoAdapter(Context context, List<? extends Map<String, ?>> datas) {
+		super(context, datas);
+	}
+
+	@Override
+	public View getView(int i, View view, ViewGroup viewGroup) {
+		ShopCartAdapterViewHolder shopCartAdapterViewHolder;
+		if (view == null) {
+			view = layoutInflater.inflate(R.layout.personal_info_item, viewGroup, false);
+			shopCartAdapterViewHolder = new ShopCartAdapterViewHolder();
+			ViewUtils.inject(shopCartAdapterViewHolder, view);
+			view.setTag(shopCartAdapterViewHolder);
+		} else {
+			shopCartAdapterViewHolder = (ShopCartAdapterViewHolder) view.getTag();
+		}
+		setTags(i, shopCartAdapterViewHolder);
+		bindDatas(i, shopCartAdapterViewHolder);
+		return view;
+	}
+
+	private void setTags(int i, ShopCartAdapterViewHolder shopCartAdapterViewHolder) {
+		shopCartAdapterViewHolder.context.setTag(i);
+		shopCartAdapterViewHolder.context_name.setTag(i);
+	}
+
+	private JsonMap<String, Object> jsonMap;
+
+	private void bindDatas(int i, ShopCartAdapterViewHolder shopCartAdapterViewHolder) {
+		jsonMap = (JsonMap<String, Object>) datas.get(i);
+		shopCartAdapterViewHolder.context.setText(jsonMap.getStringNoNull("context"));
+		shopCartAdapterViewHolder.context_name.setText(jsonMap.getStringNoNull("contextName"));
+	}
+
+
+
+	private class ShopCartAdapterViewHolder {
+		@ViewInject(R.id.context)
+		TextView context;
+
+		@ViewInject(R.id.context_name)
+		TextView context_name;
+
+	}
+
+	private OnItemClickListener itemClickListener;
+
+	public interface OnItemClickListener {
+		/**
+		 *
+		 * @param position
+		 *            根位置
+		 * @param shopCartitemType
+		 *            类别
+		 * @param index
+		 *            点击具体的商品位置
+		 */
+		void onItemClick(int position, Constant.ShopCartItemCompontType shopCartitemType, int index);
+
+	}
+
+	public void setOnItemClickListener(OnItemClickListener listener) {
+		this.itemClickListener = listener;
+	}
+}

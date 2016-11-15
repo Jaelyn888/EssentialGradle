@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.yishanxiu.yishang"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/common_margin_other"
+        android:paddingLeft="@dimen/common_margin_more"
+        android:paddingRight="@dimen/common_margin_more"
+        android:paddingTop="@dimen/common_margin_other" >
+
+        <com.yishanxiu.yishang.view.CircleImageView
+            android:id="@+id/user_photo_iv"
+            android:layout_width="@dimen/user_photo_size"
+            android:layout_height="@dimen/user_photo_size"
+            android:src="@drawable/user_center"
+            app:border_color="@color/discount_red"
+            android:layout_marginTop="@dimen/bt_radius"
+            app:border_width="1dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="@dimen/comon_half_margin" >
+
+            <TextView
+                android:id="@+id/userName_tv"
+                style="@style/common_textview_style"
+                android:text="@string/user_nickname"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/user_discri_tv"
+                style="@style/common_textview_style"
+                android:paddingTop="@dimen/default_drawpadding"
+                android:text="@string/time_test" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/default_drawpadding"
+                android:text="@string/comment_text" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_if_attention"
+            style="@style/common_textview_style"
+            android:clickable="true"
+            android:drawablePadding="@dimen/default_drawpadding"
+            android:drawableTop="@drawable/attentioned_bg"
+            android:focusable="false"
+            android:gravity="center"
+            android:text="@string/attention"
+            android:textColor="@drawable/black_gray_txt"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <ImageView
+        style="@style/hor_line_style"
+        android:paddingBottom="@dimen/common_margin_other" />
+
+</LinearLayout>

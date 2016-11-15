@@ -1,0 +1,227 @@
+package com.yishanxiu.yishang.receiver;
+
+import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.text.TextUtils;
+import android.text.format.Formatter;
+import com.google.gson.reflect.TypeToken;
+import com.lzy.okhttpserver.download.DownloadInfo;
+import com.lzy.okhttpserver.download.DownloadManager;
+import com.lzy.okhttpserver.download.DownloadService;
+import com.lzy.okhttpserver.listener.DownloadListener;
+import com.lzy.okhttputils.OkHttpUtils;
+import com.lzy.okhttputils.request.GetRequest;
+import com.sina.weibo.sdk.utils.NetworkHelper;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.app.MyApplication;
+import com.yishanxiu.yishang.bean.ApkInfo;
+import com.yishanxiu.yishang.getdata.*;
+import com.yishanxiu.yishang.model.BaseResponse;
+import com.yishanxiu.yishang.utils.*;
+import net.tsz.afinal.sdcard.SdcardHelper;
+import pub.devrel.easypermissions.EasyPermissions;
+
+import java.io.File;
+import java.util.HashMap;
+
+/**
+ * Created by Jaelyn on 2016/9/18.
+ */
+public class CheckVersionReceiver extends BroadcastReceiver {
+	private Context mContext;
+	private DownloadManager downloadManager;
+	private String url = "";
+
+	private MyDownloadListener listener;
+	private DownloadInfo downloadInfo;
+	private Notification.Builder builderNotification;
+	private NotificationManager notificationManager;
+
+	private boolean autoInstall = false;
+	private boolean isShowNotification = false;
+
+	public static final String Essential_Download_APK_Action = "com.essential.download.apk";
+
+	@Override
+	public void onReceive(Context context, Intent intent) {
+		this.mContext = context;
+		String action = intent.getAction();
+		if (action.equals(Essential_Download_APK_Action)) {
+			ApkInfo apkInfo = (ApkInfo) intent.getSerializableExtra(ExtraKeys.Key_Msg1);
+			autoInstall = apkInfo.isAutoInstall();
+			isShowNotification = apkInfo.isShowNotification();
+			startDownload(mContext, apkInfo.getVersionFilePath());
+		} else {
+			if (NetworkHelper.hasInternetPermission(context) && NetworkHelper.isNetworkAvailable(context) && NetworkHelper.isWifiValid(context)) {
+				if (TextUtils.isEmpty(url)) {
+					autoInstall = false;
+					isShowNotification = false;
+					checkVersion();
+				}
+			}
+		}
+	}
+
+	/**
+	 * 下载app
+	 *
+	 * @param mContext
+	 * @param apkDownLoadPath
+	 */
+	private void startDownload(Context mContext, String apkDownLoadPath) {
+		initNotification();
+		if (this.url.equals(apkDownLoadPath)) {
+			return;
+		}
+
+		this.url = apkDownLoadPath;
+		downloadManager = DownloadService.getDownloadManager();
+		downloadInfo = downloadManager.getDownloadInfo(apkDownLoadPath);
+		listener = new MyDownloadListener();
+		if (downloadInfo != null) {
+			switch (downloadInfo.getState()) {
+				case DownloadManager.PAUSE:
+					downloadInfo.setListener(listener);
+					downloadManager.restartTask(apkDownLoadPath);
+					break;
+				case DownloadManager.NONE:
+				case DownloadManager.ERROR:
+					downloadManager.addTask(apkDownLoadPath, downloadInfo.getRequest(), listener);
+					break;
+				case DownloadManager.DOWNLOADING:
+					downloadInfo.setListener(listener);
+					break;
+				case DownloadManager.FINISH:
+					File apkFile = new File(downloadInfo.getTargetPath());
+					if (apkFile.exists()) {
+						if (autoInstall) {
+							ApkUtils.install(mContext, apkFile);
+						}
+					} else {
+						downloadManager.removeTask(apkDownLoadPath);
+						downloadManager.addTask(apkDownLoadPath, downloadInfo.getRequest(), listener);
+					}
+					break;
+			}
+
+		} else {
+			ApkInfo apkInfo = new ApkInfo();
+			apkInfo.setVersionFileName(mContext.getResources().getString(R.string.app_name));
+			apkInfo.setVersionFilePath(apkDownLoadPath);
+			GetRequest request = OkHttpUtils.get(apkDownLoadPath);//
+			downloadManager.addTask(apkDownLoadPath, request, listener);
+			AppCacheUtils.getInstance(mContext).put(apkDownLoadPath, apkInfo);
+		}
+	}
+
+	/**
+	 * 初始化通知栏
+	 */
+	private void initNotification() {
+		if (isShowNotification) {
+			builderNotification = new Notification.Builder(mContext);
+			builderNotification.setSmallIcon(R.drawable.app_icon);
+			builderNotification.setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.app_icon));
+			builderNotification.setAutoCancel(true);
+			builderNotification.setContentTitle(mContext.getString(R.string.app_update_ticker));
+			builderNotification.setTicker(mContext.getString(R.string.app_update_ticker));
+			notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+		}
+	}
+
+	/**
+	 * 版本检查
+	 */
+	private void checkVersion() {
+		if (SdcardHelper.ExistSDCard() && EasyPermissions.hasPermissions(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+			GetDataQueue queue = new GetDataQueue();
+			queue.setActionName(GetDataConfing.Action_selectAppVersionInfo);
+			queue.setParams(new HashMap<String, Object>());
+			queue.setCallBack(callBack);
+			queue.setWhat(GetDataConfing.What_selectAppVersionInfo);
+			MyApplication.getInstance().getGetDataUtil().getData(queue);
+		}
+	}
+
+	private IGetServicesDataCallBack callBack = new IGetServicesDataCallBack() {
+		@Override
+		public void onLoaded(GetDataQueue entity) {
+			if (entity.what == GetDataConfing.What_selectAppVersionInfo) {
+				try {
+					TypeToken<BaseResponse<ApkInfo>> typeToken=new TypeToken<BaseResponse<ApkInfo>>(){};
+					BaseResponse<ApkInfo> baseResponse = new ModleUtils().mapTo(entity, typeToken);
+					ApkInfo apkInfo = baseResponse.getInfo();
+					String versionCode = apkInfo.getVersionNumber();
+					String filePath = apkInfo.getVersionFilePath();
+					String versionContent = apkInfo.getVersionContent();
+					if (TextUtils.isEmpty(versionCode) || TextUtils.isEmpty(filePath)
+							|| versionCode.equalsIgnoreCase(Utils.getVersionName(mContext))) {
+					} else {
+						startDownload(mContext, filePath);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			}
+		}
+	};
+
+	/**
+	 * 下载监听
+	 */
+	private class MyDownloadListener extends DownloadListener {
+		@Override
+		public void onProgress(DownloadInfo downloadInfo) {
+			if (isShowNotification) {
+				String downloadLength = Formatter.formatFileSize(mContext, downloadInfo.getDownloadLength());
+				String totalLength = Formatter.formatFileSize(mContext, downloadInfo.getTotalLength());
+				builderNotification.setContentText(downloadLength + "/" + totalLength);
+				builderNotification.setSubText((Math.round(downloadInfo.getProgress() * 10000) * 1.0f / 100) + "%");
+				notificationManager.notify(0, builderNotification.build());
+			}
+		}
+
+		@Override
+		public void onFinish(DownloadInfo downloadInfo) {
+			url = "";
+			File apkFile = new File(downloadInfo.getTargetPath());
+			if (apkFile.exists()) {
+				if (isShowNotification) {
+					Uri uri = Uri.fromFile(apkFile);
+					Intent installIntent = new Intent(Intent.ACTION_VIEW);
+					installIntent.setDataAndType(uri, "application/vnd.android.package-archive");
+					PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, installIntent, 0);
+					builderNotification.setContentIntent(pendingIntent);
+					String totalLength = Formatter.formatFileSize(mContext, downloadInfo.getTotalLength());
+					builderNotification.setContentText(totalLength);
+					builderNotification.setSubText(null);
+					builderNotification.setContentTitle(mContext.getString(R.string.download_success));
+					notificationManager.notify(0, builderNotification.build());
+					ApkUtils.install(mContext, apkFile);
+				}
+
+			}
+		}
+
+		@Override
+		public void onError(DownloadInfo downloadInfo, String errorMsg, Exception e) {
+			if (isShowNotification) {
+				String downloadLength = Formatter.formatFileSize(mContext, downloadInfo.getDownloadLength());
+				String totalLength = Formatter.formatFileSize(mContext, downloadInfo.getTotalLength());
+				builderNotification.setContentText(downloadLength + "/" + totalLength);
+				builderNotification.setSubText((Math.round(downloadInfo.getProgress() * 10000) * 1.0f / 100) + "%");
+				builderNotification.setContentTitle(errorMsg);
+				notificationManager.notify(0, builderNotification.build());
+			}
+			url = "";
+		}
+	}
+}

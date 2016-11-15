@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content">
+
+
+	<com.yishanxiu.yishang.view.CustomImageView
+		android:id="@+id/goods_logo"
+		android:src="@drawable/pic_load_error"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:scaleRate="1"
+		/>
+
+
+	<TextView
+		android:id="@+id/productBrand_tv"
+		android:layout_marginTop="@dimen/comon_half_margin"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_horizontal"
+		android:singleLine="true"
+		android:ellipsize="end"
+		android:textColor="@color/black"/>
+
+	<TextView
+		android:layout_marginTop="@dimen/comon_half_margin"
+		android:id="@+id/product_name_tv"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_horizontal"
+		android:singleLine="true"
+		android:ellipsize="end"
+		android:textColor="@color/black"/>
+
+
+	<TextView
+		android:layout_marginTop="@dimen/comon_half_margin"
+		android:id="@+id/product_price_tv"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_horizontal"
+		android:singleLine="true"
+		android:textColor="@color/black"/>
+
+
+	<TextView
+		android:id="@+id/goods_source_tv"
+		android:layout_marginTop="@dimen/comon_half_margin"
+		android:textColor="@color/black"
+		android:layout_gravity="center_horizontal"
+		android:layout_height="wrap_content"
+		android:background="@drawable/cus_round_black_border_bt"
+		android:paddingLeft="@dimen/common_margin_more"
+		android:paddingRight="@dimen/common_margin_more"
+		android:paddingTop="@dimen/comon_half_margin"
+		android:paddingBottom="@dimen/comon_half_margin"
+		android:layout_width="wrap_content"
+		android:gravity="center_horizontal"
+		android:singleLine="true" />
+
+
+</LinearLayout>

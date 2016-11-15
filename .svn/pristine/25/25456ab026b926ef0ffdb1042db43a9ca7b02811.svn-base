@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/l_p_i_tv_pro_param"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/goods_params_margin" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/goods_params_margin" >
+
+        <me.kaede.tagview.TagView
+            android:id="@+id/tagview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:lineMargin="@dimen/common_margin"
+            app:tagMargin="@dimen/common_margin"
+            app:textPaddingBottom="@dimen/comon_three_margin"
+            app:textPaddingLeft="@dimen/common_margin"
+            app:textPaddingRight="@dimen/common_margin"
+            app:textPaddingTop="@dimen/comon_three_margin" 
+            >
+        </me.kaede.tagview.TagView>
+    </RelativeLayout>
+
+</LinearLayout>

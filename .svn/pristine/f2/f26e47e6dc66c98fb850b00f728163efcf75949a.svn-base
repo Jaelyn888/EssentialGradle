@@ -1,0 +1,104 @@
+package com.yishanxiu.yishang.adapter;
+
+import android.content.Context;
+import android.database.DataSetObserver;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.TextView;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.utils.Constant;
+import net.tsz.afinal.json.JsonMap;
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Jaelyn on 2016/8/23.
+ * 分类相关商品侧滑 adapter
+ */
+public class MyStickyListAdapter extends MyBaseAdapter implements StickyListHeadersAdapter {
+
+	public MyStickyListAdapter(Context context) {
+		super(context);
+	}
+
+	public MyStickyListAdapter(Context context, List<? extends Map<String, ?>> datas) {
+		super(context, datas);
+	}
+
+	@Override
+	public View getView(final int position, View view, ViewGroup parent) {
+		final LeftMenuCheckboxAdapterViewHolder leftMenuCheckboxAdapterViewHolder;
+		final JsonMap<String, Object> jsonMap = (JsonMap<String, Object>) datas.get(position);
+		if (view == null) {
+			view = layoutInflater.inflate(R.layout.checkbox_item, null);
+			leftMenuCheckboxAdapterViewHolder = new LeftMenuCheckboxAdapterViewHolder();
+			leftMenuCheckboxAdapterViewHolder.item_cb= (CheckBox) view.findViewById(R.id.item_cb);
+			view.setTag(leftMenuCheckboxAdapterViewHolder);
+		} else {
+			leftMenuCheckboxAdapterViewHolder = (LeftMenuCheckboxAdapterViewHolder) view.getTag();
+		}
+		int itemType=jsonMap.getInt("itemType", Constant.ITEM_TYPE_BRAND);
+		if(itemType==Constant.ITEM_TYPE_BRAND){
+			leftMenuCheckboxAdapterViewHolder.item_cb.setText(jsonMap.getStringNoNull("brandName"));
+		} else if (itemType==Constant.ITEM_TYPE_CLASSFY){
+			leftMenuCheckboxAdapterViewHolder.item_cb.setText(jsonMap.getStringNoNull("productypeName"));
+		}
+
+
+		leftMenuCheckboxAdapterViewHolder.item_cb.setChecked(jsonMap.getBoolean("isChecked"));
+
+		leftMenuCheckboxAdapterViewHolder.item_cb.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				boolean bool = ((CheckBox) v).isChecked();
+				((JsonMap) datas.get(position)).put("isChecked", bool ? 1 : 0);
+			}
+		});
+
+		return view;
+	}
+
+	@Override
+	public View getHeaderView(int position, View convertView, ViewGroup parent) {
+		HeaderViewHolder holder;
+		final JsonMap<String, Object> jsonMap = (JsonMap<String, Object>) datas.get(position);
+		if (convertView == null) {
+			holder = new HeaderViewHolder();
+			convertView = layoutInflater.inflate(R.layout.sticky_header, parent, false);
+			//holder.text = (TextView) convertView.findViewById(R.id.text);
+			holder.text= (TextView) convertView;
+			convertView.setTag(holder);
+		} else {
+			holder = (HeaderViewHolder) convertView.getTag();
+		}
+		//set header text as first char in name
+		int headerText = R.string.brand;
+		int itemType=jsonMap.getInt("itemType", Constant.ITEM_TYPE_BRAND);
+		if(itemType==Constant.ITEM_TYPE_BRAND){
+		} else if (itemType==Constant.ITEM_TYPE_CLASSFY){
+			headerText=R.string.category;
+		}
+		holder.text.setText(headerText);
+		return convertView;
+	}
+
+	@Override
+	public long getHeaderId(int position) {
+		JsonMap<String, Object> jsonMap = (JsonMap<String, Object>) datas.get(position);
+		int itemType=jsonMap.getInt("itemType", Constant.ITEM_TYPE_BRAND);
+		return itemType;
+	}
+
+	class HeaderViewHolder {
+		TextView text;
+	}
+
+	class LeftMenuCheckboxAdapterViewHolder {
+		private CheckBox item_cb;
+	}
+}

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlt_pop"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_transparent" >
+
+    <LinearLayout
+        android:id="@+id/select_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/trans_gray"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/collect_tv"
+                style="@style/mydata_select_photo"
+                android:text="@string/collection" />
+
+            <ImageView style="@style/hor_line_style" />
+
+            <TextView
+                android:id="@+id/share_tv"
+                style="@style/mydata_select_photo"
+                android:text="@string/share" />
+
+            <ImageView style="@style/hor_line_style" />
+
+            <TextView
+                android:id="@+id/cancel_tv"
+                style="@style/mydata_select_photo"
+                android:text="@string/cancel"
+                android:textColor="@color/discount_red" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

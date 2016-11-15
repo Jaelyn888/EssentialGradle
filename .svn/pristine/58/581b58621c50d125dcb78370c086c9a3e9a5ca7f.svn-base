@@ -1,0 +1,3 @@
+include ':app', ':social_sdk_library', ':easeui', ':library', ':aymUtilUsed2', ':imagepicker'
+include ':cloudTagView'
+include ':ptrLibs'

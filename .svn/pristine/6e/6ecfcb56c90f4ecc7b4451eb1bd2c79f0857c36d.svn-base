@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content">
+
+	<com.yishanxiu.yishang.view.CustomImageView
+	    android:id="@+id/goods_pic_iv"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:src="@drawable/pic_load_error"
+	    app:scaleRate="1"
+		android:scaleType="centerInside"/>
+
+	<!-- 点点背景style="@style/product_info_circle_background" -->
+
+	<LinearLayout
+	    android:id="@+id/view_ind_layout"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginBottom="@dimen/home_item_ind_margin"
+	    android:gravity="center"
+	    android:orientation="horizontal"
+	    android:visibility="gone" />
+
+</RelativeLayout>

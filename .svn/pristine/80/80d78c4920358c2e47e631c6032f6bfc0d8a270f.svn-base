@@ -1,0 +1,59 @@
+package com.yishanxiu.yishang.adapter;
+
+import java.util.List;
+import java.util.Map;
+
+import com.yishanxiu.yishang.R;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import net.tsz.afinal.json.JsonMap;
+
+/**
+ * Created by Jaelyn on 16/3/30. 侧滑 显示商品品牌分类等
+ */
+public class LeftMenuCheckboxAdapter extends MyBaseAdapter {
+	private String name;
+
+	public LeftMenuCheckboxAdapter(Context context, List<? extends Map<String, ?>> datas, String name) {
+		super(context, datas);
+		this.name = name;
+	}
+
+	@Override
+	public View getView(final int i, View view, ViewGroup viewGroup) {
+		final LeftMenuCheckboxAdapterViewHolder leftMenuCheckboxAdapterViewHolder;
+		final JsonMap<String, Object> jsonMap = (JsonMap<String, Object>) datas.get(i);
+		if (view == null) {
+			view = layoutInflater.inflate(R.layout.checkbox_item, null);
+			leftMenuCheckboxAdapterViewHolder = new LeftMenuCheckboxAdapterViewHolder();
+			ViewUtils.inject(leftMenuCheckboxAdapterViewHolder, view);
+			view.setTag(leftMenuCheckboxAdapterViewHolder);
+		} else {
+			leftMenuCheckboxAdapterViewHolder = (LeftMenuCheckboxAdapterViewHolder) view.getTag();
+		}
+		leftMenuCheckboxAdapterViewHolder.item_cb.setText(jsonMap.getStringNoNull(name));
+		if (jsonMap.containsKey("isChecked")) {
+
+			leftMenuCheckboxAdapterViewHolder.item_cb.setChecked(jsonMap.getBoolean("isChecked"));
+		}
+		leftMenuCheckboxAdapterViewHolder.item_cb.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				boolean bool = jsonMap.getBoolean("isChecked");
+				((JsonMap) datas.get(i)).put("isChecked", bool ? 0 : 1);
+			}
+		});
+
+		return view;
+	}
+
+	private class LeftMenuCheckboxAdapterViewHolder {
+		@ViewInject(R.id.item_cb)
+		private CheckBox item_cb;
+	}
+}

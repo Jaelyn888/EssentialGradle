@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlt_pop"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_transparent" >
+
+    <LinearLayout
+        android:id="@+id/ll_popup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#ffffff"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+          <TextView
+                android:id="@+id/cancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/common_margin"
+                android:paddingBottom="@dimen/margin_8dp"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/margin_8dp"
+                android:text="@string/cancel"
+                android:textColor="@color/TextColorBlack"
+                android:textSize="@dimen/textsize_16" />
+
+            <TextView
+                android:id="@+id/fixed"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_marginLeft="@dimen/margin_50"
+                android:paddingRight="@dimen/common_margin"
+                android:paddingTop="@dimen/margin_7dp"
+                android:layout_weight="1"
+                android:text="@string/ensure"
+                android:textColor="@color/TextColorBlack"
+                android:textSize="@dimen/textsize_16" />
+        </LinearLayout>
+
+        <!--
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_h"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/item_popupwindows_camera"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_h"
+                android:background="@drawable/bt_nobgd"
+                android:text="@string/take_photograph"
+                android:textColor="@color/TextColorGray"
+                android:textSize="@dimen/title_center_size" />
+        </LinearLayout>
+
+        <ImageView style="@style/hor_line_style" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_h"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/item_popupwindows_Photo"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_h"
+                android:background="@drawable/bt_nobgd"
+                android:text="@string/select_local"
+                android:textColor="@color/TextColorGray"
+                android:textSize="@dimen/title_center_size" />
+        </LinearLayout>
+
+        <ImageView style="@style/hor_line_style" />
+
+        <Button
+            android:id="@+id/item_popupwindows_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_h"
+            android:background="@drawable/bt_nobgd"
+            android:text="@string/cancel"
+            android:textColor="@color/TextColorRed"
+            android:textSize="@dimen/title_center_size"
+             />
+        -->
+
+        <DatePicker
+            android:id="@+id/datePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:calendarViewShown="false" />
+    </LinearLayout>
+
+</RelativeLayout>

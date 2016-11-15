@@ -1,0 +1,108 @@
+package com.yishanxiu.yishang.adapter;
+
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import com.yishanxiu.yishang.utils.Utils;
+import net.tsz.afinal.json.JsonMap;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+import com.yishanxiu.yishang.utils.StringUtils;
+import com.yishanxiu.yishang.R;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Jaelyn on 16/2/29.
+ * 文章相关商品  含有外链
+ */
+public class LinkProductAdapter extends MyBaseAdapter {
+    public LinkProductAdapter(Context context) {
+        super(context);
+    }
+
+    public LinkProductAdapter(Context context, List<? extends Map<String, ?>> datas) {
+        super(context, datas);
+    }
+
+
+    @Override
+    public View getView(int i, View view, ViewGroup viewGroup) {
+        LinkProductAdapterViewHolder linkProductAdapterViewHolder;
+        if (view == null) {
+            view = layoutInflater.inflate(R.layout.link_relation_goods_item, null);
+            linkProductAdapterViewHolder = new LinkProductAdapterViewHolder(view);
+
+            view.setTag(linkProductAdapterViewHolder);
+        } else {
+            linkProductAdapterViewHolder = (LinkProductAdapterViewHolder) view.getTag();
+        }
+        bindData(i, linkProductAdapterViewHolder);
+        return view;
+    }
+
+
+    private void bindData(final int i, LinkProductAdapterViewHolder relationProductViewHolder) {
+        JsonMap jsonMap= (JsonMap) datas.get(i);
+
+        String picPath=jsonMap.getStringNoNull("path");
+        String scalePic= StringUtils.get_MImage(picPath);
+        BitmapHelper.loadImage(context,scalePic,relationProductViewHolder.productPicIv, BitmapHelper.LoadImgOption.Square);
+
+        relationProductViewHolder.productBrandTv.setText(jsonMap.getStringNoNull("brandName"));
+        relationProductViewHolder.productNameTv.setText(jsonMap.getStringNoNull("productName"));
+        relationProductViewHolder.productSourceTv.setText(jsonMap.getStringNoNull("linkFrom"));
+        double marketPrice = jsonMap.getDouble("marketPrice");
+        boolean isDiscount = jsonMap.getBoolean("isDiscount");
+        if (isDiscount) {
+            double discountPrice = jsonMap.getDouble("discountPrice");
+            relationProductViewHolder.productDiscountPricetv.setText(StringUtils.getFormatMoneyWithSign(discountPrice));
+
+            relationProductViewHolder.productPriceTv.setText(StringUtils.getFormatMoneyWithSign(marketPrice));
+            relationProductViewHolder.productPriceTv.setVisibility(View.VISIBLE);
+            Utils.addDeleteLine(relationProductViewHolder.productPriceTv);
+            relationProductViewHolder.productPriceTv.setSelected(true);
+
+        } else {
+            relationProductViewHolder.productPriceTv.setVisibility(View.GONE);
+            relationProductViewHolder.productDiscountPricetv.setText(StringUtils.getFormatMoneyWithSign(marketPrice));
+        }
+    }
+
+
+    public class LinkProductAdapterViewHolder {
+        public ImageView productPicIv;
+
+        /**
+         * 品牌
+         */
+        public TextView productBrandTv;
+
+        /**
+         * 商品名字
+         */
+        public TextView productNameTv;
+        /**
+         * 来源
+         */
+        public TextView productSourceTv;
+
+        public TextView productPriceTv; // 原价
+
+        public TextView productDiscountPricetv; // 折扣价
+
+        public LinkProductAdapterViewHolder(View view) {
+             productPicIv= (ImageView) view.findViewById(R.id.product_logo);
+            productBrandTv= (TextView) view.findViewById(R.id.productBrand_tv);
+            productNameTv= (TextView) view.findViewById(R.id.product_name_tv);
+            productSourceTv= (TextView) view.findViewById(R.id.product_source_tv);
+            productPriceTv= (TextView) view.findViewById(R.id.product_price_tv);
+            productDiscountPricetv= (TextView) view.findViewById(R.id.product_price_discount_tv);
+
+
+        }
+    }
+
+}

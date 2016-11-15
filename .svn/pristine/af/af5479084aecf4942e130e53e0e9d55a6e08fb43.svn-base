@@ -1,0 +1,141 @@
+package com.yishanxiu.yishang.activity;
+
+import android.text.TextUtils;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chatuidemo.utils.PreferenceManager;
+import com.yishanxiu.yishang.R;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.yishanxiu.yishang.activity.base.BaseUIActivity;
+import com.yishanxiu.yishang.getdata.*;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.InputFilter;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.EditText;
+import android.widget.TextView;
+import com.yishanxiu.yishang.model.BaseResponse;
+import com.yishanxiu.yishang.utils.ExtraKeys;
+import com.yishanxiu.yishang.utils.ModleUtils;
+import com.yishanxiu.yishang.utils.Utils;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * 修改个人资料
+ *
+ * @author FangDongzhang 2016/7/20
+ */
+public class ModifyInfoActivity extends BaseUIActivity {
+
+	@ViewInject(R.id.lable_tv)
+	private TextView lable_tv;
+
+	@ViewInject(R.id.editText_modify)
+	private EditText editText_modify;
+
+	private String key;
+	private String value;
+	private String requestType; //类型，1：昵称，5：简介
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_modifyinfo);
+		ViewUtils.inject(this);
+		setBtn_menuText(R.string.save, clickListener);
+		Intent intent = getIntent();
+		requestType = intent.getStringExtra(ExtraKeys.Key_Msg1);
+
+		initData();
+	}
+
+	/**
+	 * 初始化数据
+	 */
+	private void initData() {
+		if (requestType.equalsIgnoreCase("1")) {
+			key = "userNickname";
+			setCenter_title(R.string.modify_nickname);
+			lable_tv.setText(R.string.nick_name);
+			String strHint = getString(R.string.max_lenght_hint, "10");
+			editText_modify.setHint(strHint);
+			editText_modify.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+		} else if (requestType.equalsIgnoreCase("5")) {
+			key = "userDiscri";
+			setCenter_title(R.string.modify_discri);
+			lable_tv.setText(R.string.user_discri);
+			String strHint = getString(R.string.max_lenght_hint, "15");
+			editText_modify.setHint(strHint);
+			editText_modify.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
+		}
+	}
+
+
+	private OnClickListener clickListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			value = editText_modify.getText().toString();
+			if (TextUtils.isEmpty(value.toString())) {
+				if (requestType.equalsIgnoreCase("1")) {
+					toast.showToast(R.string.nickname_null);
+					return;
+				}
+			}
+			modifyInfo(requestType, key, value);
+		}
+	};
+
+	/**
+	 * 修改个人信息
+	 */
+	private void modifyInfo(String requestType, String key, String value) {
+		loadingToast.show();
+		Map<String, Object> params = new HashMap<>();
+		params.put("requestType", requestType);
+		params.put("userId", Utils.getUserId(mContext));
+		params.put(key, value);
+
+		GetDataQueue queue = new GetDataQueue();
+		queue.setCallBack(callBack);
+		queue.setActionName(GetDataConfing.UserInfo_ModUserBaseInfo);
+		queue.setWhat(GetDataConfing.What_UserInfo_ModUserBaseInfo);
+		queue.setParamsNoJson(params);
+		getDataUtil.getData(queue);
+	}
+
+	/**
+	 * 获取服务器数据的返回信息
+	 */
+	private IGetServicesDataCallBack callBack = new IGetServicesDataCallBack() {
+		@Override
+		public void onLoaded(GetDataQueue entity) {
+			loadingToast.dismiss();
+			if (entity.what == GetDataConfing.What_UserInfo_ModUserBaseInfo) {
+				BaseResponse baseResponse = new ModleUtils().mapTo(entity);
+				if (ShowGetDataError.isCodeSuccess(mContext, baseResponse)) {
+					toast.showToast(baseResponse.getMsg());
+					saveData();
+				}
+			}
+		}
+	};
+
+	private void saveData() {
+		if (requestType.equalsIgnoreCase("1")) {
+			Utils.setUserNickName(mContext, value);
+			EMClient.getInstance().updateCurrentUserNick(value);
+			PreferenceManager.getInstance().setCurrentUserNick(Utils.getUserNickName(mContext));
+
+		} else if (requestType.equalsIgnoreCase("5")) {
+			Utils.setUserDiscri(mContext, value);
+		}
+		Intent intent = new Intent();
+		setResult(RESULT_OK, intent);
+		finish();
+	}
+}

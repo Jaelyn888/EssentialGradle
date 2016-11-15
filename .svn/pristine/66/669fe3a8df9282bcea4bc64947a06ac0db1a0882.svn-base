@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_bg"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <include layout="@layout/all_activity_top" />
+
+        <LinearLayout
+            android:id="@+id/refresh_shopcart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/button_height"
+            android:orientation="vertical" >
+
+            <com.handmark.pulltorefresh.library.PullToRefreshListView
+                xmlns:ptr="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/goods_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:cacheColorHint="@color/white"
+                android:descendantFocusability="afterDescendants"
+                android:fadingEdge="none"
+                android:focusable="false"
+                android:listSelector="@color/white"
+                android:longClickable="true"
+                android:scrollbars="none" >
+            </com.handmark.pulltorefresh.library.PullToRefreshListView>
+
+            <include layout="@layout/noshopcart_layout" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 底部显示 -->
+
+    <LinearLayout
+        android:id="@+id/totle_info"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:gravity="center_vertical" 
+        android:visibility="gone">
+
+        <CheckBox
+            android:id="@+id/totle_selected_cb"
+            style="@style/shopcartChckBoxStyle"
+            android:gravity="center"
+            android:paddingLeft="@dimen/common_margin"
+            android:text="@string/select_all"
+            android:textColor="@color/black" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/common_margin"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/totle_money_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="@string/shipments"
+                android:textColor="@color/TextColorGray" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/ensure_order_tv"
+            android:layout_width="@dimen/billing_width"
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            android:gravity="center"
+            android:text="@string/settle_accounts"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+</RelativeLayout>

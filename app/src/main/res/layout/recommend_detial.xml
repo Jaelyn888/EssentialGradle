@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <!-- <com.yishanxiu.yishang.view.ScalRefreshScrollView
+         android:id="@+id/ptr_scrollview"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:scrollbars="none"
+         android:fadingEdge="none"
+         android:fillViewport="true"
+         android:descendantFocusability="blocksDescendants"
+         app:headerView="@layout/shop_head_layout"
+         app:zoomView="@layout/shop_zoom_view"
+         app:contentView="@layout/shop_content_layout"/>
+     -->
+    <com.handmark.pulltorefresh.library.PullToRefreshScrollView
+        android:id="@+id/ptr_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:descendantFocusability="blocksDescendants"
+        android:fadingEdge="none"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <include layout="@layout/recommend_detail_head" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/gray_bg"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/line_height"
+                    android:layout_marginTop="@dimen/margin_5dp"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:padding="@dimen/common_margin"
+                    android:text="@string/same_store"
+                    android:textSize="@dimen/textsize" />
+            </LinearLayout>
+
+            <com.yishanxiu.yishang.view.GridViewNoScroll
+                android:id="@+id/xgv"
+                style="@style/relation_product_style" />
+            <!--<include layout="@layout/shop_content_layout" />-->
+
+        </LinearLayout>
+    </com.handmark.pulltorefresh.library.PullToRefreshScrollView>
+
+</RelativeLayout>

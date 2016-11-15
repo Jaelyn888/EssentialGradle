@@ -1,0 +1,150 @@
+package com.yishanxiu.yishang.fragment;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import net.tsz.afinal.json.JsonMap;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.yishanxiu.yishang.activity.ProductCategoryRelationActivity;
+import com.yishanxiu.yishang.adapter.ProductCategoryAdapter;
+import com.yishanxiu.yishang.getdata.*;
+import com.yishanxiu.yishang.utils.Constant;
+import com.yishanxiu.yishang.utils.ExtraKeys;
+
+import net.tsz.afinal.json.JsonParseHelper;
+import com.yishanxiu.yishang.R;
+
+import java.util.*;
+
+/**
+ * Created by Jaelyn on 2015/9/7. 商品大分类
+ */
+public class ProductCategoryFragment extends LazyFragment {
+	@ViewInject(R.id.ptr_list)
+	private PullToRefreshListView ptr_list;
+
+	private ProductCategoryAdapter goodsCategoryAdapter;
+
+	/**
+	 * 当前展示的数据
+	 */
+	private List<JsonMap<String, Object>> dataList;
+	private int nPage = 0;
+
+	@Override
+	protected void onCreateViewLazy(Bundle savedInstanceState) {
+		super.onCreateViewLazy(savedInstanceState);
+		setContentView(R.layout.goods_category_fragment);
+		ViewUtils.inject(this, getContentView());
+		ptr_list.setOnRefreshListener(xListLoadMore);
+		ptr_list.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+		ptr_list.setOnItemClickListener(onItemClickListener);
+		loadingToast.show();
+		getDataService(true);
+	}
+
+	@Override
+	protected void onFragmentStartLazy() {
+		super.onFragmentStartLazy();
+		
+	}
+
+	/**
+	 * item 点击
+	 */
+	private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			if (position > 0) {
+				String categoryId = dataList.get(position - 1).getStringNoNull("categoryId");
+				Intent intent = new Intent(activity, ProductCategoryRelationActivity.class);
+				intent.putExtra(ExtraKeys.Key_Msg1, 1);
+				intent.putExtra(Constant.ID, categoryId);
+				intent.putExtra(Constant.NAME, dataList.get(position - 1).getStringNoNull("categoryName"));
+
+				activity.jumpTo(intent);
+			}
+		}
+	};
+
+	private void getDataService(boolean chearAllData) {
+
+		// if (chearAllData) {
+		// nPage = 0;
+		//
+		// }
+		Map<String, Object> params = new HashMap<String, Object>();
+		// params.put("UserInfoId", Utils.getUserId(getActivity()));
+		params.put("isDeleted", "0");
+		GetDataQueue queue = new GetDataQueue();
+		queue.setActionName(GetDataConfing.GetAction_SelectGoodsCategoryList);
+		queue.setCallBack(callBack);
+		queue.setParamsNoJson(params);
+		queue.setWhat(GetDataConfing.What_SelectGoodsCategoryList);
+		getDataUtil.getData(queue);
+	}
+
+	private IGetServicesDataCallBack callBack = new IGetServicesDataCallBack() {
+		@Override
+		public void onLoaded(GetDataQueue entity) {
+			loadingToast.dismiss();
+			ptr_list.onRefreshComplete();
+			if (entity.isOk()) {
+				if (ShowGetDataError.isCodeSuccess(activity, entity.getInfo())) {
+					if (entity.getWhat() == GetDataConfing.What_SelectGoodsCategoryList) {
+						List<JsonMap<String, Object>> data = JsonParseHelper.getJsonMap_List_JsonMap(entity.getInfo(),
+								JsonKeys.Key_Info);
+						setAdatper_singleSortlist(data);
+					}
+				}
+			} else {
+				ShowGetDataError.showNetError(activity);
+			}
+			validateData();
+		}
+	};
+
+	private void validateData() {
+		if (dataList == null || dataList.isEmpty()) {
+			ptr_list.setMode(PullToRefreshBase.Mode.BOTH);
+		} else {
+			ptr_list.setMode(PullToRefreshBase.Mode.MANUAL_REFRESH_ONLY);
+			// ptr_list.setRefreshing();
+		}
+
+	}
+
+	private void setAdatper_singleSortlist(List<JsonMap<String, Object>> data) {
+		// if (nPage == 0) {
+		this.dataList = data;
+		goodsCategoryAdapter = new ProductCategoryAdapter(activity, dataList);
+		ptr_list.setAdapter(goodsCategoryAdapter);
+		goodsCategoryAdapter.notifyDataSetChanged();
+		// } else {
+		// this.dataList.addAll(data);
+		// goodsCategoryAdapter.notifyDataSetChanged();
+		// }
+		// nPage++;
+	}
+
+	private PullToRefreshBase.OnRefreshListener2<ListView> xListLoadMore = new PullToRefreshBase.OnRefreshListener2<ListView>() {
+		@Override
+		public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+			getDataService(true);
+		}
+
+		@Override
+		public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+			getDataService(false);
+		}
+	};
+
+}

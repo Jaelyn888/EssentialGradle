@@ -1,0 +1,552 @@
+package com.yishanxiu.yishang.utils;
+
+import com.yishanxiu.yishang.activity.base.BaseActivity;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Paint;
+import android.text.TextUtils;
+import android.widget.TextView;
+import net.tsz.afinal.json.JsonMap;
+
+/**
+ * 保存用户个人信息
+ */
+public class Utils {
+
+	private static final String SP_NAME = "essential";
+	private static final String SP_USERNAME = "userName";
+	private static final String SP_USER_PWD = "userPwd";
+	private static final String SP_USER_NICKNAME = "userNickName";
+	/**
+	 * 用户级别
+	 */
+	private static final String SP_USER_LEVEL = "userLevelId";
+	/**
+	 * 用户id
+	 */
+	private static final String SP_KEY_USERID = "userId";
+	/**
+	 * 用户chatId
+	 */
+	private static final String SP_KEY_CHATID = "chatId";
+	/**
+	 * 环信密码
+	 */
+	private static final String SP_KEY_CHATPWD = "chatPwd";
+	/**
+	 * 用户描述
+	 */
+	private static final String SP_USER_DISCRI = "userDiscri";
+	/**
+	 * 用户手机号
+	 */
+	private static final String SP_UserPhone = "userPhone";
+	/**
+	 * 用户所在地
+	 */
+	private static final String SP_ProvinceName = "provinceName";
+	private static final String SP_ProvinceId = "provinceId";
+	/**
+	 * 用户类型
+	 */
+	private static final String SP_USERTYPE = "userType";
+	/***
+	 * 用户级别
+	 */
+	public static final String SP_UserLevelId = "userLevelId";
+	/**
+	 * 用户邮箱
+	 */
+	private static final String SP_UserEmail = "userEmail";
+	/**
+	 * 用户真实姓名
+	 */
+	public static final String SP_USERREALNAME = "userRealName";
+	/**
+	 * 用户性别（0为男，1为女，2为保密）
+	 */
+	private static final String SP_USERSEX = "userSex";
+	/**
+	 * 用户图片
+	 */
+	private static final String Sp_USER_ICON = "userIcon";
+	/**
+	 * 用户生日
+	 */
+	private static final String Sp_USER_BIRTHDAY = "birthday";
+	/**
+	 * 用户注册时间
+	 */
+	private static final String Sp_UserRegisterTime = "createTime";
+	/**
+	 * 访客的Account
+	 */
+	private static final String SP_Visiter_Account = "visiteraccount";
+	/**
+	 * 用来判断用户是正式账户0  第三方来源1
+	 */
+	private static final String SP_UserLoginStyle = "isvisiter";
+
+	/**
+	 * 是否已登录
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static boolean isHasLogin(Context context) {
+		String userId = getUserId(context);
+		return !TextUtils.isEmpty(userId);
+	}
+
+	/**
+	 * 获取用户账户
+	 */
+	public static String getUserAccount(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		return sp.getString(SP_USERNAME, "");
+	}
+
+	public static void setUserAccount(Context context, String userAccout) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(SP_USERNAME, userAccout);
+		editor.commit();
+	}
+
+	/**
+	 * 获取用户注册时间
+	 */
+	public static String getRegisterTime(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		return sp.getString(Sp_UserRegisterTime, "");
+	}
+
+
+	/**
+	 * 获取用户生日
+	 */
+	public static String getUserBrithday(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		return sp.getString(Sp_USER_BIRTHDAY, "");
+	}
+
+	public static void setUserBrithday(Context context, String userBrithday) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(Sp_USER_BIRTHDAY, userBrithday);
+		editor.commit();
+	}
+
+	/**
+	 * 获取密码
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static String getUserPwd(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		return sp.getString(SP_USER_PWD, "");
+	}
+
+	public static void seUserPwd(Context context, String userPwd) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(SP_USER_PWD, userPwd);
+		editor.commit();
+	}
+
+	/**
+	 * 获取用户昵称
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static String getUserNickName(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		return sp.getString(SP_USER_NICKNAME, "");
+
+	}
+
+	public static void setUserNickName(Context context, String userNickName) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(SP_USER_NICKNAME, userNickName);
+		editor.commit();
+	}
+
+	/**
+	 * 获取用户描述
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static String getUserDiscri(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		return sp.getString(SP_USER_DISCRI, "");
+	}
+
+	public static void setUserDiscri(Context context, String userDiscri) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(SP_USER_DISCRI, userDiscri);
+		editor.commit();
+	}
+
+	/**
+	 * 获取用户手机号码
+	 */
+	public static String getUserPhone(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		return sp.getString(SP_UserPhone, "");
+	}
+
+	/**
+	 * 获取用户邮箱
+	 */
+	public static String getUserEmail(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		return sp.getString(SP_UserEmail, "");
+	}
+
+	/**
+	 * 获取用户性别
+	 */
+	public static int getUserSex(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		return sp.getInt(SP_USERSEX, 2);
+	}
+
+	public static void setUserSex(Context context, int userSex) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putInt(SP_USERSEX, userSex);
+		editor.commit();
+	}
+
+	/**
+	 * 保存用户图片路径
+	 */
+	public static void saveUserPic(Context context, String picUrl) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(Sp_USER_ICON, picUrl);
+		editor.commit();
+	}
+
+	/**
+	 * 保存用户邮箱
+	 */
+	public static void saveUserEmail(Context context, String email) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(SP_UserEmail, email);
+		editor.commit();
+	}
+
+	/**
+	 * 保存用户昵称
+	 */
+	public static void saveUserNickName(Context context, String nickName) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(SP_USER_NICKNAME, nickName);
+		editor.commit();
+	}
+
+	/**
+	 * 保存用户性别
+	 */
+	public static void saveUserSex(Context context, int sex) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putInt(SP_USERSEX, sex);
+		editor.commit();
+	}
+
+	/**
+	 * 保存是访客登录还是注册登录
+	 */
+	public static void setUserLoginStyle(Context context, int isThirdPlatform) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putInt(SP_UserLoginStyle, isThirdPlatform);
+		editor.commit();
+	}
+
+	/**
+	 * 获取是访客登录还是注册登录
+	 */
+	public static int getUserLoginStyle(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		return sp.getInt(SP_UserLoginStyle, 0);
+	}
+
+	/**
+	 * 保存用户真实姓名
+	 */
+	public static void saveUserRealName(Context context, String realName) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(SP_USERREALNAME, realName);
+		editor.commit();
+	}
+
+
+	/**
+	 * 获取用户id
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static String getUserId(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		return sp.getString(SP_KEY_USERID, "");
+	}
+
+	/**
+	 * 获取用户chatId
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static String getChatId(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		return sp.getString(SP_KEY_CHATID, "");
+	}
+
+	/**
+	 * 获取用户环信密码	 *
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static String getChatPwd(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		return sp.getString(SP_KEY_CHATPWD, "");
+	}
+
+	/**
+	 * 获取用户chatId
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static void setChatIdAndPwd(Context context, String chatId, String chatPwd) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(SP_KEY_CHATID, chatId);
+		editor.putString(SP_KEY_CHATPWD, chatPwd);
+		editor.commit();
+	}
+
+	/**
+	 * 获取用户
+	 */
+	public static String getUserRealName(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		return sp.getString(SP_USERREALNAME, "");
+	}
+
+	/**
+	 * 获取用户所在地
+	 */
+	public static String getProvinceName(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		return sp.getString(SP_ProvinceName, "");
+	}
+
+	public static void setProvinceName(Context context, String ProvinceName) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(SP_ProvinceName, ProvinceName);
+		editor.commit();
+	}
+
+	/**
+	 * 获取用户图片
+	 */
+	public static String getUserPic(Context context) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		String userName = preferences.getString(Sp_USER_ICON, "");
+		return userName;
+	}
+
+
+	/**
+	 * 登录注册保存用户信息
+	 */
+	public static void saveUserInfos(Context context, JsonMap<String, Object> data) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		/**
+		 * 用户ID
+		 */
+		editor.putString(SP_KEY_USERID, data.getStringNoNull("userId"));
+		/**
+		 * 用户ChatID
+		 */
+		editor.putString(SP_KEY_CHATID, data.getStringNoNull("chatId"));
+		/**
+		 * 用户手机号码
+		 */
+		editor.putString(SP_UserPhone, data.getStringNoNull("userPhone"));
+		/**
+		 * 用户昵称
+		 */
+		editor.putString(SP_USER_NICKNAME, data.getStringNoNull("userNickname"));
+		/**
+		 * 用户生日
+		 */
+		editor.putString(Sp_USER_BIRTHDAY, data.getStringNoNull("birthday"));
+		/**
+		 * 用户所在地
+		 */
+		editor.putString(SP_ProvinceName, data.getStringNoNull("provinceName"));
+		editor.putLong(SP_ProvinceId, data.getLong("provinceId"));
+		/**
+		 * 注册时间
+		 */
+		editor.putString(Sp_UserRegisterTime, data.getStringNoNull("createTime"));
+		/**
+		 * 用户邮箱
+		 */
+		editor.putString(SP_UserEmail, data.getStringNoNull("userEmail"));
+
+		/**
+		 * 用户性别
+		 */
+		editor.putInt(SP_USERSEX, data.getInt("userSex", 0));
+		/**
+		 * 用户图片
+		 */
+		editor.putString(Sp_USER_ICON, data.getStringNoNull("userIcon"));
+
+		/**
+		 * 用户名称
+		 */
+		editor.putString(SP_USERNAME, data.getStringNoNull("userName"));
+		editor.putString(SP_USER_DISCRI, data.getStringNoNull("userDiscri"));
+		editor.putInt(SP_USERTYPE, data.getInt("userTypeId"));
+		editor.putInt(SP_UserLevelId, data.getInt("userLevelId"));
+		editor.commit();
+	}
+
+	/**
+	 * 退出登录 要保存
+	 */
+	public static void clearUserInfoData(Context context) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		String userPhone = preferences.getString(SP_UserPhone, "");
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.clear();
+		if (StringUtil.isPhone(userPhone)) {
+			editor.putString(SP_UserPhone, userPhone);
+		}
+		editor.commit();
+	}
+
+	/**
+	 * 保存手机号
+	 *
+	 * @param mContext
+	 * @param phone
+	 */
+	public static void saveUserPhone(Context mContext, String phone) {
+		SharedPreferences preferences = mContext.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(SP_UserPhone, phone);
+		editor.commit();
+	}
+
+	/**
+	 * textview 加下划线
+	 *
+	 * @param textView
+	 */
+	public static void addUnderLine(TextView textView) {
+		textView.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); //下划线
+		textView.getPaint().setAntiAlias(true);//抗锯齿
+	}
+
+	/**
+	 * textview 加删除线
+	 *
+	 * @param textView
+	 */
+	public static void addDeleteLine(TextView textView) {
+		textView.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG); //下划线
+		textView.getPaint().setAntiAlias(true);//抗锯齿
+	}
+
+	/**
+	 * 擦除删除线
+	 *
+	 * @param textView
+	 */
+	public static void crashDeleteLine(TextView textView) {
+		textView.getPaint().setFlags(Paint.ANTI_ALIAS_FLAG); //去除下划线
+		textView.getPaint().setAntiAlias(true);//抗锯齿
+	}
+
+	private static long lastBrandClickTime;
+
+	public static boolean isBrandFastClick() {
+		long time = System.currentTimeMillis();
+		if (time - lastBrandClickTime < 200) {
+			return true;
+		}
+		lastBrandClickTime = time;
+		return false;
+	}
+
+	private static long lastClickTime;
+
+	public static boolean isFastClick() {
+		long time = System.currentTimeMillis();
+		if (time - lastClickTime < 800) {
+			return true;
+		}
+		lastClickTime = time;
+		return false;
+	}
+
+
+	public static void setUserLevel(Context context, int userLevel) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putInt(SP_USER_LEVEL, userLevel);
+		editor.commit();
+	}
+
+	public static int getUserLevel(Context context) {
+		SharedPreferences preferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+
+		int userLevel = preferences.getInt(SP_USER_LEVEL, 0);
+		return userLevel;
+	}
+
+	/**
+	 * @param @return
+	 * @param @throws Exception
+	 * @return String 返回类型
+	 * @throws @Title: getVersionName
+	 * @Description: TODO作用：获取版本名称
+	 */
+	public static String getVersionName(Context context) {
+		// 获取packagemanager的实例
+		try {
+			PackageManager packageManager = context.getPackageManager();
+			// getPackageName()是你当前类的包名，0代表是获取版本信息
+			PackageInfo packInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+			String version = packInfo.versionName;
+			return version;
+		} catch (PackageManager.NameNotFoundException e) {
+			e.printStackTrace();
+			return "0.0";
+		}
+	}
+
+}

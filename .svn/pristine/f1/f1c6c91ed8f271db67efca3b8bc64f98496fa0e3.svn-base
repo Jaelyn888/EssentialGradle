@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="xlistview_footer_hint_no_more">没有更多数据</string>
+    <string name="xlistview_no_more_data">数据已加载到最新</string>
+    <string name="xlistview_no_data_net_error">网络出错,点击重试</string>
+    <string name="xlistview_no_data">暂无相关数据</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="text_cancel">取消</string>
+    <string name="text_tips">提示信息</string>
+    <string name="text_loadingdata">正在加载数据...</string>
+    <string name="text_uploaddata">正在提交数据</string>
+    <string name="text_downLoadedfinish">已下载完成!</string>
+    <string name="text_downLoaded">已下载 </string>
+    <string name="text_downLoad_background">后台下载 </string>
+    <string name="text_downLoad_stop">停止下载 </string>
+    <string name="text_downLoad_nosdcard">没有找到sdcard，无法执行下载操作！ </string>
+    <string name="text_downLoad_queue_error">获得下载队列失败</string>
+    <string name="text_downLoad_queue_stop"> 确定要停止下载 ？</string>
+    <string name="text_downLoad_SDcardMemory_downloadedError">SD卡内存不足，无法下载！</string>
+    <string name="text_downLoaded_doOpen"> 是否要打开此文件？</string>
+    <string name="text_downLoaded_open">打开 </string>
+    <string name="text_openFlie_error">没有应用可打开此文件。</string>
+
+</resources>

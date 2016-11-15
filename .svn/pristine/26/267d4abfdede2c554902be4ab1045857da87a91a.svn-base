@@ -1,0 +1,46 @@
+package com.yishanxiu.yishang.model.user;
+
+import com.yishanxiu.yishang.model.BaseModel;
+
+/**
+ * Created by Jaelyn on 2016/9/19.
+ * 用户基本信息
+ */
+public class UserBaseInfoModel extends BaseModel{
+	private String userId;
+	private String userLevelId;
+	private String userNickname;
+	private String userIcon;
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getUserLevelId() {
+		return userLevelId;
+	}
+
+	public void setUserLevelId(String userLevelId) {
+		this.userLevelId = userLevelId;
+	}
+
+	public String getUserNickname() {
+		return userNickname;
+	}
+
+	public void setUserNickname(String userNickname) {
+		this.userNickname = userNickname;
+	}
+
+	public String getUserIcon() {
+		return userIcon;
+	}
+
+	public void setUserIcon(String userIcon) {
+		this.userIcon = userIcon;
+	}
+}

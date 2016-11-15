@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:paddingBottom="@dimen/comon_half_margin"
+	android:paddingLeft="@dimen/common_margin_more"
+	android:paddingRight="@dimen/common_margin"
+	android:paddingTop="@dimen/comon_half_margin">
+
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+
+		<com.yishanxiu.yishang.view.CircleImageView
+			android:id="@+id/user_photo_iv"
+			android:layout_width="@dimen/user_photo_size"
+			android:layout_height="@dimen/user_photo_size"
+			android:src="@drawable/user_center"
+			android:visibility="visible" />
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:layout_marginLeft="@dimen/margin_8dp"
+			android:gravity="center_vertical"
+			android:layout_gravity="center_vertical">
+
+			<TextView
+				android:id="@+id/userName_tv"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				style="@style/text_16_darkgrey"
+				android:textColor="@drawable/cus_comments_name_color"
+				android:text="@string/name_test" />
+
+			<TextView
+				android:id="@+id/create_time_tv"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_3dp"
+				android:textColor="@color/darkGray1" />
+		</LinearLayout>
+	</LinearLayout>
+
+	<TextView
+		android:layout_marginTop="@dimen/comon_half_margin"
+		android:id="@+id/userComments_tv"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/goods_dis_test"
+		android:textColor="@color/darkGray" />
+</LinearLayout>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/gray_bg">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:paddingLeft="@dimen/common_margin"
+		android:paddingRight="@dimen/common_margin">
+
+		<TextView
+		    android:id="@+id/application_service"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingTop="@dimen/common_margin"
+			android:paddingBottom="@dimen/common_margin"
+			android:text="@string/application_service" />
+
+		<RadioGroup
+			android:id="@+id/radiogroup_return"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<RadioButton
+				android:id="@+id/radio_refund"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingTop="@dimen/common_margin"
+				android:paddingBottom="@dimen/common_margin"
+				android:background="@drawable/select_radio_bg"
+				android:button="@null"
+				android:checked="true"
+				android:drawableRight="@drawable/check_mark"
+				android:paddingLeft="@dimen/common_margin"
+				android:paddingRight="@dimen/common_margin"
+				android:text="@string/only_refund" />
+
+			<RadioButton
+				android:id="@+id/radio_return"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingTop="@dimen/common_margin"
+				android:paddingBottom="@dimen/common_margin"
+				android:background="@drawable/select_radio_bg"
+				android:button="@null"
+				android:paddingLeft="@dimen/common_margin"
+				android:paddingRight="@dimen/common_margin"
+				android:text="@string/return_refunds" />
+		</RadioGroup>
+
+		<TextView
+		    android:id="@+id/refund_money"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingTop="@dimen/common_margin"
+			android:paddingBottom="@dimen/common_margin"
+			android:text="@string/refund_amount" />
+
+		<EditText
+			android:background="@color/trans_white_color"
+			android:id="@+id/price"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/money_t"
+			android:paddingLeft="@dimen/common_margin"
+			android:digits="1234567890."
+			android:paddingTop="@dimen/common_margin"
+			android:paddingBottom="@dimen/common_margin">
+		</EditText>
+
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingTop="@dimen/common_margin"
+			android:paddingBottom="@dimen/common_margin"
+			android:text="@string/leave_msg" />
+
+
+		<EditText
+			android:id="@+id/tv_msg"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:minLines="3"
+			android:maxLines="10"
+			android:layout_weight="1"
+			android:background="@color/white"
+			android:paddingLeft="@dimen/common_margin"
+			android:paddingRight="@dimen/common_margin"
+			android:paddingTop="@dimen/common_margin"
+			android:paddingBottom="@dimen/common_margin"
+			android:gravity="top"
+			android:hint="@string/hint_length"
+			android:inputType="textMultiLine"
+			android:maxLength="200" />
+
+
+		<GridView
+			android:layout_marginTop="@dimen/common_margin"
+			android:id="@+id/noScrollgridview"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:background="@color/white"
+			android:paddingTop="@dimen/common_margin_more"
+			android:paddingLeft="@dimen/common_margin"
+			android:paddingRight="@dimen/common_margin"
+			android:paddingBottom="@dimen/common_margin_more"
+			android:horizontalSpacing="@dimen/common_double_margin"
+			android:numColumns="3"
+			android:scrollbars="none"
+			android:verticalSpacing="5dp" />
+
+	</LinearLayout>
+
+	<TextView
+		style="@style/blackBtStyle"
+		android:layout_margin="0dp"
+		android:id="@+id/commitApplayTv"
+		android:layout_alignParentBottom="true"
+		android:text="@string/submit" />
+
+</RelativeLayout>

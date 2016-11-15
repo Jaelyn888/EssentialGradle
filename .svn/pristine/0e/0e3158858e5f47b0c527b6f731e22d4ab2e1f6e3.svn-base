@@ -1,0 +1,292 @@
+package com.yishanxiu.yishang.utils;
+
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import android.text.TextUtils;
+
+public class StringUtils {
+	/**
+	 * 手机号码的格式验证
+	 *
+	 * @param
+	 * @return
+	 */
+	public static boolean isMobileNO(String mobiles) {
+		// Pattern p =
+		// Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0-9]))\\d{8}$");
+		// Matcher m = p.matcher(mobiles);
+		// return m.find();
+		if (TextUtils.isEmpty(mobiles)) {
+			return false;
+		} else if (!mobiles.startsWith("1")) {
+			return false;
+		} else
+			return mobiles.length() == 11;
+	}
+
+	/**
+	 * 手机号中间加密
+	 *
+	 * @param str
+	 * @return
+	 */
+	public static String secretMobilePhone(String str) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(str.substring(0, 3));
+		stringBuilder.append("****");
+		stringBuilder.append(str.substring(7, 11));
+		return stringBuilder.toString();
+	}
+
+	/**
+	 * 邮箱的格式验证
+	 *
+	 * @param
+	 * @return
+	 */
+	public static boolean isEmail(String email) {
+		String str = "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";
+		Pattern p = Pattern.compile(str);
+		Matcher m = p.matcher(email);
+		return m.matches();
+	}
+
+	/**
+	 * 密码的格式验证,只能验证大小字母和数字
+	 */
+	public static boolean passwordAuthentication(String password) {
+		Pattern p = Pattern.compile("^[A-Za-z0-9]+$");
+		Matcher m = p.matcher(password);
+		return m.matches();
+	}
+
+	/**
+	 * 密码的长度
+	 */
+	public static boolean passwordAuthenticationLength(String password) {
+		return password.length() > 5 && password.length() <= 16;
+	}
+
+
+
+	/**
+	 * 时间戳转化 yyyy-MM-dd HH:mm:ss   2015-11-15 21:30:17
+	 */
+	public static String getTimeFormatFull(String timeStr) {
+		if(!TextUtils.isEmpty(timeStr)) {
+			String time = timeStr.substring(0, 19);
+			return time;
+		}else {
+			return "";
+		}
+	}
+
+	/**
+	 * 根据时间抽 格式化时间 yyyy-MM-dd
+	 */
+	public static String getTimeFormatYMd(String timeStr) {
+		if(!TextUtils.isEmpty(timeStr)) {
+			String time = timeStr.substring(0, 10);
+			return time;
+		}else {
+			return "";
+		}
+	}
+
+	/**
+	 * 时间串截取  MM-dd HH:mm 05-04 12:30
+	 */
+	public static String getTimeFormatMD_HHMM(String timeStr){
+		if(!TextUtils.isEmpty(timeStr)) {
+			String time = timeStr.substring(5, 16);
+			return time;
+		}else {
+			return "";
+		}
+	}
+
+	/**
+	 * 格式化价格 商品价格显示 根据需要加
+	 *
+	 * @param price
+	 * @return
+	 */
+	public static String getFormatMoneyWithSign(String price) {
+		try {
+			price=getFormatMoney(price);
+			return "￥" + price;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "￥0";
+		}
+	}
+
+	public static String getFormatMoneyWithSign(double price) {
+		try {
+			// Double price_double = Double.parseDouble(price);
+			return "￥" + getFormatMoney(price);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "￥0";
+		}
+	}
+
+	/**
+	 * 格式化价格 带钱币符号 购物车，订单等显示 必须格式化
+	 *
+	 * @param price
+	 * @return
+	 */
+	public static String getFormatMoneyWithSignMust(String price) {
+		try {
+			return "￥" + getFormatMoney(price);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "￥0";
+		}
+	}
+
+	public static String getFormatMoneyWithSignMust(double price) {
+		try {
+			return "￥" + getFormatMoney(price);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "￥0";
+		}
+	}
+
+	/**
+	 * 格式化价格 带钱币符号
+	 *
+	 * @param price
+	 * @return
+	 */
+	public static String getFormatMoney(String price) {
+		try {
+			if ("".equals(price)) {
+				price = "0";
+			}
+			Double price_double = Double.parseDouble(price);
+			return getFormatMoney(price_double);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "0";
+		}
+	}
+
+	/**
+	 * 修改 fmt保留两位小数
+	 */
+	public static String getFormatMoney(double index) {
+		try {
+			return trimZeroNumber(index);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return "0";
+		}
+	}
+	/**
+	 * 去除无效的0
+	 * @param number
+	 * @return
+	 */
+	public static String trimZeroNumber(double number) {
+		BigDecimal  b=new  BigDecimal(number).setScale(2,BigDecimal.ROUND_HALF_UP);
+		return b.stripTrailingZeros().toPlainString();
+	}
+
+	/**
+	 * 获取缩略图路径 SS 96*96
+	 */
+	public static String getSSImage(String imgUrl) {
+		if (TextUtils.isEmpty(imgUrl)) {
+			return "";
+		}
+//		String subStr = imgUrl.substring(0, imgUrl.length() - 11);
+//		String subfifx = imgUrl.substring(imgUrl.length() - 11);
+//		if (subfifx.startsWith("_source")) {
+//
+//			return subStr + subfifx.replace("_source", "_SS");
+//		}
+		return imgUrl;
+	}
+
+	/**
+	 * 获取缩略图路径 _M 380*380
+	 */
+	public static String get_MImage(String imgUrl) {
+		if (TextUtils.isEmpty(imgUrl)) {
+			return "";
+		}
+//		String subStr = imgUrl.substring(0, imgUrl.length() - 11);
+//		String subfifx = imgUrl.substring(imgUrl.length() - 11);
+//		if (subfifx.startsWith("_source")) {
+//
+//			return subStr + subfifx.replace("_source", "_M");
+//		}
+		return imgUrl;
+	}
+
+	/**
+	 * 获取缩略图路径 _S
+	 */
+	public static String get_SImage(String imgUrl) {
+		if (TextUtils.isEmpty(imgUrl)) {
+			return "";
+		}
+//		String subStr = imgUrl.substring(0, imgUrl.length() - 11);
+//		String subfifx = imgUrl.substring(imgUrl.length() - 11);
+//		if (subfifx.startsWith("_source")) {
+//
+//			return subStr + subfifx.replace("_source", "_S");
+//		}
+		return imgUrl;
+	}
+
+	/**
+	 * 校验验证码格式
+	 *
+	 * @param code
+	 * @return
+	 */
+	public static boolean isSmsCode(String code) {
+		return !(TextUtils.isEmpty(code) || code.length() != 6);
+	}
+
+	/**
+	 * 编码转换  url含有汉子
+	 * @param str
+	 * @return
+	 */
+	public  static String utf8Togb2312(String str){
+		String data="";
+		try {
+			for(int i=0;i<str.length();i++){
+				char c=str.charAt(i);
+				if(c+"".getBytes().length>1&&c!=':'&&c!='/'){
+					data = data+java.net.URLEncoder.encode(c+"","utf-8");
+				}else {
+					data=data+c;
+				}
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}finally{
+			System.out.println(data);
+		}
+		return  data;
+	}
+
+	public static void main(String args[]) {
+		String str = getTimeFormatFull("2015-11-15 21:30:17");
+		str=getTimeFormatYMd("2015-11-15 21:30:17");
+		str=getTimeFormatMD_HHMM("2015-11-15 21:30:17");
+		System.out.println(str);
+	}
+}

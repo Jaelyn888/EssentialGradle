@@ -1,0 +1,160 @@
+package com.yishanxiu.yishang.adapter;
+
+import android.content.Context;
+import android.text.TextPaint;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import net.tsz.afinal.json.JsonMap;
+import com.cnfol.emoj.bean.LiveColorBean;
+import com.cnfol.emoj.util.MyLiveTextView;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+import com.yishanxiu.yishang.utils.LogUtil;
+import com.yishanxiu.yishang.utils.StringUtils;
+import com.yishanxiu.yishang.R;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Jaelyn on 16/2/24. 发现搜索
+ * <p>
+ * Update @author FangDongzhang 2016/7/23
+ */
+public class ArticalSearchAdapter extends MyBaseAdapter {
+	/**
+	 * 标记特殊的关键字
+	 */
+	private String specialStr = "";
+	private LiveColorBean liveColorBean;
+	private ArrayList<LiveColorBean> list;
+
+	public ArticalSearchAdapter(Context context) {
+		super(context);
+	}
+
+	public ArticalSearchAdapter(Context context, List<? extends Map<String, ?>> datas) {
+		super(context, datas);
+	}
+
+	@Override
+	public View getView(int i, View view, ViewGroup viewGroup) {
+		FindSearchAdapterViewHolder findSearchAdapterViewHolder;
+		if (view == null) {
+			view = layoutInflater.inflate(R.layout.artical_search_item, viewGroup, false);
+			findSearchAdapterViewHolder = new FindSearchAdapterViewHolder();
+			ViewUtils.inject(findSearchAdapterViewHolder, view);
+			view.setTag(findSearchAdapterViewHolder);
+		} else {
+			findSearchAdapterViewHolder = (FindSearchAdapterViewHolder) view.getTag();
+		}
+		bindData(i, findSearchAdapterViewHolder);
+		return view;
+	}
+
+	private void bindData(final int i, FindSearchAdapterViewHolder viewHolder) {
+		if (datas != null && datas.size() > 0) {
+			JsonMap<String, Object> jsonMap = (JsonMap<String, Object>) datas.get(i);
+
+			String picPath = jsonMap.getStringNoNull("thumbnailPath");
+
+			BitmapHelper.loadImage(context, picPath, viewHolder.artical_logo_iv, BitmapHelper.LoadImgOption.Square,
+					true);
+
+			viewHolder.artical_title_iv.insertGif(jsonMap.getStringNoNull("articleName"), list,
+					new MyLiveTextView.SetSpanListener() {
+						@Override
+						public void updateDrawState(TextPaint ds) {
+							LogUtil.d("sss", "click");
+						}
+
+						@Override
+						public void onClick(View view, LiveColorBean liveColorBean) {
+							LogUtil.d("sss", "click");
+						}
+					});
+
+			String articalSummary = jsonMap.getStringNoNull("articleAbstract");
+			if (TextUtils.isEmpty(articalSummary)) {
+				viewHolder.artical_disc_tv.setVisibility(View.GONE);
+			} else {
+				viewHolder.artical_disc_tv.setVisibility(View.VISIBLE);
+				int index = articalSummary.indexOf(specialStr);
+				if (index > -1) {
+					int totleSize = articalSummary.length();
+					int startIndex = index - 5;
+					if (totleSize - index < 14) {
+						startIndex = index - 14;
+					} else {
+						startIndex = index - 5;
+					}
+					if (startIndex < 1) {
+						startIndex = 1;
+					}
+					articalSummary = "……" + articalSummary.substring(startIndex - 1);
+				}
+				viewHolder.artical_disc_tv.insertGif(articalSummary, list,
+						new MyLiveTextView.SetSpanListener() {
+							@Override
+							public void updateDrawState(TextPaint ds) {
+								LogUtil.d("sss", "click");
+							}
+
+							@Override
+							public void onClick(View view, LiveColorBean liveColorBean) {
+								LogUtil.d("sss", "click");
+							}
+						});
+			}
+
+
+			viewHolder.author_tv.insertGif(jsonMap.getStringNoNull("groupName"), list,
+					new MyLiveTextView.SetSpanListener() {
+						@Override
+						public void updateDrawState(TextPaint ds) {
+							LogUtil.d("sss", "click");
+						}
+
+						@Override
+						public void onClick(View view, LiveColorBean liveColorBean) {
+							LogUtil.d("sss", "click");
+						}
+					});
+
+			viewHolder.create_time_tv.setText(StringUtils.getTimeFormatYMd(jsonMap.getStringNoNull("createTime")));
+		}
+	}
+
+	public void setSpecialStr(String specialStr) {
+		this.specialStr = specialStr;
+		liveColorBean = new LiveColorBean(specialStr, "#0000ff", "");
+		list = new ArrayList<LiveColorBean>();
+		list.add(liveColorBean);
+	}
+
+	public class FindSearchAdapterViewHolder {
+		@ViewInject(R.id.artical_logo_iv)
+		public ImageView artical_logo_iv;
+
+		@ViewInject(R.id.artical_title_tv)
+		public MyLiveTextView artical_title_iv;
+
+		@ViewInject(R.id.artical_disc_tv)
+		public MyLiveTextView artical_disc_tv;
+
+		@ViewInject(R.id.classfy_name_tv)
+		public TextView classfy_name_tv;
+
+		@ViewInject(R.id.author_tv)
+		public MyLiveTextView author_tv;
+
+		@ViewInject(R.id.create_time_tv)
+		public TextView create_time_tv;
+
+	}
+}

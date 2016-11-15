@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/item_cb"
+	android:drawableLeft="@drawable/cus_check1"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:drawablePadding="@dimen/comon_half_margin"
+	android:paddingLeft="@dimen/common_margin"
+	android:paddingTop="@dimen/comon_half_margin"
+	android:paddingBottom="@dimen/comon_half_margin"
+	android:gravity="center_vertical"
+	android:layout_gravity="center_vertical"
+	android:singleLine="true" />

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <com.yishanxiu.yishang.view.CustomImageView
+            app:scaleRate="1"
+            style="@style/common_image_fill_width_style"
+            android:id="@+id/attach_pic_iv"
+            android:src="@drawable/brand_log_load_error"/>
+
+</LinearLayout>

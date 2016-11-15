@@ -1,0 +1,246 @@
+package com.yishanxiu.yishang.fragment;
+
+import android.content.*;
+import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
+
+import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
+import com.google.gson.reflect.TypeToken;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.activity.MainActivity2;
+import com.yishanxiu.yishang.adapter.CollectionBrandAdapter;
+import com.yishanxiu.yishang.getdata.GetDataConfing;
+import com.yishanxiu.yishang.getdata.GetDataQueue;
+import com.yishanxiu.yishang.getdata.IGetServicesDataCallBack;
+import com.yishanxiu.yishang.getdata.ShowGetDataError;
+import com.yishanxiu.yishang.model.*;
+import com.yishanxiu.yishang.model.shopmall.BrandCollectionModel;
+import com.yishanxiu.yishang.model.user.CollectionResponse;
+import com.yishanxiu.yishang.utils.Constant;
+import com.yishanxiu.yishang.utils.ExtraKeys;
+import com.yishanxiu.yishang.utils.ModleUtils;
+import com.yishanxiu.yishang.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+/**
+ * Created by Jaelyn on 2016/8/3.
+ */
+public class CollectionBrandFragment extends LazyFragment {
+	private PullToRefreshListView ptr_list;
+	/**
+	 * 商品
+	 */
+	private ArrayList<BrandCollectionModel> dataList = new ArrayList<BrandCollectionModel>();
+	private CollectionBrandAdapter collectionBrandAdapter;
+
+	BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			getServiceData(0);
+		}
+	};
+
+	@Override
+	protected void onCreateViewLazy(Bundle savedInstanceState) {
+		super.onCreateViewLazy(savedInstanceState);
+		setContentView(R.layout.collection_brand_fragment_layout);
+		ptr_list = (PullToRefreshListView) findViewById(R.id.ptr_list);
+		IntentFilter intentFilter = new IntentFilter(Constant.ACT_BRAND_COLLECTION_CHANGE);
+		activity.registerReceiver(broadcastReceiver, intentFilter);
+		ptr_list.setOnRefreshListener(list_loadMoreListener);
+		ptr_list.setOnItemClickListener(onItemClickListener);
+		collectionBrandAdapter = new CollectionBrandAdapter(activity);
+		collectionBrandAdapter.setOnItemChildClickListener(itemCompontClickListener);
+		ptr_list.setAdapter(collectionBrandAdapter);
+		getServiceData(0);
+	}
+
+	@Override
+	protected void onFragmentStartLazy() {
+		super.onFragmentStartLazy();
+	}
+
+
+	private BGAOnItemChildClickListener itemCompontClickListener = new BGAOnItemChildClickListener() {
+		@Override
+		public void onItemChildClick(ViewGroup parent, View childView, int position) {
+			String vendorId = dataList.get(position).getBrandId();
+			activity.getDate_GetFocusOn(callBack, vendorId, Constant.CollectionType.Brand, activity);
+		}
+
+	};
+
+	/**
+	 * 商品 item的点击
+	 */
+	AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			if (position > 0) {
+				BrandCollectionModel brandCollectionInfo=dataList.get(position - 1);
+				activity.seeShopDetail(brandCollectionInfo);
+			}
+		}
+	};
+
+	/**
+	 * Gridview
+	 */
+	PullToRefreshBase.OnRefreshListener2 list_loadMoreListener = new PullToRefreshBase.OnRefreshListener2<GridView>() {
+		@Override
+		public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
+			getServiceData(1);
+		}
+
+		@Override
+		public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
+			getServiceData(2);
+		}
+	};
+
+	/**
+	 * 获取网络数据 private int nPage = 0; /**
+	 *
+	 * @param requestType
+	 */
+	private void getServiceData(int requestType) {
+		HashMap<String, Object> params = new HashMap<String, Object>();
+
+		if (requestType == 0) {
+			//params.put("createTime", "");
+			params.put("requestType", String.valueOf(requestType));
+		} else if (requestType == 1) {
+			//params.put("createTime", dataList.get(0).getStringNoNull("createTime"));
+			params.put("requestType", String.valueOf(0));
+		} else {
+			params.put("createTime", dataList.get(dataList.size() - 1).getCreateTime());
+			params.put("requestType", String.valueOf(requestType));
+		}
+		params.put("userId", Utils.getUserId(activity));
+		params.put("collectionType", Constant.CollectionType.Brand.ordinal() + "");
+
+		GetDataQueue queue = new GetDataQueue();
+		queue.setTag(requestType);
+		queue.setActionName(GetDataConfing.GetAction_queryCollectionByType);
+
+		queue.setParamsNoJson(params);
+		queue.setCallBack(callBack);
+		queue.setWhat(GetDataConfing.What_queryCollectionByType);
+		getDataUtil.getData(queue);
+	}
+
+	/**
+	 * 设置适配器数据
+	 */
+	private void setAdapterData(ArrayList<BrandCollectionModel> temp_data, int requestType) {
+		if (requestType == 0) {
+			if (temp_data.size() == 0) {
+				ptr_list.setMode(PullToRefreshBase.Mode.BOTH);
+				noAttention();
+			} else {
+				ptr_list.setMode(PullToRefreshBase.Mode.BOTH);
+				dataList = temp_data;
+				collectionBrandAdapter.setData(dataList);
+			}
+
+		} else if (requestType == 1) {
+//			if (!temp_data.isEmpty()) {
+//				dataList=temp_data;
+//				collectionBrandAdapter.setDatas(dataList);
+//				collectionBrandAdapter.notifyDataSetChanged();
+//			}
+			if (temp_data.size() == 0) {
+				ptr_list.setMode(PullToRefreshBase.Mode.BOTH);
+			} else {
+				ptr_list.setMode(PullToRefreshBase.Mode.BOTH);
+				dataList = temp_data;
+				collectionBrandAdapter.setData(dataList);
+			}
+		} else {
+			if (temp_data.size() == 0) {
+				ptr_list.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+			} else {
+				ptr_list.setMode(PullToRefreshBase.Mode.BOTH);
+				dataList.addAll(temp_data);
+				collectionBrandAdapter.setData(dataList);
+			}
+		}
+	}
+
+	AlertDialog.Builder builder;
+
+	private void noAttention() {
+		dataList.clear();
+		collectionBrandAdapter.setData(dataList);
+		collectionBrandAdapter.notifyDataSetChanged();
+		builder = new AlertDialog.Builder(activity);
+		builder.setMessage(R.string.no_collection_msg);
+		builder.setNeutralButton(R.string.go_attention, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Intent intent = new Intent(activity, MainActivity2.class);
+				intent.putExtra(ExtraKeys.Key_Msg1, 1);
+				intent.putExtra(ExtraKeys.Key_Msg2, 2);
+				activity.jumpTo(intent);
+			}
+		});
+		builder.show();
+	}
+
+	/**
+	 * 获取服务器数据的返回信息
+	 */
+	private IGetServicesDataCallBack callBack = new IGetServicesDataCallBack() {
+		@Override
+		public void onLoaded(GetDataQueue entity) {
+			if (entity.what == GetDataConfing.What_queryCollectionByType) {
+				 ptr_list.onRefreshComplete();
+				TypeToken<BaseResponse<List<BrandCollectionModel>>> typeToken=new TypeToken<BaseResponse<List<BrandCollectionModel>>>(){};
+				BaseResponse<List<BrandCollectionModel>> baseResponse = new ModleUtils().mapTo(entity,typeToken);
+				if (ShowGetDataError.isCodeSuccess(activity, baseResponse)) {
+					setAdapterData((ArrayList<BrandCollectionModel>) baseResponse.getInfo(), (Integer) entity.getTag());
+				}
+			} else if (entity.what == GetDataConfing.WHAT_GET_FOCUS_ON) { // 关注平拍
+				TypeToken<BaseResponse<CollectionResponse>> typeToken=new TypeToken<BaseResponse<CollectionResponse>>(){};
+				BaseResponse<CollectionResponse> baseResponse = new ModleUtils().mapTo(entity,typeToken);
+				if (ShowGetDataError.isCodeSuccess(activity, baseResponse)) {
+					try {
+						updateCollection(baseResponse.getInfo());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	};
+
+	private void updateCollection(CollectionResponse collectionResponse) {
+		String contentId = collectionResponse.getContentId();
+		for (int i = 0; i < dataList.size(); i++) {
+			BrandCollectionModel brandCollectionInfo = dataList.get(i);
+			String brandId = brandCollectionInfo.getBrandId();
+			if (contentId.equals(brandId) ){
+				//dataList.remove(i);
+				int isCollected = brandCollectionInfo.getIsCollected();
+				if (isCollected>0) {
+					brandCollectionInfo.setIsCollected(0);
+				} else {
+					brandCollectionInfo.setIsCollected(1);
+				}
+				dataList.set(i, brandCollectionInfo);
+				collectionBrandAdapter.notifyDataSetChanged();
+				break;
+			}
+		}
+	}
+
+}

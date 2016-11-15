@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:background="@color/gray_bg">
+
+	<EditText
+		android:gravity="top"
+		android:paddingLeft="@dimen/common_margin"
+		android:paddingTop="@dimen/margin_8dp"
+		android:paddingRight="@dimen/common_margin"
+		android:paddingBottom="@dimen/margin_8dp"
+		android:id="@+id/comment_edit"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="@color/white"
+		android:hint="@string/comment_submit_hint"
+		android:textSize="16sp" />
+
+
+</LinearLayout>

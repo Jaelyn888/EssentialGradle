@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--<com.yishanxiu.yishang.view.SquareLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.yishanxiu.yishang"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/cus_gray_border_black_bt">-->
+
+<!--    <TextView
+            android:gravity="center"
+            android:id="@+id/tv_shopmall_right"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/comon_half_margin"
+            android:textColor="@color/white"
+            android:text="@string/app_name"
+    />-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res/com.yishanxiu.yishang"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content">
+
+	<com.yishanxiu.yishang.view.CustomImageView
+		android:id="@+id/brand_logo_iv"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:scaleRate="1" />
+
+</LinearLayout>
+	<!--</com.yishanxiu.yishang.view.SquareLayout>-->

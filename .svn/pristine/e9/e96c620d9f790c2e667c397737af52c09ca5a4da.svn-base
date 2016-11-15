@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ListView
+        android:id="@+id/xlv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:cacheColorHint="@color/transparent"
+        android:fadingEdge="none"
+        android:headerDividersEnabled="true"
+        android:scrollbars="none" />
+
+    <TextView
+        android:id="@+id/dialog_tv"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:background="@color/trans_balck_color"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        android:visibility="invisible" />
+
+    <com.yishanxiu.yishang.view.sidebar.SideBar
+        android:id="@+id/sideBar"
+        android:layout_width="15dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="right|center"
+        android:background="@color/white"
+        android:paddingTop="@dimen/common_margin" />
+
+</FrameLayout>

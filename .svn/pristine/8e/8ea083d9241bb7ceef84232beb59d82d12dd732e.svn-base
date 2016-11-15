@@ -1,0 +1,29 @@
+package com.yishanxiu.yishang.adapter;
+
+import android.content.Context;
+import cn.bingoogolapple.androidcommon.adapter.BGAAdapterViewAdapter;
+import com.yishanxiu.yishang.model.article.ArticleModel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Jaelyn on 2016/9/18.
+ * 兼容list和recycleView的通用adapter
+ */
+public abstract class CommonBaseAdapter<M> extends BGAAdapterViewAdapter {
+
+	protected  Context mContext;
+	public CommonBaseAdapter(Context context, int itemLayoutId) {
+		super(context, itemLayoutId);
+		mContext=context;
+	}
+
+	public void setDatas(List<M> dataList) {
+	   setData(dataList);
+	}
+
+	public List<M> getDatas() {
+		return mData;
+	}
+}

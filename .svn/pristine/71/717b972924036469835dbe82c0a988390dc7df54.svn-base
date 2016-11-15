@@ -1,0 +1,238 @@
+package com.yishanxiu.yishang.activity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
+import net.tsz.afinal.annotation.view.ViewInject;
+import net.tsz.afinal.json.JsonMap;
+import net.tsz.afinal.json.JsonParseHelper;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.activity.base.BaseUIActivity;
+import com.yishanxiu.yishang.getdata.*;
+import com.yishanxiu.yishang.utils.ExtraKeys;
+import com.yishanxiu.yishang.utils.Utils;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * 网页加载
+ */
+public class UrlWebviewActivity extends BaseUIActivity implements View.OnClickListener {
+	/**
+	 * 注册协议
+	 */
+	private String registerAgreeMentUrl = GetDataConfing.Url_Base + "LoginManager/AppRegistAgreement";
+	/**
+	 * 帮助中心
+	 */
+	private String help_url = GetDataConfing.Url_Base + "pages/mobile_page/H5helpCenter.html";
+	/**
+	 * 关于我们
+	 */
+	private String about_url = GetDataConfing.Url_Base + "pages/mobile_page/H5aboutUs.html";
+
+	/**
+	 * 退款详情
+	 */
+	private String return_fund_detail_url = GetDataConfing.Url_Base + "App/ReFundScheduleSelect?orderNum=";
+	/**
+	 * 退货详情
+	 */
+	private String return_goods_detail_url = GetDataConfing.Url_Base + "App/ReturnGoodsDetail?GoodRetrunNum=";
+
+	/**
+	 * 退货进度
+	 */
+	private String return_goods_progress_url = GetDataConfing.Url_Base + "App/ReturnGoodsScheduleSelect?GoodReturnNum=";
+
+	/**
+	 * 退款进度
+	 */
+	private String refund_progress_url = GetDataConfing.Url_Base + "App/ScheduleMoneySelect?UserId=";
+
+	@ViewInject(id = R.id.register_agreement_wv)
+	private WebView register_agreement_wv;
+
+	@ViewInject(id = R.id.myProgressBar)
+	private ProgressBar myProgressBar;
+	private int flag = 0;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_register_agreement);
+		try {
+			flag = getIntent().getIntExtra(ExtraKeys.Key_Msg1, 0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setBtn_backListener(this);
+		setWebViewFeature();
+		switch (flag) {
+		case 0:
+			setCenter_title(R.string.register_agreement);
+			register_agreement_wv.loadUrl(registerAgreeMentUrl);
+			break;
+		case 1:
+			setCenter_title(R.string.my_help_center);
+			register_agreement_wv.loadUrl(help_url);
+			break;
+		case 2:
+			setCenter_title(R.string.logistics_detail_title);
+			String ordereNum = getIntent().getStringExtra(ExtraKeys.Key_Msg2);
+			getLogisticsDetailUrl(ordereNum);
+			break;
+		case 3: // 退款详情
+			setCenter_title(R.string.return_fund_detail);
+			String ordereNum3 = getIntent().getStringExtra(ExtraKeys.Key_Msg2);
+			register_agreement_wv.loadUrl(return_fund_detail_url + ordereNum3);
+			break;
+		case 4: // 退货进度
+			setCenter_title(R.string.scan_progress);
+			String ordereNum4 = getIntent().getStringExtra(ExtraKeys.Key_Msg2);
+			register_agreement_wv.loadUrl(return_goods_progress_url + ordereNum4);
+			break;
+		case 5: // 退货详情
+			setCenter_title(R.string.return_goods_detail);
+			String ordereNum5 = getIntent().getStringExtra(ExtraKeys.Key_Msg2);
+			register_agreement_wv.loadUrl(return_goods_detail_url + ordereNum5);
+			break;
+		case 6:// 退货后的退款进度
+			setCenter_title(R.string.refund_progress);
+			register_agreement_wv.loadUrl(refund_progress_url + Utils.getUserId(mContext));
+		case 7: // 关于我们
+			setCenter_title(R.string.my_about_us);
+			register_agreement_wv.loadUrl(about_url);
+			break;
+		case 8:
+			setCenter_title(R.string.goods_detail_title);
+			register_agreement_wv.loadUrl(getIntent().getStringExtra(ExtraKeys.Key_Msg2));
+			break;
+		case 9:
+			setCenter_title(R.string.product_detail);
+			register_agreement_wv.loadUrl(getIntent().getStringExtra(ExtraKeys.Key_Msg2));
+			break;
+		default:
+		}
+
+	}
+
+	/**
+	 * 获取查看物流的URL
+	 * 
+	 * @param ordereNum
+	 */
+	private void getLogisticsDetailUrl(String ordereNum) {
+		loadingToast.show();
+
+		Map<String, Object> params = new HashMap<String, Object>();
+
+		params.put("orderNum", ordereNum);
+		GetDataQueue queue = new GetDataQueue();
+		queue.setCallBack(callBack);
+		queue.setActionName(GetDataConfing.Action_QueryLogisticsByOrderNum);
+		queue.setWhat(GetDataConfing.What_QueryLogisticsByOrderNum);
+		queue.setParamsNoJson(params);
+		getDataUtil.getData(queue);
+	}
+
+	/**
+	 * 获取服务器数据的返回信息
+	 */
+	private IGetServicesDataCallBack callBack = new IGetServicesDataCallBack() {
+		@Override
+		public void onLoaded(GetDataQueue entity) {
+			if (entity.isOk()) {
+				if (ShowGetDataError.isCodeSuccess(mContext, entity.getInfo())) {
+					if (entity.what == GetDataConfing.What_QueryLogisticsByOrderNum) {
+						JsonMap<String, Object> jsonMap = JsonParseHelper.getJsonMap_JsonMap(entity.getInfo(),
+								JsonKeys.Key_Info);
+						String urlStr = jsonMap.getStringNoNull("url");
+						urlStr = urlStr.replaceAll("amp;", "");
+						register_agreement_wv.loadUrl(urlStr);
+					}
+				}
+			} else {
+				ShowGetDataError.showNetError(mContext);
+			}
+			loadingToast.dismiss();
+		}
+	};
+
+	private void setWebViewFeature() {
+		WebSettings webSettings = register_agreement_wv.getSettings();
+		webSettings.setJavaScriptEnabled(true);
+		webSettings.setAllowFileAccess(true);
+		webSettings.setAllowContentAccess(true);
+		webSettings.setAppCacheEnabled(true);
+		webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
+		webSettings.setDomStorageEnabled(true);
+		webSettings.setGeolocationEnabled(true);
+		webSettings.setLoadsImagesAutomatically(true);
+		webSettings.setEnableSmoothTransition(true);
+		webSettings.setBuiltInZoomControls(true);
+		webSettings.setLightTouchEnabled(true);
+		webSettings.setSupportZoom(true);
+		register_agreement_wv.setHapticFeedbackEnabled(true);
+		webSettings.setUseWideViewPort(true);
+		webSettings.setLoadWithOverviewMode(true);
+		register_agreement_wv.setWebViewClient(new WebViewClient() {
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				// if (url.contains("/ShopMall/Index?vid=")) {
+				// int startIndex = url.indexOf("=");
+				// String id = url.substring(startIndex + 1);
+				// seeShopThemeDetail(id, "");
+				// } else if (url.contains("/Orders/OrderDetail?orderNum=")) {
+				// int startIndex = url.indexOf("=");
+				// String id = url.substring(startIndex + 1);
+				// seeOrderDetail("", id, "");
+				// } else {
+				// view.loadUrl(url);
+				// }
+				view.loadUrl(url);
+				return false;
+			}
+
+		});
+		register_agreement_wv.setWebChromeClient(new WebChromeClient() {
+			@Override
+			public void onProgressChanged(WebView view, int newProgress) {
+				if (newProgress == 100) {
+					myProgressBar.setVisibility(View.GONE);
+				} else {
+					if (View.INVISIBLE == myProgressBar.getVisibility()) {
+						myProgressBar.setVisibility(View.VISIBLE);
+					}
+					myProgressBar.setProgress(newProgress);
+				}
+				super.onProgressChanged(view, newProgress);
+			}
+
+		});
+	}
+
+	@Override
+	public void onClick(View v) {
+		if (register_agreement_wv.canGoBack()) {
+			register_agreement_wv.goBack();
+		} else {
+			finish();
+		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (register_agreement_wv.canGoBack()) {
+			register_agreement_wv.goBack();
+		} else {
+			super.onBackPressed();
+		}
+	}
+
+}

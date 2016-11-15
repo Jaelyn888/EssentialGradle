@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <com.handmark.pulltorefresh.library.PullToRefreshListView
+            android:id="@+id/ptr_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:cacheColorHint="@color/transparent"
+            android:divider="@drawable/hor_line"
+            android:headerDividersEnabled="true"
+            android:fadingEdge="none"
+            android:scrollbars="none" />
+
+        <include layout="@layout/nodata_layout" />
+    </LinearLayout>
+
+    <!-- bottom -->
+
+    <RelativeLayout
+        android:id="@+id/layout_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:padding="5dp" >
+
+        <EditText
+            android:id="@+id/comment_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/comment_submit"
+            android:background="@drawable/cus_search_bg"
+            android:hint="@string/comment_submit_hint"
+            android:padding="8dp"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@id/comment_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="5dp"
+            android:text="@string/comment_submit1"
+            android:textColor="#6c6c6c"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+</LinearLayout>

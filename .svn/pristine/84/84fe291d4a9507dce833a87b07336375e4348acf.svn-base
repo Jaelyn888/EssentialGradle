@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+     >
+<!--
+    <striveen.util.used.view.view.XListView
+        android:id="@+id/my_lv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:cacheColorHint="#00000000"
+        android:divider="#00000000"
+        android:dividerHeight="5dp"
+        android:listSelector="#00000000"
+        android:scrollbars="none" />
+
+    
+    <fragment
+        android:name="essentialial.essential.fragment.ContentFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </fragment>
+    -->
+
+    <LinearLayout
+        android:id="@+id/my_llt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/white" >
+    </LinearLayout>
+
+</LinearLayout>

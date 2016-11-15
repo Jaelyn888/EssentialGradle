@@ -1,0 +1,145 @@
+package com.yishanxiu.yishang.receiver;
+
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.text.TextUtils;
+import android.text.format.Formatter;
+import com.lzy.okhttpserver.download.DownloadInfo;
+import com.lzy.okhttpserver.download.DownloadManager;
+import com.lzy.okhttpserver.download.DownloadService;
+import com.lzy.okhttpserver.listener.DownloadListener;
+import com.lzy.okhttputils.OkHttpUtils;
+import com.lzy.okhttputils.request.GetRequest;
+import com.sina.weibo.sdk.utils.NetworkHelper;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.app.MyApplication;
+import com.yishanxiu.yishang.bean.ApkInfo;
+import com.yishanxiu.yishang.getdata.*;
+import com.yishanxiu.yishang.utils.ApkUtils;
+import com.yishanxiu.yishang.utils.AppCacheUtils;
+import com.yishanxiu.yishang.utils.Utils;
+import net.tsz.afinal.json.JsonMap;
+import net.tsz.afinal.json.JsonParseHelper;
+import net.tsz.afinal.sdcard.SdcardHelper;
+
+import java.io.File;
+import java.util.HashMap;
+
+/**
+ * Created by admin on 15/10/19.
+ */
+public class NetStatueChangeReceiver extends BroadcastReceiver {
+    private Context mContext;
+    private MyDownloadListener listener;
+    @Override
+    public void onReceive(Context context, Intent intent) {
+
+        if(NetworkHelper.isNetworkAvailable(context)) {
+            this.mContext=context;
+            checkVersion();
+        }
+    }
+
+    private void upVersion(Context context,String apkDownLoadPath){
+        if(NetworkHelper.hasInternetPermission(context)){
+            if(NetworkHelper.isWifiValid(context)){
+                listener=new MyDownloadListener();
+                DownloadManager  downloadManager = DownloadService.getDownloadManager();
+                DownloadInfo downloadInfo;
+                downloadInfo = downloadManager.getDownloadInfo(apkDownLoadPath);
+
+                if (downloadInfo != null) {
+                    switch (downloadInfo.getState()) {
+                        case DownloadManager.PAUSE:
+                            downloadManager.restartTask(apkDownLoadPath);
+                            break;
+                        case DownloadManager.NONE:
+                        case DownloadManager.ERROR:
+                            downloadManager.addTask(apkDownLoadPath, downloadInfo.getRequest(),listener);
+                            break;
+                        case DownloadManager.DOWNLOADING:
+                            break;
+                        case DownloadManager.FINISH:
+                            File apkFile = new File(downloadInfo.getTargetPath());
+                            if (apkFile.exists()) {
+
+                            } else {
+                                downloadManager.removeTask(apkDownLoadPath);
+                                downloadManager.addTask(apkDownLoadPath, downloadInfo.getRequest(),listener);
+                            }
+                            break;
+                    }
+
+                } else {
+                    String appName=mContext.getString(R.string.app_name);
+                    ApkInfo apkInfo = new ApkInfo();
+                    apkInfo.setName(appName);
+                    apkInfo.setUrl(apkDownLoadPath);
+                    GetRequest request = OkHttpUtils.get(apkDownLoadPath);//
+                    downloadManager.addTask(apkDownLoadPath, request,listener);
+                    AppCacheUtils.getInstance(mContext).put(apkDownLoadPath, appName + ".apk");
+
+                }
+            }
+        }
+    }
+    private void checkVersion() {
+        if (SdcardHelper.ExistSDCard()) {
+            GetDataQueue queue = new GetDataQueue();
+            queue.setActionName(GetDataConfing.Action_selectAppVersionInfo);
+            queue.setParams(new HashMap<String, Object>());
+            queue.setCallBack(callBack);
+            queue.setWhat(GetDataConfing.What_selectAppVersionInfo);
+            MyApplication.getInstance().getGetDataUtil().getData(queue);
+        }
+    }
+
+    private IGetServicesDataCallBack callBack = new IGetServicesDataCallBack() {
+
+        @Override
+        public void onLoaded(GetDataQueue entity) {
+            if (entity.isOk()) {
+                    if (entity.what == GetDataConfing.What_selectAppVersionInfo) {
+                        JsonMap<String, Object> info = JsonParseHelper.getJsonMap_JsonMap(entity.getInfo(),
+                                JsonKeys.Key_Info);
+                        if (info.isEmpty()) {
+
+                        } else {
+                            String versionCode = info.getStringNoNull("versionNumber");
+                            String filePath = info.getStringNoNull("versionFilePath");
+                            if (TextUtils.isEmpty(versionCode) || TextUtils.isEmpty(filePath)
+                                    || versionCode.equalsIgnoreCase(Utils.getVersionName(mContext))) {
+
+                            } else {
+                                upVersion(mContext,filePath);
+                            }
+                        }
+                    }
+            }
+
+        }
+
+    };
+
+    private class MyDownloadListener extends DownloadListener {
+        @Override
+        public void onProgress(DownloadInfo downloadInfo) {
+        }
+
+        @Override
+        public void onFinish(DownloadInfo downloadInfo) {
+
+        }
+
+        @Override
+        public void onError(DownloadInfo downloadInfo, String errorMsg, Exception e) {
+        }
+
+    }
+}

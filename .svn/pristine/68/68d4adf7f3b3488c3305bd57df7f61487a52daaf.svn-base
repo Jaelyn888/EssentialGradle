@@ -1,0 +1,209 @@
+package com.yishanxiu.yishang.fragment;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.*;
+import com.google.gson.reflect.TypeToken;
+import com.yishanxiu.yishang.model.AllBrandListResponse;
+import com.yishanxiu.yishang.model.BaseBrandInfo;
+import com.yishanxiu.yishang.model.BaseResponse;
+import com.yishanxiu.yishang.model.BrandInfo;
+import com.yishanxiu.yishang.utils.ModleUtils;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.adapter.BrandAdapter;
+import com.yishanxiu.yishang.adapter.HotBrandGridAdater;
+import com.yishanxiu.yishang.getdata.*;
+import com.yishanxiu.yishang.view.sidebar.CharacterParser;
+import com.yishanxiu.yishang.view.sidebar.PinyinComparator;
+import com.yishanxiu.yishang.view.sidebar.SideBar;
+
+import java.util.*;
+
+/**
+ * Created by Jaelyn on 2015/9/7. 品牌列表
+ */
+public class BrandAllFragment extends LazyFragment {
+
+	private GridView hot_brand_gv;
+	/**
+	 * 顶部布局
+	 */
+	private LinearLayout headView;
+
+	private ListView xlv;
+	private BrandAdapter brandListAdapter;
+	/**
+	 * 汉字转换成拼音的类
+	 */
+	private CharacterParser characterParser;
+
+	/**
+	 * 根据拼音来排列ListView里面的数据类
+	 */
+	private PinyinComparator pinyinComparator;
+	private ArrayList<BrandInfo> sourceDataList = new ArrayList<BrandInfo>();
+
+	/**
+	 * 热门品牌
+	 */
+	private ArrayList<BaseBrandInfo> hotBrandList = new ArrayList<BaseBrandInfo>();
+	/**
+	 * 品牌搜索引擎
+	 */
+	private SideBar sideBar;
+
+	/**
+	 * 弹出的字母
+	 */
+	private TextView dialog_tv;
+
+	@Override
+	protected void onCreateViewLazy(Bundle savedInstanceState) {
+		super.onCreateViewLazy(savedInstanceState);
+		setContentView(R.layout.fragment_list_brand);
+		headView = (LinearLayout) inflater.inflate(R.layout.hot_brand_layout, null);
+		xlv = (ListView) findViewById(R.id.xlv);
+		hot_brand_gv = (GridView) headView.findViewById(R.id.hot_brand_gv);
+		xlv.addHeaderView(headView);
+		sideBar = (SideBar) findViewById(R.id.sideBar);
+		dialog_tv = (TextView) findViewById(R.id.dialog_tv);
+		// headView.setVisibility(View.GONE);
+		// 实例化汉字转拼音类
+		characterParser = CharacterParser.getInstance();
+		pinyinComparator = new PinyinComparator();
+
+		getData_BrandList();
+	}
+
+	private void getData_BrandList() {
+		loadingToast.show();
+		Map<String, Object> params = new HashMap<String, Object>();
+		GetDataQueue queue = new GetDataQueue();
+		params.put("requestType", "2");
+		queue.setActionName(GetDataConfing.GetAction_SelectBrandList);
+		queue.setWhat(GetDataConfing.What_SelectBrandList);
+
+		queue.setCallBack(callBack);
+		queue.setParamsNoJson(params);
+		getDataUtil.getData(queue);
+	}
+
+	@Override
+	protected void onFragmentStartLazy() {
+		super.onFragmentStartLazy();
+	}
+
+	private IGetServicesDataCallBack callBack = new IGetServicesDataCallBack() {
+		@Override
+		public void onLoaded(GetDataQueue entity) {
+
+			if (entity.getWhat() == GetDataConfing.What_SelectBrandList) {
+				TypeToken<BaseResponse<AllBrandListResponse>> typeToken=new TypeToken<BaseResponse<AllBrandListResponse>>(){};
+				BaseResponse<AllBrandListResponse> baseResponse = new ModleUtils().mapTo(entity,typeToken);
+				if (ShowGetDataError.isCodeSuccess(activity, baseResponse)) {
+					AllBrandListResponse brandListResponse = baseResponse.getInfo();
+					hotBrandList = (ArrayList<BaseBrandInfo>) brandListResponse.getHotBrandList();
+					sourceDataList = filledData((ArrayList<BrandInfo>) brandListResponse.getTotalBrandList());
+					initViews();
+					validateData();
+				}
+
+			}
+
+			loadingToast.dismiss();
+		}
+	};
+
+	private void validateData() {
+		// if(sourceDataList==null||sourceDataList.isEmpty()){
+		// nodataLayout.setVisibility(View.VISIBLE);
+		// xlv.setVisibility(View.GONE);
+		// } else {
+		// nodataLayout.setVisibility(View.GONE);
+		// xlv.setVisibility(View.VISIBLE);
+		// }
+	}
+
+	/**
+	 * 为ListView填充数据
+	 *
+	 * @param date
+	 * @return
+	 */
+	private ArrayList<BrandInfo> filledData(ArrayList<BrandInfo> date) {
+		for (BrandInfo brandInfo : date) {
+			// 汉字转换成拼音
+			String pinyin = characterParser.getSelling(brandInfo.getBrandName());
+			try {
+				String sortString = pinyin.substring(0, 1).toUpperCase();
+				// 正则表达式，判断首字母是否是英文字母
+				if (sortString.matches("[A-Z]")) {
+					brandInfo.setSortLetters(sortString.toUpperCase());
+				} else {
+					brandInfo.setSortLetters(SideBar.b[SideBar.b.length]);
+				}
+			} catch (StringIndexOutOfBoundsException e) {
+				e.printStackTrace();
+				brandInfo.setSortLetters(SideBar.b[SideBar.b.length]);
+			}
+		}
+		return date;
+	}
+
+	private void initViews() {
+		initHotViews();
+		sideBar.setTextView(dialog_tv);
+		Collections.sort(sourceDataList, pinyinComparator);
+		brandListAdapter = new BrandAdapter(activity, sourceDataList);
+		xlv.setAdapter(brandListAdapter);
+		// 设置右侧触摸监听
+		sideBar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
+
+			@Override
+			public void onTouchingLetterChanged(String s) {
+				// 该字母首次出现的位置
+				boolean isHead = s.equalsIgnoreCase(SideBar.b[0]);
+				if (isHead) {
+					xlv.setSelection(0);
+				}
+				int position = brandListAdapter.getPositionForSection(s.charAt(0));
+				if (position != -1) {
+					xlv.setSelection(position + 1);
+				}
+
+			}
+		});
+		xlv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				if (position > 0) {
+					BrandInfo BrandInfo = sourceDataList.get(position - 1);
+					activity.seeShopDetail(BrandInfo);
+				}
+			}
+		});
+
+	}
+
+	/**
+	 * 热门品牌界面
+	 */
+	private void initHotViews() {
+		if (hotBrandList.isEmpty()) {
+			headView.setVisibility(View.GONE);
+		} else {
+			headView.setVisibility(View.VISIBLE);
+			hot_brand_gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					BaseBrandInfo brandData = hotBrandList.get(position);
+					activity.seeShopDetail(brandData);
+				}
+			});
+			HotBrandGridAdater hotBrandAdapter = new HotBrandGridAdater(activity, hotBrandList);
+			hot_brand_gv.setAdapter(hotBrandAdapter);
+			// xlv.addHeaderView(headView);
+		}
+	}
+
+}

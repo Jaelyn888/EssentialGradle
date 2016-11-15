@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:background="@color/gray_bg">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:background="@color/white"
+		android:layout_marginTop="@dimen/common_margin">
+		<ImageView style="@style/hor_line_style" />
+
+		<LinearLayout
+			android:id="@+id/user_nickname_layout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+
+			<TextView
+				style="@style/userCenterItemLableStyle"
+				android:layout_width="wrap_content"
+				android:text="@string/nick_name" />
+
+			<TextView
+				android:id="@+id/user_nickname_tv"
+				style="@style/userCenterItemMsgStyle"/>
+		</LinearLayout>
+
+		<ImageView style="@style/hor_line_style" />
+
+		<LinearLayout
+			android:id="@+id/sex_layout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+
+			<TextView
+				style="@style/userCenterItemLableStyle"
+				android:layout_width="wrap_content"
+				android:text="@string/user_sex" />
+
+			<TextView
+				android:id="@+id/sex_tv"
+				style="@style/userCenterItemMsgStyle" />
+		</LinearLayout>
+
+		<ImageView style="@style/hor_line_style" />
+
+		<LinearLayout
+			android:id="@+id/birthday_layout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+
+			<TextView
+				style="@style/userCenterItemLableStyle"
+				android:layout_width="wrap_content"
+				android:text="@string/user_brithday" />
+
+			<TextView
+				android:id="@+id/birthday_tv"
+				style="@style/userCenterItemMsgStyle" />
+		</LinearLayout>
+
+		<ImageView style="@style/hor_line_style" />
+
+		<LinearLayout
+			android:id="@+id/user_addr_layout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+
+			<TextView
+				style="@style/userCenterItemLableStyle"
+				android:layout_width="wrap_content"
+				android:text="@string/user_addr" />
+
+			<TextView
+				android:id="@+id/user_addr_tv"
+				style="@style/userCenterItemMsgStyle" />
+		</LinearLayout>
+
+		<ImageView style="@style/hor_line_style" />
+
+		<LinearLayout
+			android:id="@+id/user_discri_layout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+
+			<TextView
+				style="@style/userCenterItemLableStyle"
+				android:layout_width="wrap_content"
+				android:text="@string/user_discri" />
+
+			<TextView
+				android:id="@+id/user_discri_tv"
+				style="@style/userCenterItemMsgStyle" />
+		</LinearLayout>
+
+		<ImageView style="@style/hor_line_style" />
+
+		<LinearLayout
+			android:id="@+id/rigist_time_layout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+
+			<TextView
+				style="@style/userCenterItemLableStyle"
+				android:layout_width="wrap_content"
+				android:text="@string/rigist_time" />
+
+			<TextView
+				android:id="@+id/rigist_time_tv"
+				android:drawableRight="@null"
+				style="@style/userCenterItemMsgStyle"
+				android:textColor="@color/textcolorgray2"
+				/>
+		</LinearLayout>
+	</LinearLayout>
+
+
+</LinearLayout>

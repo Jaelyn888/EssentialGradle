@@ -1,0 +1,101 @@
+package com.yishanxiu.yishang.view;
+
+
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import com.ecloud.pulltozoomview.PullToZoomLayoutEx;
+import android.content.Context;
+import android.util.AttributeSet;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
+
+/**
+ * scroll顶部带图片的可拉伸 初始化然后setImageView
+ * <p/>
+ * Created by Jaelyn on 16/3/12.
+ */
+public class ScalRefreshScrollView extends PullToRefreshScrollView {
+	private PullToZoomLayoutEx zoomLayoutEx;
+	private View zoomHeaderView;
+	private FrameLayout mZoomHeaderContainer;
+	private LinearLayout mZoomRootContainer;
+	private View mZoomContentView;
+
+	public ScalRefreshScrollView(Context context) {
+		super(context);
+	}
+
+	public ScalRefreshScrollView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+	}
+
+	public ScalRefreshScrollView(Context context, Mode mode) {
+		super(context, mode);
+	}
+
+	public ScalRefreshScrollView(Context context, Mode mode, AnimationStyle style) {
+		super(context, mode, style);
+	}
+
+	public void initCompont(Context context) {
+		zoomLayoutEx= (PullToZoomLayoutEx) mRefreshableView.getChildAt(0);
+		zoomHeaderView=zoomLayoutEx.getHeaderView();
+		mZoomHeaderContainer=zoomLayoutEx.getmHeaderContainer();
+		mZoomRootContainer=zoomLayoutEx.getmRootContainer();
+		mZoomContentView=zoomLayoutEx.getmContentView();
+	}
+
+	public PullToZoomLayoutEx getZoomLayoutEx() {
+		return zoomLayoutEx;
+	}
+
+	public View getZoomHeaderView() {
+		return zoomHeaderView;
+	}
+
+	public FrameLayout getmZoomHeaderContainer() {
+		return mZoomHeaderContainer;
+	}
+
+	public LinearLayout getmZoomRootContainer() {
+		return mZoomRootContainer;
+	}
+
+	public View getmZoomContentView() {
+		return mZoomContentView;
+	}
+
+	public void setZoomHeaderLayoutParams(){
+
+	}
+
+	@Override
+	public boolean onInterceptTouchEvent(MotionEvent event) {
+		return super.onInterceptTouchEvent(event);
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		return super.onTouchEvent(event);
+	}
+
+	@Override
+	protected boolean isReadyForPullStart() {
+		return mRefreshableView.getScrollY() == 0;
+	}
+
+	@Override
+	protected boolean isReadyForPullEnd() {
+		View scrollViewChild = mRefreshableView.getChildAt(0);
+		if (null != scrollViewChild) {
+			return mRefreshableView.getScrollY() >= (scrollViewChild.getHeight() - getHeight());
+		}
+		return false;
+	}
+
+
+}
+
+
+

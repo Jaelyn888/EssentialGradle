@@ -1,0 +1,135 @@
+package com.yishanxiu.yishang.adapter;
+
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+import com.yishanxiu.yishang.utils.Constant;
+import com.yishanxiu.yishang.utils.StringUtils;
+import com.yishanxiu.yishang.view.CircleImageView;
+import net.tsz.afinal.json.JsonMap;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Jaelyn on 16/3/3. 文章评论
+ */
+public class ArticleCommentsAdapter extends MyBaseAdapter {
+
+	private int flag;
+
+	public int getFlag() {
+		return flag;
+	}
+
+	public void setFlag(int flag) {
+		this.flag = flag;
+	}
+
+	/**
+	 * 按钮和推荐的列表的点击事件
+	 */
+	private ItemClickListener itemClickListener;
+
+	public void setItemClickListener(ItemClickListener itemClickListener) {
+		this.itemClickListener = itemClickListener;
+	}
+
+	public ArticleCommentsAdapter(Context context) {
+		super(context);
+	}
+
+	public ArticleCommentsAdapter(Context context, List<? extends Map<String, ?>> datas) {
+		super(context, datas);
+	}
+
+	@Override
+	public View getView(int i, View view, ViewGroup viewGroup) {
+		ArticleCommentsAdapterViewHolder commentsAdapterViewHolder;
+		if (view == null) {
+			commentsAdapterViewHolder = new ArticleCommentsAdapterViewHolder();
+			view = layoutInflater.inflate(R.layout.artical_comments_item, viewGroup, false);
+			ViewUtils.inject(commentsAdapterViewHolder, view);
+			view.setTag(commentsAdapterViewHolder);
+		} else {
+			commentsAdapterViewHolder = (ArticleCommentsAdapterViewHolder) view.getTag();
+		}
+		setTag(i, commentsAdapterViewHolder);
+		bindData(i, commentsAdapterViewHolder);
+		return view;
+	}
+
+	private void setTag(int i, ArticleCommentsAdapterViewHolder commentsAdapterViewHolder) {
+		//commentsAdapterViewHolder.attach_pic_hv.setTag(i);
+	}
+
+	private void bindData(int i, ArticleCommentsAdapterViewHolder goodsCommentsAdapterViewHolder) {
+//		if (i == 0 && flag == 1) {
+//			goodsCommentsAdapterViewHolder.userName_tv.getPaint().setAntiAlias(true);
+//			goodsCommentsAdapterViewHolder.userName_tv.getPaint().setFakeBoldText(true);
+//			goodsCommentsAdapterViewHolder.create_time_tv.getPaint().setAntiAlias(true);
+//			goodsCommentsAdapterViewHolder.create_time_tv.getPaint().setFakeBoldText(true);
+//			goodsCommentsAdapterViewHolder.userComments_tv.getPaint().setAntiAlias(true);
+//			goodsCommentsAdapterViewHolder.userComments_tv.getPaint().setFakeBoldText(true);
+//			goodsCommentsAdapterViewHolder.userComments_tv
+//					.setTextColor(context.getResources().getColor(R.color.darkGray1));
+//		} else {
+//			goodsCommentsAdapterViewHolder.userName_tv.getPaint().setFakeBoldText(false);
+//			goodsCommentsAdapterViewHolder.userComments_tv.getPaint().setFakeBoldText(false);
+//			goodsCommentsAdapterViewHolder.create_time_tv.getPaint().setFakeBoldText(false);
+//			goodsCommentsAdapterViewHolder.userComments_tv
+//					.setTextColor(context.getResources().getColor(R.color.darkGray));
+//		}
+
+		JsonMap<String, Object> map = (JsonMap<String, Object>) datas.get(i);
+		goodsCommentsAdapterViewHolder.userName_tv.setText(map.getStringNoNull("userNickname"));
+
+		goodsCommentsAdapterViewHolder.create_time_tv
+				.setText(StringUtils.getTimeFormatFull(map.getStringNoNull("createTime")));
+
+		BitmapHelper.loadImage(context, map.getStringNoNull("userIcon"), goodsCommentsAdapterViewHolder.user_photo_iv);
+		goodsCommentsAdapterViewHolder.userComments_tv.setText(map.getStringNoNull("commentContent"));
+		// String commentsContent = map.getStringNoNull("commentContent");
+
+		// String returnName = map.getStringNoNull("replayName");
+		// if (!TextUtils.isEmpty(returnName)) {
+		// String str_fomart = "<b>回复@%s：</b>%s";
+		// String msg = String.format(str_fomart, returnName, commentsContent);
+		// goodsCommentsAdapterViewHolder.userComments_tv.setText(Html.fromHtml(msg));
+		// } else {
+		// goodsCommentsAdapterViewHolder.userComments_tv.setText(commentsContent);
+		// }
+
+	}
+
+	public class ArticleCommentsAdapterViewHolder {
+		@ViewInject(R.id.user_photo_iv)
+		public CircleImageView user_photo_iv;
+		@ViewInject(R.id.userName_tv)
+		public TextView userName_tv;
+		@ViewInject(R.id.create_time_tv)
+		public TextView create_time_tv;
+		@ViewInject(R.id.userComments_tv)
+		public TextView userComments_tv;
+
+	}
+
+	public interface ItemClickListener {
+		/**
+		 * 返回item的空间的点击事件
+		 *
+		 * @param itemCompontType
+		 *            点击事件的类型 RECOMMAND_ITEM_CLICK：推荐列表的点击事件 MORE_CLICK：更多点击
+		 * @param position
+		 *            点击的item的位置
+		 * @param childPosition
+		 *            当点击的是推荐列表的item 返回数据的子list的位置 否则返回-1
+		 */
+		void onItemClickListener(Constant.FindItemCompontType itemCompontType, int position, int childPosition);
+	}
+}

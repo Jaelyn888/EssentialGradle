@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.yishanxiu.yishang.view.NoTouchLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/left_drawer"
+    android:layout_width="@dimen/left_drawer_with"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:layout_marginTop="0dp"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <!--<ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fadingEdge="none" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/classfy_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@color/TextColorBlack"
+                    android:gravity="center"
+                    android:text="@string/classify"
+                    android:textColor="@color/white" />
+
+                <com.yishanxiu.yishang.view.ListViewNoScroll
+                    android:id="@+id/classfy_lv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/common_margin"
+                    android:divider="@drawable/hor_line" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/brand_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@color/TextColorBlack"
+                    android:gravity="center"
+                    android:text="@string/brand"
+                    android:textColor="@color/white" />
+
+                <com.yishanxiu.yishang.view.ListViewNoScroll
+                    android:id="@+id/brand_lv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/common_margin"
+                    android:divider="@drawable/hor_line" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>-->
+
+    <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+        android:id="@+id/stick_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fadingEdge="none" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/common_margin_other"
+        android:paddingTop="@dimen/common_margin_other"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/common_double_margin"
+        android:paddingRight="@dimen/common_double_margin"
+        android:background="@color/gray_bg"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:background="@drawable/cus_round_darkgray_bt"
+            android:text="@string/cancel"
+            android:textColor="@color/white"/>
+
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="@dimen/common_double_margin"
+            android:layout_weight="1"
+            android:background="@drawable/cus_round_black_bt"
+            android:text="@string/confirm"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+</com.yishanxiu.yishang.view.NoTouchLinearLayout>

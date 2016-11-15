@@ -1,0 +1,171 @@
+package com.yishanxiu.yishang.activity;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.activity.base.BaseUIActivity;
+import com.yishanxiu.yishang.adapter.AddrListAdapter;
+import com.yishanxiu.yishang.getdata.GetDataConfing;
+import com.yishanxiu.yishang.getdata.GetDataQueue;
+import com.yishanxiu.yishang.getdata.IGetServicesDataCallBack;
+import com.yishanxiu.yishang.getdata.JsonKeys;
+import com.yishanxiu.yishang.getdata.ShowGetDataError;
+import com.yishanxiu.yishang.utils.ExtraKeys;
+import com.yishanxiu.yishang.utils.Utils;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import net.tsz.afinal.annotation.view.ViewInject;
+import net.tsz.afinal.json.JsonMap;
+import net.tsz.afinal.json.JsonParseHelper;
+
+/**
+ * 选择收货人列表
+ * 
+ * @author FangDongzhang 2016/7/25
+ */
+public class SelectRecipientActivity extends BaseUIActivity implements AdapterView.OnItemClickListener {
+	/**
+	 * 订单收货人信息列表
+	 */
+	@ViewInject(id = R.id.ptr_list)
+	private ListView ptr_list;
+	/**
+	 * 收货人列表数据
+	 */
+	private List<JsonMap<String, Object>> data_shouhuaren;
+	/**
+	 * 收货人列表数据适配器
+	 */
+	private AddrListAdapter addrListAdapter;
+	private JsonMap<String, Object> userReceiptAddress;
+
+	private int arg;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_select_user_recipient);
+		setCenter_title(R.string.select_addr);
+		setBtn_menuText(R.string.manager, onClickListener);
+		initView();
+		getDataRecipientList();
+
+	}
+
+	private OnClickListener onClickListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			jumpTo(RecipientActivity.class);
+		}
+	};
+
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		getDataRecipientList();
+	}
+
+	/**
+	 * 初始化
+	 */
+	private void initView() {
+		// ptr_list.setMode(PullToRefreshBase.Mode.BOTH);
+		ptr_list.setOnItemClickListener(this);
+		addrListAdapter = new AddrListAdapter(mContext);
+		addrListAdapter.setType(0);
+		ptr_list.setAdapter(addrListAdapter);
+	}
+
+	/**
+	 * 为收货人列表设定数据适配器
+	 */
+	private void setAdatper_shouHuoRenList(List<JsonMap<String, Object>> data) {
+		this.data_shouhuaren = data;
+		if (data_shouhuaren != null) {
+			addrListAdapter.setDatas(data);
+			addrListAdapter.notifyDataSetChanged();
+		}
+	}
+
+	/**
+	 * 获取服务器收货人列表
+	 */
+	private void getDataRecipientList() {
+		loadingToast.show();
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", Utils.getUserId(mContext));
+		GetDataQueue queue = new GetDataQueue();
+		queue.setCallBack(callBack);
+		queue.setActionName(GetDataConfing.GetAction_GetAddresslistByUsername);
+		queue.setWhat(GetDataConfing.what_GetAddresslistByUsername);
+		queue.setParamsNoJson(params);
+		getDataUtil.getData(queue);
+	}
+
+	private IGetServicesDataCallBack callBack = new IGetServicesDataCallBack() {
+
+		@Override
+		public void onLoaded(GetDataQueue entity) {
+			loadingToast.dismiss();
+			if (entity.isOk()) {
+				if (ShowGetDataError.isCodeSuccess(mContext, entity.getInfo()))
+					if (entity.what == GetDataConfing.what_GetAddresslistByUsername) {
+						setAdatper_shouHuoRenList(
+								JsonParseHelper.getJsonMap_List_JsonMap(entity.getInfo(), JsonKeys.Key_Info));
+
+					} else if (GetDataConfing.What_queryFreightByAddressId == entity.getWhat()) {
+						JsonMap<String, Object> info = JsonParseHelper.getJsonMap_JsonMap(entity.getInfo(),
+								JsonKeys.Key_Info);
+						Intent intent = new Intent();
+						intent.putExtra(ExtraKeys.Key_Msg1, info.toJson());
+						setResult(RESULT_OK);
+					}
+			} else {
+				ShowGetDataError.showNetError(SelectRecipientActivity.this);
+			}
+
+		}
+	};
+
+	private void changeAddressRequest() {
+		loadingToast.show();
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", Utils.getUserId(this));
+		params.put("provinceId", userReceiptAddress.getStringNoNull("provinceId"));
+		params.put("cityId", userReceiptAddress.getStringNoNull("cityId"));
+		params.put("districtId", userReceiptAddress.getStringNoNull("districtId"));
+		GetDataQueue queue = new GetDataQueue();
+		queue.setActionName(GetDataConfing.Action_queryFreightByAddressId);
+		queue.setCallBack(callBack);
+		queue.setParamsNoJson(params);
+		queue.setMediaType(GetDataQueue.MediaType.JSON);
+		queue.setWhat(GetDataConfing.What_queryFreightByAddressId);
+		getDataUtil.getData(queue);
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+		arg = i;
+		addrListAdapter.setSelectID(arg);
+		addrListAdapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public void finish() {
+		if(data_shouhuaren==null&&data_shouhuaren.size()==0&&data_shouhuaren.size()>arg) {
+			userReceiptAddress = data_shouhuaren.get(arg);
+
+			Intent intent = new Intent();
+			intent.putExtra(ExtraKeys.Key_Msg1, userReceiptAddress.toJson());
+			setResult(RESULT_OK, intent);
+		}
+		super.finish();
+	}
+}

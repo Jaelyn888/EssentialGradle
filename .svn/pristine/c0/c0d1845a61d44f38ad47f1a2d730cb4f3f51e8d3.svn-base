@@ -1,0 +1,112 @@
+package com.yishanxiu.yishang.adapter;
+
+import com.yishanxiu.yishang.R;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+import com.yishanxiu.yishang.utils.Constant;
+import com.yishanxiu.yishang.utils.BitmapHelper.LoadImgOption;
+
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import net.tsz.afinal.json.JsonMap;
+
+/**
+ * Created by Jaelyn on 2015/9/6 0006.
+ */
+public class ArticalAdapter extends MyBaseAdapter {
+
+	/**
+	 * 按钮和推荐的列表的点击事件
+	 */
+	private ItemClickListener itemClickListener;
+
+	public void setItemClickListener(ItemClickListener itemClickListener) {
+		this.itemClickListener = itemClickListener;
+	}
+
+	public ArticalAdapter(Context context) {
+		super(context);
+	}
+
+	@Override
+	public View getView(int i, View view, ViewGroup viewGroup) {
+		FindProductAdapterViewHolder findProductAdapterViewHolder;
+		if (view == null) {
+			view = layoutInflater.inflate(R.layout.artical_item, viewGroup, false);
+			findProductAdapterViewHolder = new FindProductAdapterViewHolder();
+			ViewUtils.inject(findProductAdapterViewHolder, view);
+			view.setTag(findProductAdapterViewHolder);
+		} else {
+			findProductAdapterViewHolder = (FindProductAdapterViewHolder) view.getTag();
+		}
+		setItemTag(i, findProductAdapterViewHolder);
+		bindData(i, findProductAdapterViewHolder);
+		return view;
+	}
+
+	private void setItemTag(int i, FindProductAdapterViewHolder findProductAdapterViewHolder) {
+
+	}
+
+	private void bindData(final int i, FindProductAdapterViewHolder viewHolder) {
+		JsonMap<String, Object> jsonMap = (JsonMap<String, Object>) datas.get(i);
+		// ArrayList<JsonMap<String,Object>> recommandGoodsList=
+		// (ArrayList<JsonMap<String, Object>>)
+		// jsonMap.getList_JsonMap("ProductList");
+		// RecommandProductAdapter recommandProductAdapter = new
+		// RecommandProductAdapter(context);
+		// recommandProductAdapter.setType(1);
+		// recommandProductAdapter.setDatas(recommandGoodsList);
+		// viewHolder.find_page_item_hv.setAdapter(recommandProductAdapter);
+		viewHolder.find_item_big_title_tv.setText(jsonMap.getStringNoNull("articleName"));
+		viewHolder.find_item_classfy_tv.setText(jsonMap.getStringNoNull("groupName"));
+//		viewHolder.find_item_create_time_tv
+//				.setText(StringUtils.getDatayyyyMMddBySeconds(jsonMap.getStringNoNull("createTime")));
+//		viewHolder.find_item_scan_num_tv.setText(jsonMap.getStringNoNull("readcount"));
+		String picPath = jsonMap.getStringNoNull("mainPath");
+		//picPath="http://139.196.33.67:8005//discover/20151126/06583ebb-f599-428a-8f72-6dd0b18a2b93.png";
+		BitmapHelper.loadImage(context, picPath, viewHolder.big_iv, LoadImgOption.Rectangle);
+		String iconStr=jsonMap.getStringNoNull("authorIcon");
+		BitmapHelper.loadImage(context,iconStr,viewHolder.iv_icon,LoadImgOption.Photo);
+	}
+
+	public class FindProductAdapterViewHolder {
+		@ViewInject(R.id.big_iv)
+		public ImageView big_iv;
+
+		@ViewInject(R.id.find_item_big_title_tv)
+		public TextView find_item_big_title_tv;
+
+		@ViewInject(R.id.find_item_classfy_tv)
+		public TextView find_item_classfy_tv;
+
+		@ViewInject(R.id.create_time_tv)
+		public TextView find_item_create_time_tv;
+
+		@ViewInject(R.id.find_item_scan_num_tv)
+		public TextView find_item_scan_num_tv;
+
+		@ViewInject(R.id.iv_icon)
+		public ImageView iv_icon;
+
+
+	}
+
+	public interface ItemClickListener {
+		/**
+		 * 返回item的空间的点击事件
+		 *
+		 * @param itemCompontType
+		 *            点击事件的类型 RECOMMAND_ITEM_CLICK：推荐列表的点击事件 MORE_CLICK：更多点击
+		 * @param position
+		 *            点击的item的位置
+		 * @param childPosition
+		 *            当点击的是推荐列表的item 返回数据的子list的位置 否则返回-1
+		 */
+		void onItemClickListener(Constant.FindItemCompontType itemCompontType, int position, int childPosition);
+	}
+}

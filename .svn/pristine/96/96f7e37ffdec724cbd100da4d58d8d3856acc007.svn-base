@@ -1,0 +1,83 @@
+package com.yishanxiu.yishang.activity;
+
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.*;
+import net.tsz.afinal.json.JsonMap;
+import net.tsz.afinal.json.JsonParseHelper;
+import net.tsz.afinal.annotation.view.ViewInject;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.activity.base.BaseUIActivity;
+import com.yishanxiu.yishang.adapter.ShopIntroductAdapter;
+import com.yishanxiu.yishang.getdata.*;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+import com.yishanxiu.yishang.utils.ExtraKeys;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by Jaelyn on 2015/9/25.
+ * 店铺详情介绍
+ */
+public class ShopIntroductionActivity extends BaseUIActivity {
+
+    /**
+     * to头部图片
+     */
+    private ImageView shop_logo_iv;
+    /**
+     * 头部信息
+     */
+    private TextView shop_rich_discri_tv;
+    /**
+     * 网址
+     */
+    private TextView internet_tv;
+
+    private JsonMap shopDatas; // 店铺信息
+    private String shopStr;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_shop_introduction);
+        shopStr=getIntent().getStringExtra(ExtraKeys.Key_Msg1);
+        shopDatas = JsonParseHelper.getJsonMap(shopStr);
+        shop_logo_iv= (ImageView) findViewById(R.id.shop_logo_iv);
+        shop_rich_discri_tv= (TextView) findViewById(R.id.shop_rich_discri_tv);
+        internet_tv= (TextView) findViewById(R.id.internet_tv);
+        internet_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoInternet(shopDatas.getStringNoNull("remark1"));
+            }
+        });
+        setIntroductData(shopDatas);
+    }
+
+    /**
+     * 打开浏览器
+     *
+     * @param internetUrl
+     */
+    public void gotoInternet(String internetUrl) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Uri content_url = Uri.parse(internetUrl);
+        intent.setData(content_url);
+        startActivity(intent);
+    }
+
+    public void setIntroductData(JsonMap data) {
+        String logoPath = data.getStringNoNull("logoPath");
+        BitmapHelper.loadImage(mContext,logoPath, shop_logo_iv, BitmapHelper.LoadImgOption.BrandLogo);
+        shop_rich_discri_tv.setText("\t\t\t\t"+data.getStringNoNull("detailedDesc"));
+        internet_tv.setText(data.getStringNoNull("remark1"));
+    }
+}

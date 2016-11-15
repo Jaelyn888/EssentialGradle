@@ -1,0 +1,156 @@
+package com.yishanxiu.yishang.adapter;
+
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.utils.BitmapHelper;
+import com.yishanxiu.yishang.utils.Constant;
+import com.yishanxiu.yishang.utils.StringUtils;
+import com.yishanxiu.yishang.view.CustomImageView;
+
+import net.tsz.afinal.json.JsonMap;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by FangDongzhang on 2016/9/7.
+ */
+public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ContentViewHolder> implements View.OnClickListener {
+
+    /**
+     * 父类的位置
+     */
+    private int parentPosition = -1;
+
+    public int getParentPosition() {
+        return parentPosition;
+    }
+
+    public void setParentPosition(int parentPosition) {
+        this.parentPosition = parentPosition;
+    }
+
+    protected List<? extends Map<String, ?>> datas;
+
+    private LayoutInflater mLayoutInflater;
+    private Context context;
+
+    public MyRecyclerViewAdapter(Context context) {
+        this.context = context;
+        mLayoutInflater = LayoutInflater.from(context);
+    }
+
+    public void setDatas(List<? extends Map<String, ?>> datas) {
+        this.datas = datas;
+    }
+
+    //内容长度
+    public int getContentItemCount() {
+        return datas.size();
+    }
+
+    //底部View个数
+    private int mBottomCount = 1;
+
+    //判断当前item是否是FooterView
+    public boolean isBottomView(int position) {
+        return mBottomCount != 0 && position >= (getContentItemCount());
+    }
+
+    //判断当前item类型
+//    @Override
+//    public int getItemViewType(int position) {
+//        int dataItemCount = getContentItemCount();
+//        if (mBottomCount != 0 && position >= dataItemCount) {
+//            //底部View
+//            return ITEM_TYPE_BOTTOM;
+//        } else {
+//            //内容View
+//            return ITEM_TYPE_CONTENT;
+//        }
+//    }
+
+
+    @Override
+    public int getItemCount() {
+        return datas.size() + mBottomCount;
+    }
+
+    //创建新View，被LayoutManager所调用
+    @Override
+    public ContentViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        View view;
+        ContentViewHolder contentViewHolder;
+        view = mLayoutInflater.inflate(R.layout.recommend_pro_item, viewGroup, false);
+        contentViewHolder = new ContentViewHolder(view);
+        view.setOnClickListener(this);
+        return contentViewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(ContentViewHolder holder, final int position) {
+
+        if (position != datas.size()) {
+            JsonMap<String, Object> jsonMap = (JsonMap<String, Object>) datas.get(position);
+            String iconStr = jsonMap.getStringNoNull("path");
+            BitmapHelper.loadImage(context, iconStr, holder.relation_goods_iv, BitmapHelper.LoadImgOption.Rectangle);
+            holder.brand_name_tv.setText(jsonMap.getStringNoNull("brandName"));
+            holder.product_name_tv.setText(jsonMap.getStringNoNull("productName"));
+            double marketPrice = jsonMap.getDouble("costPrice");
+            holder.product_price_tv.setText(StringUtils.getFormatMoneyWithSign(marketPrice));
+        } else {
+            holder.brand_name_tv.setText("");
+            holder.product_name_tv.setText("");
+            holder.product_price_tv.setText("");
+            Picasso.with(context).load(R.drawable.review_more).into(holder.relation_goods_iv);
+        }
+
+
+        holder.itemView.setTag(position);
+        holder.relation_goods_iv.setTag(position);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (mOnItemClickListener != null) {
+            //注意这里使用getTag方法获取数据
+            mOnItemClickListener.onItemClick(parentPosition, Constant.RecommendItem.RELATION_PRODUCT, (int) view.getTag());
+        }
+
+
+    }
+
+    public static class ContentViewHolder extends RecyclerView.ViewHolder {
+        public CustomImageView relation_goods_iv;
+        public TextView brand_name_tv;
+        public TextView product_name_tv;
+        public TextView product_price_tv;
+
+        public ContentViewHolder(View itemView) {
+            super(itemView);
+            relation_goods_iv = (CustomImageView) itemView.findViewById(R.id.relation_goods_iv);
+            brand_name_tv = (TextView) itemView.findViewById(R.id.brand_name_tv);
+            product_name_tv = (TextView) itemView.findViewById(R.id.product_name_tv);
+            product_price_tv = (TextView) itemView.findViewById(R.id.product_price_tv);
+        }
+    }
+
+    private OnRecyclerViewItemClickListener mOnItemClickListener;
+
+    public void setOnItemClickListener(OnRecyclerViewItemClickListener listener) {
+        this.mOnItemClickListener = listener;
+    }
+
+
+    public interface OnRecyclerViewItemClickListener {
+        void onItemClick(int itemPosition, Constant.RecommendItem type, int childIndex);
+    }
+
+}

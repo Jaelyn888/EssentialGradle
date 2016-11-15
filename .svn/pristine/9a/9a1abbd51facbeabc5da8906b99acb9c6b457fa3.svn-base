@@ -1,0 +1,147 @@
+package com.yishanxiu.yishang.fragment;
+
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.lidroid.xutils.ViewUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
+import com.yishanxiu.yishang.R;
+import com.yishanxiu.yishang.adapter.RecommendAdapter;
+import com.yishanxiu.yishang.getdata.GetDataConfing;
+import com.yishanxiu.yishang.getdata.GetDataQueue;
+import com.yishanxiu.yishang.getdata.IGetServicesDataCallBack;
+import com.yishanxiu.yishang.getdata.JsonKeys;
+import com.yishanxiu.yishang.getdata.ShowGetDataError;
+import com.yishanxiu.yishang.model.RecommendCarouselPic;
+import com.yishanxiu.yishang.utils.DisplayUtil;
+
+import net.tsz.afinal.json.JsonMap;
+import net.tsz.afinal.json.JsonParseHelper;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import cn.bingoogolapple.bgabanner.BGABanner;
+
+/**
+ * Created by FangDongzhang on 2016/9/5.
+ * <p/>
+ * 推荐
+ */
+public class RecommendFragment extends LazyFragment {
+    @ViewInject(R.id.ptr_list)
+    private PullToRefreshListView listView;
+
+    private BGABanner mBanner;
+
+    @Override
+    protected void onCreateViewLazy(Bundle savedInstanceState) {
+        super.onCreateViewLazy(savedInstanceState);
+        setContentView(R.layout.recommend_layout);
+        ViewUtils.inject(this, getContentView());
+        initListView();
+        getServerData();
+        initData();
+    }
+
+    /**
+     * 初始化ListView
+     */
+    private void initListView() {
+
+        listView.setMode(PullToRefreshBase.Mode.BOTH);
+        // 初始化HeaderView
+        View headerView = View.inflate(activity, R.layout.layout_header_recommend, null);
+        mBanner = (BGABanner) headerView.findViewById(R.id.banner);
+        ViewGroup.LayoutParams lp;
+        lp = mBanner.getLayoutParams();
+        lp.width = DisplayUtil.screenWidth;
+        lp.height = (int) (DisplayUtil.screenWidth / 1.8);
+        mBanner.setLayoutParams(lp);
+
+        mBanner.setAdapter(new BGABanner.Adapter() {
+            @Override
+            public void fillBannerItem(BGABanner banner, View view, Object model, int position) {
+                Glide.with(banner.getContext()).load(model).placeholder(R.drawable.me_head_bg)
+                        .error(R.drawable.me_head_bg).dontAnimate().thumbnail(0.1f).into((ImageView) view);
+            }
+        });
+
+        // 初始化ListView
+        listView.getRefreshableView().addHeaderView(headerView);
+        RecommendAdapter recommendAdapter = new RecommendAdapter(activity);
+        listView.setAdapter(recommendAdapter);
+
+    }
+
+    private void initData() {
+
+        mBanner.setAdapter(new BGABanner.Adapter() {
+            @Override
+            public void fillBannerItem(BGABanner banner, View view, Object model, int position) {
+                ((ImageView) view).setImageResource((int) model);
+            }
+        });
+        mBanner.setData(Arrays.asList(R.drawable.pic_load_error, R.drawable.pic_load_error, R.drawable.pic_load_error), null);
+
+//        List<View> views = new ArrayList<>();
+//        views.add(BGABannerUtil.getItemImageView(activity, R.drawable.me_head_bg));
+//        views.add(BGABannerUtil.getItemImageView(activity, R.drawable.me_head_bg));
+//        views.add(BGABannerUtil.getItemImageView(activity, R.drawable.me_head_bg));
+//        // 如果你想实现少于3页的无限轮播，请不要用该方式初始化。用「方式1」初始化
+//        mBanner.setData(views);
+    }
+
+    /**
+     * 获取轮播图
+     */
+    private void getServerData() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        GetDataQueue queue = new GetDataQueue();
+        queue.setActionName(GetDataConfing.Recommend_QueryRecommendCarouselPic);
+        queue.setParamsNoJson(params);
+        queue.setCallBack(callBack);
+        queue.setWhat(GetDataConfing.What_Recommend_QueryRecommendCarouselPic);
+        getDataUtil.getData(queue);
+    }
+
+    private IGetServicesDataCallBack callBack = new IGetServicesDataCallBack() {
+        @Override
+        public void onLoaded(GetDataQueue entity) {
+//            goods_list.onRefreshComplete();
+            activity.loadingToast.dismiss();
+            if (entity.isOk()) {
+                if (ShowGetDataError.isCodeSuccess(activity, entity.getInfo())) {
+                    if (entity.what == GetDataConfing.What_Recommend_QueryRecommendCarouselPic) {
+                        List<JsonMap<String, Object>> jsonMaps = JsonParseHelper.getJsonMap_List_JsonMap(entity.getInfo(),
+                                JsonKeys.Key_Info);
+                        Type listType = new TypeToken<LinkedList<RecommendCarouselPic>>(){}.getType();
+                        Gson gson = new Gson();
+                        for(int i = 0;i<jsonMaps.size();i++){
+                            LinkedList<RecommendCarouselPic> users = gson.fromJson(jsonMaps.get(i).toJson(), listType);
+                            List<RecommendCarouselPic> recommendCarouselPiclist = new ArrayList<>();
+                            for (Iterator iterator = users.iterator(); iterator.hasNext();) {
+                                RecommendCarouselPic user = (RecommendCarouselPic) iterator.next();
+                                recommendCarouselPiclist.add(user);
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+    };
+}

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pro_detail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants"
+    android:background="@color/white" >
+
+    <com.handmark.pulltorefresh.library.PullToRefreshScrollView
+        android:id="@+id/ptr_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/llt_custom"
+        android:fadingEdge="none" >
+
+        <LinearLayout
+            android:id="@+id/content_info_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <include layout="@layout/head_product_detail" />
+
+            <com.yishanxiu.yishang.view.GridViewNoScroll
+                android:id="@+id/relation_product_gv"
+                style="@style/relation_product_style" />
+        </LinearLayout>
+    </com.handmark.pulltorefresh.library.PullToRefreshScrollView>
+
+    <LinearLayout
+        android:id="@+id/llt_custom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/tab_bottom_bg"
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:id="@+id/custom_service_tv"
+            style="@style/tab_item_style"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:drawableTop="@drawable/customer"
+            android:paddingBottom="@dimen/default_drawpadding"
+            android:paddingTop="@dimen/default_drawpadding"
+            android:text="@string/custom_service"
+            android:textColor="@color/black" />
+
+        <View style="@style/vertical_line_style" />
+
+        <TextView
+            android:id="@+id/collect_tv"
+            style="@style/tab_item_style"
+            android:layout_width="0dp"
+            android:layout_gravity="bottom"
+            android:layout_weight="2"
+            android:drawableTop="@drawable/collect_bg"
+            android:paddingBottom="@dimen/default_drawpadding"
+            android:paddingTop="@dimen/default_drawpadding"
+            android:text="@string/collection"
+            android:textColor="@color/TextColorBlack" />
+
+        <View style="@style/vertical_line_style" />
+
+        <TextView
+            android:id="@+id/shop_tv"
+            style="@style/tab_item_style"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:drawableTop="@drawable/shopcart_logo"
+            android:paddingBottom="@dimen/default_drawpadding"
+            android:paddingTop="@dimen/default_drawpadding"
+            android:text="@string/brand"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/add_cart_tv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:background="@color/black"
+            android:gravity="center"
+            android:text="@string/add2cart"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+</RelativeLayout>
